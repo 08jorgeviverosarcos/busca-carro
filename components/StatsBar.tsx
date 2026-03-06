@@ -1,0 +1,57 @@
+'use client'
+
+import { useQuery } from '@tanstack/react-query'
+
+type StatsData = {
+  totalActive: number
+  byPortal: Record<string, number>
+  lastSync: Record<string, string>
+}
+
+export function StatsBar() {
+  const { data, isLoading } = useQuery<{ data: StatsData | null; error: string | null }>({
+    queryKey: ['stats'],
+    queryFn: () => fetch('/api/stats').then((r) => r.json()),
+    staleTime: 5 * 60 * 1000,
+  })
+
+  const stats = data?.data
+
+  return (
+    <section className="border-t border-b border-zinc-800 bg-zinc-900/50">
+      <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+          {isLoading ? (
+            <>
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="space-y-1">
+                  <div className="h-7 bg-zinc-800 rounded animate-pulse mx-auto w-20" />
+                  <div className="h-3 bg-zinc-800 rounded animate-pulse mx-auto w-24" />
+                </div>
+              ))}
+            </>
+          ) : (
+            <>
+              <div>
+                <p className="text-2xl font-black text-white">
+                  {stats?.totalActive?.toLocaleString('es-CO') ?? '—'}
+                </p>
+                <p className="text-xs text-zinc-500 uppercase tracking-wide">Anuncios activos</p>
+              </div>
+              {['mercadolibre', 'tucarro', 'vendetunave'].map((portal) => (
+                <div key={portal}>
+                  <p className="text-2xl font-black text-white">
+                    {stats?.byPortal?.[portal]?.toLocaleString('es-CO') ?? '0'}
+                  </p>
+                  <p className="text-xs text-zinc-500 uppercase tracking-wide">
+                    {portal === 'mercadolibre' ? 'MercadoLibre' : portal === 'tucarro' ? 'TuCarro' : 'VendeTuNave'}
+                  </p>
+                </div>
+              ))}
+            </>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}

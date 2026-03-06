@@ -1,26 +1,56 @@
 {
-  "name": "busca-carro-temp",
+  "name": "busca-carro",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:migrate": "prisma migrate dev",
+    "db:generate": "prisma generate",
+    "db:studio": "prisma studio",
+    "db:seed": "ts-node prisma/seed.ts",
+    "sync:ml": "node scripts/sync.mjs ml",
+    "sync:tucarro": "node scripts/sync.mjs tucarro",
+    "sync:vendetunave": "node scripts/sync.mjs vendetunave",
+    "sync:olx": "node scripts/sync.mjs olx",
+    "sync:autocosmos": "node scripts/sync.mjs autocosmos",
+    "sync:all": "npm run sync:autocosmos"
   },
   "dependencies": {
-    "next": "16.1.6",
+    "@mendable/firecrawl-js": "^1.21.1",
+    "@prisma/adapter-pg": "^7.4.2",
+    "@prisma/client": "^7.4.2",
+    "@tanstack/react-query": "^5.90.21",
+    "@types/pg": "^8.18.0",
+    "@upstash/redis": "^1.36.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "dotenv": "^17.3.1",
+    "lucide-react": "^0.577.0",
+    "next": "^16.1.6",
+    "pg": "^8.20.0",
+    "prisma": "^7.4.2",
+    "radix-ui": "^1.4.3",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "resend": "^6.9.3",
+    "tailwind-merge": "^3.5.0",
+    "zod": "^4.3.6",
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^20.19.36",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "shadcn": "^3.8.5",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tw-animate-css": "^1.4.0",
+    "typescript": "^5.9.3"
   }
 }

@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BuscaCarro Colombia
 
-## Getting Started
+Meta-buscador de carros usados en Colombia. Agrega anuncios de MercadoLibre, TuCarro, VendeTuNave y OLX en una sola plataforma con búsqueda y filtros en tiempo real.
 
-First, run the development server:
+## Arquitectura de 4 capas
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+CAPA 1: Extracción    → lib/extractors/  (ML API + Firecrawl)
+CAPA 2: Normalización → lib/normalizer.ts (unifica formatos)
+CAPA 3: Almacenamiento → lib/storage.ts  (PostgreSQL via Prisma)
+CAPA 4: Interfaz      → app/ + components/ (Next.js frontend)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+El frontend **nunca** llama a APIs externas directamente — todo pasa por `/api/search` que lee de la DB local, garantizando respuestas < 200ms.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Requisitos
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Node.js 18+
+- PostgreSQL 14+
+- Cuenta Upstash (Redis) — opcional, para caché
+- Cuenta Firecrawl — para scraping de TuCarro, VendeTuNave, OLX
+- Cuenta Resend — para alertas por email
 
-## Learn More
+## Setup
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# 1. Clonar repo
+git clone <url> busca-carro
+cd busca-carro
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# 2. Instalar dependencias
+npm install
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# 3. Configurar variables de entorno
+cp .env.example .env
+# Editar .env con tus credenciales
 
-## Deploy on Vercel
+# 4. Aplicar migraciones de base de datos
+npm run db:migrate
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# 5. Generar cliente Prisma
+npm run db:generate
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# 6. Iniciar servidor de desarrollo
+npm run dev
+
+# 7. Poblar la DB con anuncios de MercadoLibre (requiere servidor corriendo)
+npm run sync:ml
+```
+
+Abre http://localhost:3000
+
+## Sincronización de portales
+
+```bash
+# MercadoLibre (API oficial, sin costo)
+npm run sync:ml
+
+# TuCarro via Firecrawl
+npm run sync:tucarro
+
+# VendeTuNave via Firecrawl
+npm run sync:vendetunave
+
+# Todos los portales
+npm run sync:all
+```
+
+## Agregar un nuevo portal
+
+1. Crear `lib/extractors/miportal.ts` que exporte `extractMiPortal(): Promise<RawListing[]>`
+2. El extractor debe retornar siempre `RawListing[]` (nunca lanzar excepciones)
+3. Usar rate limiting: máximo 1 req/segundo
+4. Agregar el portal en `app/api/sync/firecrawl/route.ts` en `PORTALES_VALIDOS`
+5. Agregar badge de color en `lib/utils.ts` en `PORTAL_COLORS`
+
+## Stack
+
+- **Frontend**: Next.js 16 (App Router), TypeScript, Tailwind CSS, shadcn/ui
+- **Estado**: Zustand + TanStack Query
+- **DB**: PostgreSQL + Prisma ORM
+- **Cache**: Upstash Redis (TTL 30 min busquedas, 5 min stats)
+- **Scraping**: Firecrawl API
+- **Emails**: Resend
