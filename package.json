@@ -13,10 +13,10 @@
     "db:seed": "ts-node prisma/seed.ts",
     "sync:ml": "node scripts/sync.mjs ml",
     "sync:tucarro": "node scripts/sync.mjs tucarro",
-    "sync:vendetunave": "node scripts/sync.mjs vendetunave",
     "sync:olx": "node scripts/sync.mjs olx",
     "sync:autocosmos": "node scripts/sync.mjs autocosmos",
-    "sync:all": "npm run sync:autocosmos"
+    "sync:vendetunave": "node scripts/sync.mjs vendetunave",
+    "sync:all": "npm run sync:autocosmos && npm run sync:vendetunave"
   },
   "dependencies": {
     "@mendable/firecrawl-js": "^1.21.1",

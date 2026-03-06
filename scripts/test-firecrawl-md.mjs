@@ -12,20 +12,29 @@ env.split('\n').forEach(line => {
 
 const FirecrawlApp = require('@mendable/firecrawl-js').default
 const app = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY })
-const listingRegex = () => /\[!\[([^\]]+)\]\(([^)]+)\)(\\+\n\\+\n)([\s\S]+?)\]\(([^"]+) "([^"]+)"\)/g
 
-async function getListings(url) {
-  const result = await app.scrapeUrl(url, { formats: ['markdown'] })
-  const md = result.markdown ?? ''
-  const re = listingRegex()
-  const urls = []
-  let m
-  while ((m = re.exec(md)) !== null) urls.push(m[5]?.split('/').pop()?.substring(0,12))
-  return urls
+// Intentar con waitFor para renderizado JS
+console.log('🔄 Testing VendeTuNave with waitFor...')
+try {
+  const result = await app.scrapeUrl('https://www.vendetunave.co/vehiculos/', {
+    formats: ['markdown'],
+    waitFor: 3000,
+  })
+  console.log('Success:', result.success, '| Length:', result.markdown?.length)
+  console.log(result.markdown?.substring(0, 2000))
+} catch(e) {
+  console.error('waitFor failed:', e.message?.substring(0, 200))
 }
 
-const p1 = await getListings('https://www.autocosmos.com.co/auto/usado')
-const p2 = await getListings('https://www.autocosmos.com.co/auto/usado?paginaResultados=2')
-console.log('Page 1 count:', p1.length, 'First 3:', p1.slice(0,3))
-console.log('Page 2 count:', p2.length, 'First 3:', p2.slice(0,3))
-console.log('Same?', p1[0] === p2[0])
+// Probar la API de VendeTuNave directamente (suelen tener API REST)
+console.log('\n🔄 Testing VendeTuNave API...')
+try {
+  const res = await fetch('https://www.vendetunave.co/api/vehicles?category=car&page=1&limit=10')
+  console.log('API status:', res.status)
+  if (res.ok) {
+    const json = await res.json()
+    console.log('API response:', JSON.stringify(json).substring(0, 500))
+  }
+} catch(e) {
+  console.error('API failed:', e.message?.substring(0, 100))
+}

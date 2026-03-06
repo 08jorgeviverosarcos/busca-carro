@@ -23,8 +23,8 @@ const SECRET = process.env.SYNC_SECRET ?? ''
 
 const command = process.argv[2] // 'ml', 'tucarro', 'vendetunave', 'olx', 'autocosmos'
 
-// Número total de marcas en el extractor de Autocosmos
-const AUTOCOSMOS_MARCAS_TOTAL = 20
+// Número total de marcas en cada extractor
+const MARCAS_TOTAL = { autocosmos: 20, vendetunave: 25 }
 
 async function syncBatch(portal, startIdx, batchSize) {
   const isMl = portal === 'ml'
@@ -68,9 +68,10 @@ async function sync(portal) {
     return
   }
 
-  // Para autocosmos: iterar por lotes de marcas
-  const totalBatches = Math.ceil(AUTOCOSMOS_MARCAS_TOTAL / batchSize)
-  console.log(`🔄 Sincronizando ${portal} (${AUTOCOSMOS_MARCAS_TOTAL} marcas, ${totalBatches} lotes)...`)
+  // Para autocosmos/vendetunave: iterar por lotes de marcas
+  const totalMarcas = MARCAS_TOTAL[portal] ?? 20
+  const totalBatches = Math.ceil(totalMarcas / batchSize)
+  console.log(`🔄 Sincronizando ${portal} (${totalMarcas} marcas, ${totalBatches} lotes)...`)
 
   for (let batch = 0; batch < totalBatches; batch++) {
     const startIdx = batch * batchSize

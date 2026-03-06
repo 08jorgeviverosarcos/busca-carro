@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
     if (portal === 'tucarro') {
       rawListings = await extractTuCarro(pages)
     } else if (portal === 'vendetunave') {
-      rawListings = await extractVendeTuNave(pages)
+      rawListings = await extractVendeTuNave(pages, startIdx)
     } else if (portal === 'olx') {
       rawListings = await extractOLX(pages)
     } else {
