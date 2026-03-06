@@ -6,7 +6,7 @@ import { RawListing } from '@/lib/types'
 import { sleep } from '@/lib/utils'
 
 const BASE_URL = 'https://www.vendetunave.co'
-const IMG_BASE = `${BASE_URL}/images/vehiculos/medium`
+const IMG_BASE = 'https://d3bmp4azzreq60.cloudfront.net/fit-in/300x200/vendetunave/images/vehiculos'
 
 // Marcas colombianas con inventario en VendeTuNave
 const MARCAS = [
