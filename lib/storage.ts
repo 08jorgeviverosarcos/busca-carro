@@ -21,7 +21,7 @@ export async function upsertListings(listings: NormalizedListing[]): Promise<Syn
       })
 
       if (!existing) {
-        await prisma.listing.create({
+        const newListing = await prisma.listing.create({
           data: {
             externalId: listing.externalId,
             sourcePortal: listing.sourcePortal,
@@ -38,21 +38,49 @@ export async function upsertListings(listings: NormalizedListing[]): Promise<Syn
             images: listing.images,
             urlOriginal: listing.urlOriginal,
             isActive: true,
+            firstSeenAt: listing.scrapedAt,
             scrapedAt: listing.scrapedAt,
           },
         })
+
+        // Registrar precio inicial en historial
+        if (listing.priceCop !== null) {
+          await prisma.priceHistory.create({
+            data: {
+              listingId: newListing.id,
+              priceCop: BigInt(listing.priceCop),
+              recordedAt: listing.scrapedAt,
+            },
+          })
+        }
+
         inserted++
       } else {
+        const newPrice = listing.priceCop !== null ? BigInt(listing.priceCop) : null
+        const priceChanged = newPrice !== null && existing.priceCop !== newPrice
+
         // Actualizar precio, imágenes y marcar como activo
         await prisma.listing.update({
           where: { id: existing.id },
           data: {
-            priceCop: listing.priceCop !== null ? BigInt(listing.priceCop) : existing.priceCop,
+            priceCop: newPrice !== null ? newPrice : existing.priceCop,
             images: listing.images.length > 0 ? listing.images : existing.images,
             isActive: true,
             scrapedAt: listing.scrapedAt,
           },
         })
+
+        // Registrar en historial solo si el precio cambió
+        if (priceChanged) {
+          await prisma.priceHistory.create({
+            data: {
+              listingId: existing.id,
+              priceCop: newPrice,
+              recordedAt: listing.scrapedAt,
+            },
+          })
+        }
+
         updated++
       }
     } catch (err) {

@@ -16,9 +16,12 @@
     "sync:olx": "node scripts/sync.mjs olx",
     "sync:autocosmos": "node scripts/sync.mjs autocosmos",
     "sync:vendetunave": "node scripts/sync.mjs vendetunave",
-    "sync:all": "npm run sync:autocosmos && npm run sync:vendetunave"
+    "sync:all": "npm run sync:autocosmos && npm run sync:vendetunave",
+    "db:fix-vtn-urls": "node scripts/fix-vendetunave-urls.mjs",
+    "db:backfill-prices": "node scripts/backfill-price-history.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
     "@mendable/firecrawl-js": "^1.21.1",
     "@prisma/adapter-pg": "^7.4.2",
     "@prisma/client": "^7.4.2",

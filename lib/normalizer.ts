@@ -269,6 +269,11 @@ function normalizeTransmission(raw: string): string | null {
   return TRANSMISSION_MAP[key] ?? null
 }
 
+export const VALID_BRANDS = [...new Set(Object.values(BRAND_MAP))]
+export const VALID_CITIES = [...new Set(Object.values(CITY_MAP))]
+export const VALID_FUEL_TYPES = [...new Set(Object.values(FUEL_MAP))]
+export const VALID_TRANSMISSIONS = [...new Set(Object.values(TRANSMISSION_MAP))]
+
 export function normalizeListings(rawListings: RawListing[]): {
   normalized: NormalizedListing[]
   stats: NormalizationStats

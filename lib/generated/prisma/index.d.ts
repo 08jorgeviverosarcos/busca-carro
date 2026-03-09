@@ -19,6 +19,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type Listing = $Result.DefaultSelection<Prisma.$ListingPayload>
 /**
+ * Model PriceHistory
+ * 
+ */
+export type PriceHistory = $Result.DefaultSelection<Prisma.$PriceHistoryPayload>
+/**
  * Model Alert
  * 
  */
@@ -159,6 +164,16 @@ export class PrismaClient<
     * ```
     */
   get listing(): Prisma.ListingDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.priceHistory`: Exposes CRUD operations for the **PriceHistory** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PriceHistories
+    * const priceHistories = await prisma.priceHistory.findMany()
+    * ```
+    */
+  get priceHistory(): Prisma.PriceHistoryDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.alert`: Exposes CRUD operations for the **Alert** model.
@@ -614,6 +629,7 @@ export namespace Prisma {
 
   export const ModelName: {
     Listing: 'Listing',
+    PriceHistory: 'PriceHistory',
     Alert: 'Alert',
     ScrapeLog: 'ScrapeLog'
   };
@@ -631,7 +647,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "listing" | "alert" | "scrapeLog"
+      modelProps: "listing" | "priceHistory" | "alert" | "scrapeLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -706,6 +722,80 @@ export namespace Prisma {
           count: {
             args: Prisma.ListingCountArgs<ExtArgs>
             result: $Utils.Optional<ListingCountAggregateOutputType> | number
+          }
+        }
+      }
+      PriceHistory: {
+        payload: Prisma.$PriceHistoryPayload<ExtArgs>
+        fields: Prisma.PriceHistoryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PriceHistoryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PriceHistoryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload>
+          }
+          findFirst: {
+            args: Prisma.PriceHistoryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PriceHistoryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload>
+          }
+          findMany: {
+            args: Prisma.PriceHistoryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload>[]
+          }
+          create: {
+            args: Prisma.PriceHistoryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload>
+          }
+          createMany: {
+            args: Prisma.PriceHistoryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PriceHistoryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload>[]
+          }
+          delete: {
+            args: Prisma.PriceHistoryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload>
+          }
+          update: {
+            args: Prisma.PriceHistoryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload>
+          }
+          deleteMany: {
+            args: Prisma.PriceHistoryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PriceHistoryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PriceHistoryUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload>[]
+          }
+          upsert: {
+            args: Prisma.PriceHistoryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload>
+          }
+          aggregate: {
+            args: Prisma.PriceHistoryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePriceHistory>
+          }
+          groupBy: {
+            args: Prisma.PriceHistoryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PriceHistoryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PriceHistoryCountArgs<ExtArgs>
+            result: $Utils.Optional<PriceHistoryCountAggregateOutputType> | number
           }
         }
       }
@@ -966,6 +1056,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     listing?: ListingOmit
+    priceHistory?: PriceHistoryOmit
     alert?: AlertOmit
     scrapeLog?: ScrapeLogOmit
   }
@@ -1043,6 +1134,36 @@ export namespace Prisma {
    */
 
 
+  /**
+   * Count Type ListingCountOutputType
+   */
+
+  export type ListingCountOutputType = {
+    priceHistory: number
+  }
+
+  export type ListingCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    priceHistory?: boolean | ListingCountOutputTypeCountPriceHistoryArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ListingCountOutputType without action
+   */
+  export type ListingCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ListingCountOutputType
+     */
+    select?: ListingCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ListingCountOutputType without action
+   */
+  export type ListingCountOutputTypeCountPriceHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PriceHistoryWhereInput
+  }
+
 
   /**
    * Models
@@ -1089,6 +1210,7 @@ export namespace Prisma {
     description: string | null
     urlOriginal: string | null
     isActive: boolean | null
+    firstSeenAt: Date | null
     scrapedAt: Date | null
     updatedAt: Date | null
   }
@@ -1110,6 +1232,7 @@ export namespace Prisma {
     description: string | null
     urlOriginal: string | null
     isActive: boolean | null
+    firstSeenAt: Date | null
     scrapedAt: Date | null
     updatedAt: Date | null
   }
@@ -1132,6 +1255,7 @@ export namespace Prisma {
     description: number
     urlOriginal: number
     isActive: number
+    firstSeenAt: number
     scrapedAt: number
     updatedAt: number
     _all: number
@@ -1167,6 +1291,7 @@ export namespace Prisma {
     description?: true
     urlOriginal?: true
     isActive?: true
+    firstSeenAt?: true
     scrapedAt?: true
     updatedAt?: true
   }
@@ -1188,6 +1313,7 @@ export namespace Prisma {
     description?: true
     urlOriginal?: true
     isActive?: true
+    firstSeenAt?: true
     scrapedAt?: true
     updatedAt?: true
   }
@@ -1210,6 +1336,7 @@ export namespace Prisma {
     description?: true
     urlOriginal?: true
     isActive?: true
+    firstSeenAt?: true
     scrapedAt?: true
     updatedAt?: true
     _all?: true
@@ -1319,6 +1446,7 @@ export namespace Prisma {
     description: string | null
     urlOriginal: string
     isActive: boolean
+    firstSeenAt: Date
     scrapedAt: Date
     updatedAt: Date
     _count: ListingCountAggregateOutputType | null
@@ -1360,8 +1488,11 @@ export namespace Prisma {
     description?: boolean
     urlOriginal?: boolean
     isActive?: boolean
+    firstSeenAt?: boolean
     scrapedAt?: boolean
     updatedAt?: boolean
+    priceHistory?: boolean | Listing$priceHistoryArgs<ExtArgs>
+    _count?: boolean | ListingCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["listing"]>
 
   export type ListingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1382,6 +1513,7 @@ export namespace Prisma {
     description?: boolean
     urlOriginal?: boolean
     isActive?: boolean
+    firstSeenAt?: boolean
     scrapedAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["listing"]>
@@ -1404,6 +1536,7 @@ export namespace Prisma {
     description?: boolean
     urlOriginal?: boolean
     isActive?: boolean
+    firstSeenAt?: boolean
     scrapedAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["listing"]>
@@ -1426,15 +1559,24 @@ export namespace Prisma {
     description?: boolean
     urlOriginal?: boolean
     isActive?: boolean
+    firstSeenAt?: boolean
     scrapedAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ListingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "externalId" | "sourcePortal" | "title" | "brand" | "model" | "year" | "priceCop" | "mileage" | "fuelType" | "transmission" | "city" | "department" | "images" | "description" | "urlOriginal" | "isActive" | "scrapedAt" | "updatedAt", ExtArgs["result"]["listing"]>
+  export type ListingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "externalId" | "sourcePortal" | "title" | "brand" | "model" | "year" | "priceCop" | "mileage" | "fuelType" | "transmission" | "city" | "department" | "images" | "description" | "urlOriginal" | "isActive" | "firstSeenAt" | "scrapedAt" | "updatedAt", ExtArgs["result"]["listing"]>
+  export type ListingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    priceHistory?: boolean | Listing$priceHistoryArgs<ExtArgs>
+    _count?: boolean | ListingCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ListingIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type ListingIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $ListingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Listing"
-    objects: {}
+    objects: {
+      priceHistory: Prisma.$PriceHistoryPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       externalId: string
@@ -1453,6 +1595,7 @@ export namespace Prisma {
       description: string | null
       urlOriginal: string
       isActive: boolean
+      firstSeenAt: Date
       scrapedAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["listing"]>
@@ -1849,6 +1992,7 @@ export namespace Prisma {
    */
   export interface Prisma__ListingClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    priceHistory<T extends Listing$priceHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Listing$priceHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1895,6 +2039,7 @@ export namespace Prisma {
     readonly description: FieldRef<"Listing", 'String'>
     readonly urlOriginal: FieldRef<"Listing", 'String'>
     readonly isActive: FieldRef<"Listing", 'Boolean'>
+    readonly firstSeenAt: FieldRef<"Listing", 'DateTime'>
     readonly scrapedAt: FieldRef<"Listing", 'DateTime'>
     readonly updatedAt: FieldRef<"Listing", 'DateTime'>
   }
@@ -1914,6 +2059,10 @@ export namespace Prisma {
      */
     omit?: ListingOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListingInclude<ExtArgs> | null
+    /**
      * Filter, which Listing to fetch.
      */
     where: ListingWhereUniqueInput
@@ -1932,6 +2081,10 @@ export namespace Prisma {
      */
     omit?: ListingOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListingInclude<ExtArgs> | null
+    /**
      * Filter, which Listing to fetch.
      */
     where: ListingWhereUniqueInput
@@ -1949,6 +2102,10 @@ export namespace Prisma {
      * Omit specific fields from the Listing
      */
     omit?: ListingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListingInclude<ExtArgs> | null
     /**
      * Filter, which Listing to fetch.
      */
@@ -1998,6 +2155,10 @@ export namespace Prisma {
      */
     omit?: ListingOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListingInclude<ExtArgs> | null
+    /**
      * Filter, which Listing to fetch.
      */
     where?: ListingWhereInput
@@ -2046,6 +2207,10 @@ export namespace Prisma {
      */
     omit?: ListingOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListingInclude<ExtArgs> | null
+    /**
      * Filter, which Listings to fetch.
      */
     where?: ListingWhereInput
@@ -2088,6 +2253,10 @@ export namespace Prisma {
      * Omit specific fields from the Listing
      */
     omit?: ListingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListingInclude<ExtArgs> | null
     /**
      * The data needed to create a Listing.
      */
@@ -2136,6 +2305,10 @@ export namespace Prisma {
      * Omit specific fields from the Listing
      */
     omit?: ListingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListingInclude<ExtArgs> | null
     /**
      * The data needed to update a Listing.
      */
@@ -2203,6 +2376,10 @@ export namespace Prisma {
      */
     omit?: ListingOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListingInclude<ExtArgs> | null
+    /**
      * The filter to search for the Listing to update in case it exists.
      */
     where: ListingWhereUniqueInput
@@ -2229,6 +2406,10 @@ export namespace Prisma {
      */
     omit?: ListingOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListingInclude<ExtArgs> | null
+    /**
      * Filter which Listing to delete.
      */
     where: ListingWhereUniqueInput
@@ -2249,6 +2430,30 @@ export namespace Prisma {
   }
 
   /**
+   * Listing.priceHistory
+   */
+  export type Listing$priceHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PriceHistory
+     */
+    omit?: PriceHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PriceHistoryInclude<ExtArgs> | null
+    where?: PriceHistoryWhereInput
+    orderBy?: PriceHistoryOrderByWithRelationInput | PriceHistoryOrderByWithRelationInput[]
+    cursor?: PriceHistoryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PriceHistoryScalarFieldEnum | PriceHistoryScalarFieldEnum[]
+  }
+
+  /**
    * Listing without action
    */
   export type ListingDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2260,6 +2465,1089 @@ export namespace Prisma {
      * Omit specific fields from the Listing
      */
     omit?: ListingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListingInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PriceHistory
+   */
+
+  export type AggregatePriceHistory = {
+    _count: PriceHistoryCountAggregateOutputType | null
+    _avg: PriceHistoryAvgAggregateOutputType | null
+    _sum: PriceHistorySumAggregateOutputType | null
+    _min: PriceHistoryMinAggregateOutputType | null
+    _max: PriceHistoryMaxAggregateOutputType | null
+  }
+
+  export type PriceHistoryAvgAggregateOutputType = {
+    priceCop: number | null
+  }
+
+  export type PriceHistorySumAggregateOutputType = {
+    priceCop: bigint | null
+  }
+
+  export type PriceHistoryMinAggregateOutputType = {
+    id: string | null
+    listingId: string | null
+    priceCop: bigint | null
+    recordedAt: Date | null
+  }
+
+  export type PriceHistoryMaxAggregateOutputType = {
+    id: string | null
+    listingId: string | null
+    priceCop: bigint | null
+    recordedAt: Date | null
+  }
+
+  export type PriceHistoryCountAggregateOutputType = {
+    id: number
+    listingId: number
+    priceCop: number
+    recordedAt: number
+    _all: number
+  }
+
+
+  export type PriceHistoryAvgAggregateInputType = {
+    priceCop?: true
+  }
+
+  export type PriceHistorySumAggregateInputType = {
+    priceCop?: true
+  }
+
+  export type PriceHistoryMinAggregateInputType = {
+    id?: true
+    listingId?: true
+    priceCop?: true
+    recordedAt?: true
+  }
+
+  export type PriceHistoryMaxAggregateInputType = {
+    id?: true
+    listingId?: true
+    priceCop?: true
+    recordedAt?: true
+  }
+
+  export type PriceHistoryCountAggregateInputType = {
+    id?: true
+    listingId?: true
+    priceCop?: true
+    recordedAt?: true
+    _all?: true
+  }
+
+  export type PriceHistoryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PriceHistory to aggregate.
+     */
+    where?: PriceHistoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PriceHistories to fetch.
+     */
+    orderBy?: PriceHistoryOrderByWithRelationInput | PriceHistoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PriceHistoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PriceHistories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PriceHistories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PriceHistories
+    **/
+    _count?: true | PriceHistoryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PriceHistoryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PriceHistorySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PriceHistoryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PriceHistoryMaxAggregateInputType
+  }
+
+  export type GetPriceHistoryAggregateType<T extends PriceHistoryAggregateArgs> = {
+        [P in keyof T & keyof AggregatePriceHistory]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePriceHistory[P]>
+      : GetScalarType<T[P], AggregatePriceHistory[P]>
+  }
+
+
+
+
+  export type PriceHistoryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PriceHistoryWhereInput
+    orderBy?: PriceHistoryOrderByWithAggregationInput | PriceHistoryOrderByWithAggregationInput[]
+    by: PriceHistoryScalarFieldEnum[] | PriceHistoryScalarFieldEnum
+    having?: PriceHistoryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PriceHistoryCountAggregateInputType | true
+    _avg?: PriceHistoryAvgAggregateInputType
+    _sum?: PriceHistorySumAggregateInputType
+    _min?: PriceHistoryMinAggregateInputType
+    _max?: PriceHistoryMaxAggregateInputType
+  }
+
+  export type PriceHistoryGroupByOutputType = {
+    id: string
+    listingId: string
+    priceCop: bigint
+    recordedAt: Date
+    _count: PriceHistoryCountAggregateOutputType | null
+    _avg: PriceHistoryAvgAggregateOutputType | null
+    _sum: PriceHistorySumAggregateOutputType | null
+    _min: PriceHistoryMinAggregateOutputType | null
+    _max: PriceHistoryMaxAggregateOutputType | null
+  }
+
+  type GetPriceHistoryGroupByPayload<T extends PriceHistoryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PriceHistoryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PriceHistoryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PriceHistoryGroupByOutputType[P]>
+            : GetScalarType<T[P], PriceHistoryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PriceHistorySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    listingId?: boolean
+    priceCop?: boolean
+    recordedAt?: boolean
+    listing?: boolean | ListingDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["priceHistory"]>
+
+  export type PriceHistorySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    listingId?: boolean
+    priceCop?: boolean
+    recordedAt?: boolean
+    listing?: boolean | ListingDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["priceHistory"]>
+
+  export type PriceHistorySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    listingId?: boolean
+    priceCop?: boolean
+    recordedAt?: boolean
+    listing?: boolean | ListingDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["priceHistory"]>
+
+  export type PriceHistorySelectScalar = {
+    id?: boolean
+    listingId?: boolean
+    priceCop?: boolean
+    recordedAt?: boolean
+  }
+
+  export type PriceHistoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "listingId" | "priceCop" | "recordedAt", ExtArgs["result"]["priceHistory"]>
+  export type PriceHistoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    listing?: boolean | ListingDefaultArgs<ExtArgs>
+  }
+  export type PriceHistoryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    listing?: boolean | ListingDefaultArgs<ExtArgs>
+  }
+  export type PriceHistoryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    listing?: boolean | ListingDefaultArgs<ExtArgs>
+  }
+
+  export type $PriceHistoryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PriceHistory"
+    objects: {
+      listing: Prisma.$ListingPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      listingId: string
+      priceCop: bigint
+      recordedAt: Date
+    }, ExtArgs["result"]["priceHistory"]>
+    composites: {}
+  }
+
+  type PriceHistoryGetPayload<S extends boolean | null | undefined | PriceHistoryDefaultArgs> = $Result.GetResult<Prisma.$PriceHistoryPayload, S>
+
+  type PriceHistoryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PriceHistoryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PriceHistoryCountAggregateInputType | true
+    }
+
+  export interface PriceHistoryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PriceHistory'], meta: { name: 'PriceHistory' } }
+    /**
+     * Find zero or one PriceHistory that matches the filter.
+     * @param {PriceHistoryFindUniqueArgs} args - Arguments to find a PriceHistory
+     * @example
+     * // Get one PriceHistory
+     * const priceHistory = await prisma.priceHistory.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PriceHistoryFindUniqueArgs>(args: SelectSubset<T, PriceHistoryFindUniqueArgs<ExtArgs>>): Prisma__PriceHistoryClient<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PriceHistory that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PriceHistoryFindUniqueOrThrowArgs} args - Arguments to find a PriceHistory
+     * @example
+     * // Get one PriceHistory
+     * const priceHistory = await prisma.priceHistory.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PriceHistoryFindUniqueOrThrowArgs>(args: SelectSubset<T, PriceHistoryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PriceHistoryClient<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PriceHistory that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PriceHistoryFindFirstArgs} args - Arguments to find a PriceHistory
+     * @example
+     * // Get one PriceHistory
+     * const priceHistory = await prisma.priceHistory.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PriceHistoryFindFirstArgs>(args?: SelectSubset<T, PriceHistoryFindFirstArgs<ExtArgs>>): Prisma__PriceHistoryClient<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PriceHistory that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PriceHistoryFindFirstOrThrowArgs} args - Arguments to find a PriceHistory
+     * @example
+     * // Get one PriceHistory
+     * const priceHistory = await prisma.priceHistory.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PriceHistoryFindFirstOrThrowArgs>(args?: SelectSubset<T, PriceHistoryFindFirstOrThrowArgs<ExtArgs>>): Prisma__PriceHistoryClient<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PriceHistories that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PriceHistoryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PriceHistories
+     * const priceHistories = await prisma.priceHistory.findMany()
+     * 
+     * // Get first 10 PriceHistories
+     * const priceHistories = await prisma.priceHistory.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const priceHistoryWithIdOnly = await prisma.priceHistory.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PriceHistoryFindManyArgs>(args?: SelectSubset<T, PriceHistoryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PriceHistory.
+     * @param {PriceHistoryCreateArgs} args - Arguments to create a PriceHistory.
+     * @example
+     * // Create one PriceHistory
+     * const PriceHistory = await prisma.priceHistory.create({
+     *   data: {
+     *     // ... data to create a PriceHistory
+     *   }
+     * })
+     * 
+     */
+    create<T extends PriceHistoryCreateArgs>(args: SelectSubset<T, PriceHistoryCreateArgs<ExtArgs>>): Prisma__PriceHistoryClient<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PriceHistories.
+     * @param {PriceHistoryCreateManyArgs} args - Arguments to create many PriceHistories.
+     * @example
+     * // Create many PriceHistories
+     * const priceHistory = await prisma.priceHistory.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PriceHistoryCreateManyArgs>(args?: SelectSubset<T, PriceHistoryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PriceHistories and returns the data saved in the database.
+     * @param {PriceHistoryCreateManyAndReturnArgs} args - Arguments to create many PriceHistories.
+     * @example
+     * // Create many PriceHistories
+     * const priceHistory = await prisma.priceHistory.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PriceHistories and only return the `id`
+     * const priceHistoryWithIdOnly = await prisma.priceHistory.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PriceHistoryCreateManyAndReturnArgs>(args?: SelectSubset<T, PriceHistoryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PriceHistory.
+     * @param {PriceHistoryDeleteArgs} args - Arguments to delete one PriceHistory.
+     * @example
+     * // Delete one PriceHistory
+     * const PriceHistory = await prisma.priceHistory.delete({
+     *   where: {
+     *     // ... filter to delete one PriceHistory
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PriceHistoryDeleteArgs>(args: SelectSubset<T, PriceHistoryDeleteArgs<ExtArgs>>): Prisma__PriceHistoryClient<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PriceHistory.
+     * @param {PriceHistoryUpdateArgs} args - Arguments to update one PriceHistory.
+     * @example
+     * // Update one PriceHistory
+     * const priceHistory = await prisma.priceHistory.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PriceHistoryUpdateArgs>(args: SelectSubset<T, PriceHistoryUpdateArgs<ExtArgs>>): Prisma__PriceHistoryClient<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PriceHistories.
+     * @param {PriceHistoryDeleteManyArgs} args - Arguments to filter PriceHistories to delete.
+     * @example
+     * // Delete a few PriceHistories
+     * const { count } = await prisma.priceHistory.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PriceHistoryDeleteManyArgs>(args?: SelectSubset<T, PriceHistoryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PriceHistories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PriceHistoryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PriceHistories
+     * const priceHistory = await prisma.priceHistory.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PriceHistoryUpdateManyArgs>(args: SelectSubset<T, PriceHistoryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PriceHistories and returns the data updated in the database.
+     * @param {PriceHistoryUpdateManyAndReturnArgs} args - Arguments to update many PriceHistories.
+     * @example
+     * // Update many PriceHistories
+     * const priceHistory = await prisma.priceHistory.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PriceHistories and only return the `id`
+     * const priceHistoryWithIdOnly = await prisma.priceHistory.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PriceHistoryUpdateManyAndReturnArgs>(args: SelectSubset<T, PriceHistoryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PriceHistory.
+     * @param {PriceHistoryUpsertArgs} args - Arguments to update or create a PriceHistory.
+     * @example
+     * // Update or create a PriceHistory
+     * const priceHistory = await prisma.priceHistory.upsert({
+     *   create: {
+     *     // ... data to create a PriceHistory
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PriceHistory we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PriceHistoryUpsertArgs>(args: SelectSubset<T, PriceHistoryUpsertArgs<ExtArgs>>): Prisma__PriceHistoryClient<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PriceHistories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PriceHistoryCountArgs} args - Arguments to filter PriceHistories to count.
+     * @example
+     * // Count the number of PriceHistories
+     * const count = await prisma.priceHistory.count({
+     *   where: {
+     *     // ... the filter for the PriceHistories we want to count
+     *   }
+     * })
+    **/
+    count<T extends PriceHistoryCountArgs>(
+      args?: Subset<T, PriceHistoryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PriceHistoryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PriceHistory.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PriceHistoryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PriceHistoryAggregateArgs>(args: Subset<T, PriceHistoryAggregateArgs>): Prisma.PrismaPromise<GetPriceHistoryAggregateType<T>>
+
+    /**
+     * Group by PriceHistory.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PriceHistoryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PriceHistoryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PriceHistoryGroupByArgs['orderBy'] }
+        : { orderBy?: PriceHistoryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PriceHistoryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPriceHistoryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PriceHistory model
+   */
+  readonly fields: PriceHistoryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PriceHistory.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PriceHistoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    listing<T extends ListingDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ListingDefaultArgs<ExtArgs>>): Prisma__ListingClient<$Result.GetResult<Prisma.$ListingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PriceHistory model
+   */
+  interface PriceHistoryFieldRefs {
+    readonly id: FieldRef<"PriceHistory", 'String'>
+    readonly listingId: FieldRef<"PriceHistory", 'String'>
+    readonly priceCop: FieldRef<"PriceHistory", 'BigInt'>
+    readonly recordedAt: FieldRef<"PriceHistory", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PriceHistory findUnique
+   */
+  export type PriceHistoryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PriceHistory
+     */
+    omit?: PriceHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PriceHistoryInclude<ExtArgs> | null
+    /**
+     * Filter, which PriceHistory to fetch.
+     */
+    where: PriceHistoryWhereUniqueInput
+  }
+
+  /**
+   * PriceHistory findUniqueOrThrow
+   */
+  export type PriceHistoryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PriceHistory
+     */
+    omit?: PriceHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PriceHistoryInclude<ExtArgs> | null
+    /**
+     * Filter, which PriceHistory to fetch.
+     */
+    where: PriceHistoryWhereUniqueInput
+  }
+
+  /**
+   * PriceHistory findFirst
+   */
+  export type PriceHistoryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PriceHistory
+     */
+    omit?: PriceHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PriceHistoryInclude<ExtArgs> | null
+    /**
+     * Filter, which PriceHistory to fetch.
+     */
+    where?: PriceHistoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PriceHistories to fetch.
+     */
+    orderBy?: PriceHistoryOrderByWithRelationInput | PriceHistoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PriceHistories.
+     */
+    cursor?: PriceHistoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PriceHistories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PriceHistories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PriceHistories.
+     */
+    distinct?: PriceHistoryScalarFieldEnum | PriceHistoryScalarFieldEnum[]
+  }
+
+  /**
+   * PriceHistory findFirstOrThrow
+   */
+  export type PriceHistoryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PriceHistory
+     */
+    omit?: PriceHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PriceHistoryInclude<ExtArgs> | null
+    /**
+     * Filter, which PriceHistory to fetch.
+     */
+    where?: PriceHistoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PriceHistories to fetch.
+     */
+    orderBy?: PriceHistoryOrderByWithRelationInput | PriceHistoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PriceHistories.
+     */
+    cursor?: PriceHistoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PriceHistories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PriceHistories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PriceHistories.
+     */
+    distinct?: PriceHistoryScalarFieldEnum | PriceHistoryScalarFieldEnum[]
+  }
+
+  /**
+   * PriceHistory findMany
+   */
+  export type PriceHistoryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PriceHistory
+     */
+    omit?: PriceHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PriceHistoryInclude<ExtArgs> | null
+    /**
+     * Filter, which PriceHistories to fetch.
+     */
+    where?: PriceHistoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PriceHistories to fetch.
+     */
+    orderBy?: PriceHistoryOrderByWithRelationInput | PriceHistoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PriceHistories.
+     */
+    cursor?: PriceHistoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PriceHistories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PriceHistories.
+     */
+    skip?: number
+    distinct?: PriceHistoryScalarFieldEnum | PriceHistoryScalarFieldEnum[]
+  }
+
+  /**
+   * PriceHistory create
+   */
+  export type PriceHistoryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PriceHistory
+     */
+    omit?: PriceHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PriceHistoryInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PriceHistory.
+     */
+    data: XOR<PriceHistoryCreateInput, PriceHistoryUncheckedCreateInput>
+  }
+
+  /**
+   * PriceHistory createMany
+   */
+  export type PriceHistoryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PriceHistories.
+     */
+    data: PriceHistoryCreateManyInput | PriceHistoryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PriceHistory createManyAndReturn
+   */
+  export type PriceHistoryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PriceHistory
+     */
+    omit?: PriceHistoryOmit<ExtArgs> | null
+    /**
+     * The data used to create many PriceHistories.
+     */
+    data: PriceHistoryCreateManyInput | PriceHistoryCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PriceHistoryIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PriceHistory update
+   */
+  export type PriceHistoryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PriceHistory
+     */
+    omit?: PriceHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PriceHistoryInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PriceHistory.
+     */
+    data: XOR<PriceHistoryUpdateInput, PriceHistoryUncheckedUpdateInput>
+    /**
+     * Choose, which PriceHistory to update.
+     */
+    where: PriceHistoryWhereUniqueInput
+  }
+
+  /**
+   * PriceHistory updateMany
+   */
+  export type PriceHistoryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PriceHistories.
+     */
+    data: XOR<PriceHistoryUpdateManyMutationInput, PriceHistoryUncheckedUpdateManyInput>
+    /**
+     * Filter which PriceHistories to update
+     */
+    where?: PriceHistoryWhereInput
+    /**
+     * Limit how many PriceHistories to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PriceHistory updateManyAndReturn
+   */
+  export type PriceHistoryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PriceHistory
+     */
+    omit?: PriceHistoryOmit<ExtArgs> | null
+    /**
+     * The data used to update PriceHistories.
+     */
+    data: XOR<PriceHistoryUpdateManyMutationInput, PriceHistoryUncheckedUpdateManyInput>
+    /**
+     * Filter which PriceHistories to update
+     */
+    where?: PriceHistoryWhereInput
+    /**
+     * Limit how many PriceHistories to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PriceHistoryIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PriceHistory upsert
+   */
+  export type PriceHistoryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PriceHistory
+     */
+    omit?: PriceHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PriceHistoryInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PriceHistory to update in case it exists.
+     */
+    where: PriceHistoryWhereUniqueInput
+    /**
+     * In case the PriceHistory found by the `where` argument doesn't exist, create a new PriceHistory with this data.
+     */
+    create: XOR<PriceHistoryCreateInput, PriceHistoryUncheckedCreateInput>
+    /**
+     * In case the PriceHistory was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PriceHistoryUpdateInput, PriceHistoryUncheckedUpdateInput>
+  }
+
+  /**
+   * PriceHistory delete
+   */
+  export type PriceHistoryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PriceHistory
+     */
+    omit?: PriceHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PriceHistoryInclude<ExtArgs> | null
+    /**
+     * Filter which PriceHistory to delete.
+     */
+    where: PriceHistoryWhereUniqueInput
+  }
+
+  /**
+   * PriceHistory deleteMany
+   */
+  export type PriceHistoryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PriceHistories to delete
+     */
+    where?: PriceHistoryWhereInput
+    /**
+     * Limit how many PriceHistories to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PriceHistory without action
+   */
+  export type PriceHistoryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PriceHistory
+     */
+    omit?: PriceHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PriceHistoryInclude<ExtArgs> | null
   }
 
 
@@ -4388,11 +5676,22 @@ export namespace Prisma {
     description: 'description',
     urlOriginal: 'urlOriginal',
     isActive: 'isActive',
+    firstSeenAt: 'firstSeenAt',
     scrapedAt: 'scrapedAt',
     updatedAt: 'updatedAt'
   };
 
   export type ListingScalarFieldEnum = (typeof ListingScalarFieldEnum)[keyof typeof ListingScalarFieldEnum]
+
+
+  export const PriceHistoryScalarFieldEnum: {
+    id: 'id',
+    listingId: 'listingId',
+    priceCop: 'priceCop',
+    recordedAt: 'recordedAt'
+  };
+
+  export type PriceHistoryScalarFieldEnum = (typeof PriceHistoryScalarFieldEnum)[keyof typeof PriceHistoryScalarFieldEnum]
 
 
   export const AlertScalarFieldEnum: {
@@ -4582,8 +5881,10 @@ export namespace Prisma {
     description?: StringNullableFilter<"Listing"> | string | null
     urlOriginal?: StringFilter<"Listing"> | string
     isActive?: BoolFilter<"Listing"> | boolean
+    firstSeenAt?: DateTimeFilter<"Listing"> | Date | string
     scrapedAt?: DateTimeFilter<"Listing"> | Date | string
     updatedAt?: DateTimeFilter<"Listing"> | Date | string
+    priceHistory?: PriceHistoryListRelationFilter
   }
 
   export type ListingOrderByWithRelationInput = {
@@ -4604,8 +5905,10 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     urlOriginal?: SortOrder
     isActive?: SortOrder
+    firstSeenAt?: SortOrder
     scrapedAt?: SortOrder
     updatedAt?: SortOrder
+    priceHistory?: PriceHistoryOrderByRelationAggregateInput
   }
 
   export type ListingWhereUniqueInput = Prisma.AtLeast<{
@@ -4630,8 +5933,10 @@ export namespace Prisma {
     description?: StringNullableFilter<"Listing"> | string | null
     urlOriginal?: StringFilter<"Listing"> | string
     isActive?: BoolFilter<"Listing"> | boolean
+    firstSeenAt?: DateTimeFilter<"Listing"> | Date | string
     scrapedAt?: DateTimeFilter<"Listing"> | Date | string
     updatedAt?: DateTimeFilter<"Listing"> | Date | string
+    priceHistory?: PriceHistoryListRelationFilter
   }, "id" | "sourcePortal_externalId">
 
   export type ListingOrderByWithAggregationInput = {
@@ -4652,6 +5957,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     urlOriginal?: SortOrder
     isActive?: SortOrder
+    firstSeenAt?: SortOrder
     scrapedAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ListingCountOrderByAggregateInput
@@ -4682,8 +5988,61 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Listing"> | string | null
     urlOriginal?: StringWithAggregatesFilter<"Listing"> | string
     isActive?: BoolWithAggregatesFilter<"Listing"> | boolean
+    firstSeenAt?: DateTimeWithAggregatesFilter<"Listing"> | Date | string
     scrapedAt?: DateTimeWithAggregatesFilter<"Listing"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Listing"> | Date | string
+  }
+
+  export type PriceHistoryWhereInput = {
+    AND?: PriceHistoryWhereInput | PriceHistoryWhereInput[]
+    OR?: PriceHistoryWhereInput[]
+    NOT?: PriceHistoryWhereInput | PriceHistoryWhereInput[]
+    id?: StringFilter<"PriceHistory"> | string
+    listingId?: StringFilter<"PriceHistory"> | string
+    priceCop?: BigIntFilter<"PriceHistory"> | bigint | number
+    recordedAt?: DateTimeFilter<"PriceHistory"> | Date | string
+    listing?: XOR<ListingScalarRelationFilter, ListingWhereInput>
+  }
+
+  export type PriceHistoryOrderByWithRelationInput = {
+    id?: SortOrder
+    listingId?: SortOrder
+    priceCop?: SortOrder
+    recordedAt?: SortOrder
+    listing?: ListingOrderByWithRelationInput
+  }
+
+  export type PriceHistoryWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PriceHistoryWhereInput | PriceHistoryWhereInput[]
+    OR?: PriceHistoryWhereInput[]
+    NOT?: PriceHistoryWhereInput | PriceHistoryWhereInput[]
+    listingId?: StringFilter<"PriceHistory"> | string
+    priceCop?: BigIntFilter<"PriceHistory"> | bigint | number
+    recordedAt?: DateTimeFilter<"PriceHistory"> | Date | string
+    listing?: XOR<ListingScalarRelationFilter, ListingWhereInput>
+  }, "id">
+
+  export type PriceHistoryOrderByWithAggregationInput = {
+    id?: SortOrder
+    listingId?: SortOrder
+    priceCop?: SortOrder
+    recordedAt?: SortOrder
+    _count?: PriceHistoryCountOrderByAggregateInput
+    _avg?: PriceHistoryAvgOrderByAggregateInput
+    _max?: PriceHistoryMaxOrderByAggregateInput
+    _min?: PriceHistoryMinOrderByAggregateInput
+    _sum?: PriceHistorySumOrderByAggregateInput
+  }
+
+  export type PriceHistoryScalarWhereWithAggregatesInput = {
+    AND?: PriceHistoryScalarWhereWithAggregatesInput | PriceHistoryScalarWhereWithAggregatesInput[]
+    OR?: PriceHistoryScalarWhereWithAggregatesInput[]
+    NOT?: PriceHistoryScalarWhereWithAggregatesInput | PriceHistoryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PriceHistory"> | string
+    listingId?: StringWithAggregatesFilter<"PriceHistory"> | string
+    priceCop?: BigIntWithAggregatesFilter<"PriceHistory"> | bigint | number
+    recordedAt?: DateTimeWithAggregatesFilter<"PriceHistory"> | Date | string
   }
 
   export type AlertWhereInput = {
@@ -4835,8 +6194,10 @@ export namespace Prisma {
     description?: string | null
     urlOriginal: string
     isActive?: boolean
+    firstSeenAt?: Date | string
     scrapedAt?: Date | string
     updatedAt?: Date | string
+    priceHistory?: PriceHistoryCreateNestedManyWithoutListingInput
   }
 
   export type ListingUncheckedCreateInput = {
@@ -4857,8 +6218,10 @@ export namespace Prisma {
     description?: string | null
     urlOriginal: string
     isActive?: boolean
+    firstSeenAt?: Date | string
     scrapedAt?: Date | string
     updatedAt?: Date | string
+    priceHistory?: PriceHistoryUncheckedCreateNestedManyWithoutListingInput
   }
 
   export type ListingUpdateInput = {
@@ -4879,8 +6242,10 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     urlOriginal?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    firstSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
     scrapedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    priceHistory?: PriceHistoryUpdateManyWithoutListingNestedInput
   }
 
   export type ListingUncheckedUpdateInput = {
@@ -4901,8 +6266,10 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     urlOriginal?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    firstSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
     scrapedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    priceHistory?: PriceHistoryUncheckedUpdateManyWithoutListingNestedInput
   }
 
   export type ListingCreateManyInput = {
@@ -4923,6 +6290,7 @@ export namespace Prisma {
     description?: string | null
     urlOriginal: string
     isActive?: boolean
+    firstSeenAt?: Date | string
     scrapedAt?: Date | string
     updatedAt?: Date | string
   }
@@ -4945,6 +6313,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     urlOriginal?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    firstSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
     scrapedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -4967,8 +6336,57 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     urlOriginal?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    firstSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
     scrapedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PriceHistoryCreateInput = {
+    id?: string
+    priceCop: bigint | number
+    recordedAt?: Date | string
+    listing: ListingCreateNestedOneWithoutPriceHistoryInput
+  }
+
+  export type PriceHistoryUncheckedCreateInput = {
+    id?: string
+    listingId: string
+    priceCop: bigint | number
+    recordedAt?: Date | string
+  }
+
+  export type PriceHistoryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    priceCop?: BigIntFieldUpdateOperationsInput | bigint | number
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    listing?: ListingUpdateOneRequiredWithoutPriceHistoryNestedInput
+  }
+
+  export type PriceHistoryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    listingId?: StringFieldUpdateOperationsInput | string
+    priceCop?: BigIntFieldUpdateOperationsInput | bigint | number
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PriceHistoryCreateManyInput = {
+    id?: string
+    listingId: string
+    priceCop: bigint | number
+    recordedAt?: Date | string
+  }
+
+  export type PriceHistoryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    priceCop?: BigIntFieldUpdateOperationsInput | bigint | number
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PriceHistoryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    listingId?: StringFieldUpdateOperationsInput | string
+    priceCop?: BigIntFieldUpdateOperationsInput | bigint | number
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AlertCreateInput = {
@@ -5194,9 +6612,19 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type PriceHistoryListRelationFilter = {
+    every?: PriceHistoryWhereInput
+    some?: PriceHistoryWhereInput
+    none?: PriceHistoryWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
+  }
+
+  export type PriceHistoryOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type ListingSourcePortalExternalIdCompoundUniqueInput = {
@@ -5222,6 +6650,7 @@ export namespace Prisma {
     description?: SortOrder
     urlOriginal?: SortOrder
     isActive?: SortOrder
+    firstSeenAt?: SortOrder
     scrapedAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5249,6 +6678,7 @@ export namespace Prisma {
     description?: SortOrder
     urlOriginal?: SortOrder
     isActive?: SortOrder
+    firstSeenAt?: SortOrder
     scrapedAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5270,6 +6700,7 @@ export namespace Prisma {
     description?: SortOrder
     urlOriginal?: SortOrder
     isActive?: SortOrder
+    firstSeenAt?: SortOrder
     scrapedAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5368,6 +6799,67 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type BigIntFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntFilter<$PrismaModel> | bigint | number
+  }
+
+  export type ListingScalarRelationFilter = {
+    is?: ListingWhereInput
+    isNot?: ListingWhereInput
+  }
+
+  export type PriceHistoryCountOrderByAggregateInput = {
+    id?: SortOrder
+    listingId?: SortOrder
+    priceCop?: SortOrder
+    recordedAt?: SortOrder
+  }
+
+  export type PriceHistoryAvgOrderByAggregateInput = {
+    priceCop?: SortOrder
+  }
+
+  export type PriceHistoryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    listingId?: SortOrder
+    priceCop?: SortOrder
+    recordedAt?: SortOrder
+  }
+
+  export type PriceHistoryMinOrderByAggregateInput = {
+    id?: SortOrder
+    listingId?: SortOrder
+    priceCop?: SortOrder
+    recordedAt?: SortOrder
+  }
+
+  export type PriceHistorySumOrderByAggregateInput = {
+    priceCop?: SortOrder
+  }
+
+  export type BigIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedBigIntFilter<$PrismaModel>
+    _min?: NestedBigIntFilter<$PrismaModel>
+    _max?: NestedBigIntFilter<$PrismaModel>
   }
   export type JsonFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -5548,6 +7040,20 @@ export namespace Prisma {
     set: string[]
   }
 
+  export type PriceHistoryCreateNestedManyWithoutListingInput = {
+    create?: XOR<PriceHistoryCreateWithoutListingInput, PriceHistoryUncheckedCreateWithoutListingInput> | PriceHistoryCreateWithoutListingInput[] | PriceHistoryUncheckedCreateWithoutListingInput[]
+    connectOrCreate?: PriceHistoryCreateOrConnectWithoutListingInput | PriceHistoryCreateOrConnectWithoutListingInput[]
+    createMany?: PriceHistoryCreateManyListingInputEnvelope
+    connect?: PriceHistoryWhereUniqueInput | PriceHistoryWhereUniqueInput[]
+  }
+
+  export type PriceHistoryUncheckedCreateNestedManyWithoutListingInput = {
+    create?: XOR<PriceHistoryCreateWithoutListingInput, PriceHistoryUncheckedCreateWithoutListingInput> | PriceHistoryCreateWithoutListingInput[] | PriceHistoryUncheckedCreateWithoutListingInput[]
+    connectOrCreate?: PriceHistoryCreateOrConnectWithoutListingInput | PriceHistoryCreateOrConnectWithoutListingInput[]
+    createMany?: PriceHistoryCreateManyListingInputEnvelope
+    connect?: PriceHistoryWhereUniqueInput | PriceHistoryWhereUniqueInput[]
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -5583,6 +7089,56 @@ export namespace Prisma {
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type PriceHistoryUpdateManyWithoutListingNestedInput = {
+    create?: XOR<PriceHistoryCreateWithoutListingInput, PriceHistoryUncheckedCreateWithoutListingInput> | PriceHistoryCreateWithoutListingInput[] | PriceHistoryUncheckedCreateWithoutListingInput[]
+    connectOrCreate?: PriceHistoryCreateOrConnectWithoutListingInput | PriceHistoryCreateOrConnectWithoutListingInput[]
+    upsert?: PriceHistoryUpsertWithWhereUniqueWithoutListingInput | PriceHistoryUpsertWithWhereUniqueWithoutListingInput[]
+    createMany?: PriceHistoryCreateManyListingInputEnvelope
+    set?: PriceHistoryWhereUniqueInput | PriceHistoryWhereUniqueInput[]
+    disconnect?: PriceHistoryWhereUniqueInput | PriceHistoryWhereUniqueInput[]
+    delete?: PriceHistoryWhereUniqueInput | PriceHistoryWhereUniqueInput[]
+    connect?: PriceHistoryWhereUniqueInput | PriceHistoryWhereUniqueInput[]
+    update?: PriceHistoryUpdateWithWhereUniqueWithoutListingInput | PriceHistoryUpdateWithWhereUniqueWithoutListingInput[]
+    updateMany?: PriceHistoryUpdateManyWithWhereWithoutListingInput | PriceHistoryUpdateManyWithWhereWithoutListingInput[]
+    deleteMany?: PriceHistoryScalarWhereInput | PriceHistoryScalarWhereInput[]
+  }
+
+  export type PriceHistoryUncheckedUpdateManyWithoutListingNestedInput = {
+    create?: XOR<PriceHistoryCreateWithoutListingInput, PriceHistoryUncheckedCreateWithoutListingInput> | PriceHistoryCreateWithoutListingInput[] | PriceHistoryUncheckedCreateWithoutListingInput[]
+    connectOrCreate?: PriceHistoryCreateOrConnectWithoutListingInput | PriceHistoryCreateOrConnectWithoutListingInput[]
+    upsert?: PriceHistoryUpsertWithWhereUniqueWithoutListingInput | PriceHistoryUpsertWithWhereUniqueWithoutListingInput[]
+    createMany?: PriceHistoryCreateManyListingInputEnvelope
+    set?: PriceHistoryWhereUniqueInput | PriceHistoryWhereUniqueInput[]
+    disconnect?: PriceHistoryWhereUniqueInput | PriceHistoryWhereUniqueInput[]
+    delete?: PriceHistoryWhereUniqueInput | PriceHistoryWhereUniqueInput[]
+    connect?: PriceHistoryWhereUniqueInput | PriceHistoryWhereUniqueInput[]
+    update?: PriceHistoryUpdateWithWhereUniqueWithoutListingInput | PriceHistoryUpdateWithWhereUniqueWithoutListingInput[]
+    updateMany?: PriceHistoryUpdateManyWithWhereWithoutListingInput | PriceHistoryUpdateManyWithWhereWithoutListingInput[]
+    deleteMany?: PriceHistoryScalarWhereInput | PriceHistoryScalarWhereInput[]
+  }
+
+  export type ListingCreateNestedOneWithoutPriceHistoryInput = {
+    create?: XOR<ListingCreateWithoutPriceHistoryInput, ListingUncheckedCreateWithoutPriceHistoryInput>
+    connectOrCreate?: ListingCreateOrConnectWithoutPriceHistoryInput
+    connect?: ListingWhereUniqueInput
+  }
+
+  export type BigIntFieldUpdateOperationsInput = {
+    set?: bigint | number
+    increment?: bigint | number
+    decrement?: bigint | number
+    multiply?: bigint | number
+    divide?: bigint | number
+  }
+
+  export type ListingUpdateOneRequiredWithoutPriceHistoryNestedInput = {
+    create?: XOR<ListingCreateWithoutPriceHistoryInput, ListingUncheckedCreateWithoutPriceHistoryInput>
+    connectOrCreate?: ListingCreateOrConnectWithoutPriceHistoryInput
+    upsert?: ListingUpsertWithoutPriceHistoryInput
+    connect?: ListingWhereUniqueInput
+    update?: XOR<XOR<ListingUpdateToOneWithWhereWithoutPriceHistoryInput, ListingUpdateWithoutPriceHistoryInput>, ListingUncheckedUpdateWithoutPriceHistoryInput>
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -5773,6 +7329,44 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedBigIntFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntFilter<$PrismaModel> | bigint | number
+  }
+
+  export type NestedBigIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedBigIntFilter<$PrismaModel>
+    _min?: NestedBigIntFilter<$PrismaModel>
+    _max?: NestedBigIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -5837,15 +7431,184 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
+  export type PriceHistoryCreateWithoutListingInput = {
+    id?: string
+    priceCop: bigint | number
+    recordedAt?: Date | string
+  }
+
+  export type PriceHistoryUncheckedCreateWithoutListingInput = {
+    id?: string
+    priceCop: bigint | number
+    recordedAt?: Date | string
+  }
+
+  export type PriceHistoryCreateOrConnectWithoutListingInput = {
+    where: PriceHistoryWhereUniqueInput
+    create: XOR<PriceHistoryCreateWithoutListingInput, PriceHistoryUncheckedCreateWithoutListingInput>
+  }
+
+  export type PriceHistoryCreateManyListingInputEnvelope = {
+    data: PriceHistoryCreateManyListingInput | PriceHistoryCreateManyListingInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PriceHistoryUpsertWithWhereUniqueWithoutListingInput = {
+    where: PriceHistoryWhereUniqueInput
+    update: XOR<PriceHistoryUpdateWithoutListingInput, PriceHistoryUncheckedUpdateWithoutListingInput>
+    create: XOR<PriceHistoryCreateWithoutListingInput, PriceHistoryUncheckedCreateWithoutListingInput>
+  }
+
+  export type PriceHistoryUpdateWithWhereUniqueWithoutListingInput = {
+    where: PriceHistoryWhereUniqueInput
+    data: XOR<PriceHistoryUpdateWithoutListingInput, PriceHistoryUncheckedUpdateWithoutListingInput>
+  }
+
+  export type PriceHistoryUpdateManyWithWhereWithoutListingInput = {
+    where: PriceHistoryScalarWhereInput
+    data: XOR<PriceHistoryUpdateManyMutationInput, PriceHistoryUncheckedUpdateManyWithoutListingInput>
+  }
+
+  export type PriceHistoryScalarWhereInput = {
+    AND?: PriceHistoryScalarWhereInput | PriceHistoryScalarWhereInput[]
+    OR?: PriceHistoryScalarWhereInput[]
+    NOT?: PriceHistoryScalarWhereInput | PriceHistoryScalarWhereInput[]
+    id?: StringFilter<"PriceHistory"> | string
+    listingId?: StringFilter<"PriceHistory"> | string
+    priceCop?: BigIntFilter<"PriceHistory"> | bigint | number
+    recordedAt?: DateTimeFilter<"PriceHistory"> | Date | string
+  }
+
+  export type ListingCreateWithoutPriceHistoryInput = {
+    id?: string
+    externalId: string
+    sourcePortal: string
+    title: string
+    brand?: string | null
+    model?: string | null
+    year?: number | null
+    priceCop?: bigint | number | null
+    mileage?: number | null
+    fuelType?: string | null
+    transmission?: string | null
+    city?: string | null
+    department?: string | null
+    images?: ListingCreateimagesInput | string[]
+    description?: string | null
+    urlOriginal: string
+    isActive?: boolean
+    firstSeenAt?: Date | string
+    scrapedAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ListingUncheckedCreateWithoutPriceHistoryInput = {
+    id?: string
+    externalId: string
+    sourcePortal: string
+    title: string
+    brand?: string | null
+    model?: string | null
+    year?: number | null
+    priceCop?: bigint | number | null
+    mileage?: number | null
+    fuelType?: string | null
+    transmission?: string | null
+    city?: string | null
+    department?: string | null
+    images?: ListingCreateimagesInput | string[]
+    description?: string | null
+    urlOriginal: string
+    isActive?: boolean
+    firstSeenAt?: Date | string
+    scrapedAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ListingCreateOrConnectWithoutPriceHistoryInput = {
+    where: ListingWhereUniqueInput
+    create: XOR<ListingCreateWithoutPriceHistoryInput, ListingUncheckedCreateWithoutPriceHistoryInput>
+  }
+
+  export type ListingUpsertWithoutPriceHistoryInput = {
+    update: XOR<ListingUpdateWithoutPriceHistoryInput, ListingUncheckedUpdateWithoutPriceHistoryInput>
+    create: XOR<ListingCreateWithoutPriceHistoryInput, ListingUncheckedCreateWithoutPriceHistoryInput>
+    where?: ListingWhereInput
+  }
+
+  export type ListingUpdateToOneWithWhereWithoutPriceHistoryInput = {
+    where?: ListingWhereInput
+    data: XOR<ListingUpdateWithoutPriceHistoryInput, ListingUncheckedUpdateWithoutPriceHistoryInput>
+  }
+
+  export type ListingUpdateWithoutPriceHistoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    externalId?: StringFieldUpdateOperationsInput | string
+    sourcePortal?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    brand?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: NullableStringFieldUpdateOperationsInput | string | null
+    year?: NullableIntFieldUpdateOperationsInput | number | null
+    priceCop?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    mileage?: NullableIntFieldUpdateOperationsInput | number | null
+    fuelType?: NullableStringFieldUpdateOperationsInput | string | null
+    transmission?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: ListingUpdateimagesInput | string[]
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    urlOriginal?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    firstSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    scrapedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ListingUncheckedUpdateWithoutPriceHistoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    externalId?: StringFieldUpdateOperationsInput | string
+    sourcePortal?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    brand?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: NullableStringFieldUpdateOperationsInput | string | null
+    year?: NullableIntFieldUpdateOperationsInput | number | null
+    priceCop?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    mileage?: NullableIntFieldUpdateOperationsInput | number | null
+    fuelType?: NullableStringFieldUpdateOperationsInput | string | null
+    transmission?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: ListingUpdateimagesInput | string[]
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    urlOriginal?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    firstSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    scrapedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PriceHistoryCreateManyListingInput = {
+    id?: string
+    priceCop: bigint | number
+    recordedAt?: Date | string
+  }
+
+  export type PriceHistoryUpdateWithoutListingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    priceCop?: BigIntFieldUpdateOperationsInput | bigint | number
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PriceHistoryUncheckedUpdateWithoutListingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    priceCop?: BigIntFieldUpdateOperationsInput | bigint | number
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PriceHistoryUncheckedUpdateManyWithoutListingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    priceCop?: BigIntFieldUpdateOperationsInput | bigint | number
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

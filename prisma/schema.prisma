@@ -25,14 +25,27 @@ model Listing {
   description  String?
   urlOriginal  String
   isActive     Boolean  @default(true)
+  firstSeenAt  DateTime @default(now())
   scrapedAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  priceHistory PriceHistory[]
 
   @@unique([sourcePortal, externalId])
   @@index([brand, model, year])
   @@index([city])
   @@index([priceCop])
   @@index([isActive, updatedAt])
+  @@index([firstSeenAt])
+}
+
+model PriceHistory {
+  id         String   @id @default(cuid())
+  listingId  String
+  listing    Listing  @relation(fields: [listingId], references: [id])
+  priceCop   BigInt
+  recordedAt DateTime @default(now())
+
+  @@index([listingId, recordedAt])
 }
 
 model Alert {
