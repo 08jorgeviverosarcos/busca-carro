@@ -1,5 +1,5 @@
 // CAPA 1: Extractor de MercadoLibre Colombia
-// Usa OAuth client_credentials para obtener access_token y consumir la API oficial
+// Usa OAuth authorization_code (refresh_token) para acceder a la API del marketplace
 
 import { RawListing } from '@/lib/types'
 import { sleep } from '@/lib/utils'

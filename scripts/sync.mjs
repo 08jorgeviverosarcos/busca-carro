@@ -23,8 +23,11 @@ const SECRET = process.env.SYNC_SECRET ?? ''
 
 const command = process.argv[2] // 'ml', 'tucarro', 'vendetunave', 'olx', 'autocosmos'
 
-// Número total de marcas en cada extractor
-const MARCAS_TOTAL = { autocosmos: 20, vendetunave: 25 }
+// Configuración por portal
+const PORTAL_CONFIG = {
+  autocosmos: { total: 10, batchSize: 5, unit: 'páginas' }, // ~40 listings/página × 10 páginas ≈ 408 vehículos
+  vendetunave: { total: 604, batchSize: 20, unit: 'páginas' }, // 20 vehículos/página × 604 páginas ≈ 12,000 vehículos
+}
 
 async function syncBatch(portal, startIdx, batchSize) {
   const isMl = portal === 'ml'
@@ -52,7 +55,6 @@ async function syncBatch(portal, startIdx, batchSize) {
 }
 
 async function sync(portal) {
-  const batchSize = 3 // marcas por llamada API (para no exceder timeout)
   let totalInserted = 0
   let totalUpdated = 0
 
@@ -68,14 +70,19 @@ async function sync(portal) {
     return
   }
 
-  // Para autocosmos/vendetunave: iterar por lotes de marcas
-  const totalMarcas = MARCAS_TOTAL[portal] ?? 20
-  const totalBatches = Math.ceil(totalMarcas / batchSize)
-  console.log(`🔄 Sincronizando ${portal} (${totalMarcas} marcas, ${totalBatches} lotes)...`)
+  const config = PORTAL_CONFIG[portal]
+  if (!config) {
+    console.error(`❌ Portal desconocido: ${portal}`)
+    process.exit(1)
+  }
+
+  const { total, batchSize, unit } = config
+  const totalBatches = Math.ceil(total / batchSize)
+  console.log(`🔄 Sincronizando ${portal} (${total} ${unit}, ${totalBatches} lotes de ${batchSize})...`)
 
   for (let batch = 0; batch < totalBatches; batch++) {
-    const startIdx = batch * batchSize
-    console.log(`  🔄 Lote ${batch + 1}/${totalBatches} (marcas ${startIdx}-${startIdx + batchSize - 1})...`)
+    const startIdx = batch * batchSize + 1 // páginas son 1-based
+    console.log(`  🔄 Lote ${batch + 1}/${totalBatches} (${unit} ${startIdx}–${startIdx + batchSize - 1})...`)
     const result = await syncBatch(portal, startIdx, batchSize)
 
     if (!result.data) {

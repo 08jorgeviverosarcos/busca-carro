@@ -1,19 +1,11 @@
 // CAPA 1: Extractor de Autocosmos.com.co via Firecrawl (markdown parsing)
-// Usa URLs por marca para evitar caché de Firecrawl con paginación por querystring
+// Paginación: /auto/usado?pidx=N — ~40 listings por página (~408 totales, ~10 páginas)
 
 import FirecrawlApp from '@mendable/firecrawl-js'
 import { RawListing } from '@/lib/types'
 import { sleep } from '@/lib/utils'
 
 const BASE_URL = 'https://www.autocosmos.com.co/auto/usado'
-
-// Marcas colombianas con más inventario en Autocosmos
-const MARCAS = [
-  'chevrolet', 'renault', 'mazda', 'toyota', 'kia',
-  'hyundai', 'ford', 'nissan', 'volkswagen', 'suzuki',
-  'audi', 'bmw', 'mercedes', 'jeep', 'honda',
-  'dodge', 'mitsubishi', 'volvo', 'seat', 'skoda',
-]
 
 // Extrae el modelo del título del listado
 // Título: "BRAND MODEL TRIM usado (YEAR) color COLOR precio $PRICE"
@@ -94,43 +86,35 @@ export async function extractAutocosmosUrl(app: FirecrawlApp, url: string): Prom
   return parseListingsFromMarkdown(result.markdown)
 }
 
-export async function extractAutocosmos(marcasCount = MARCAS.length, startIdx = 0): Promise<RawListing[]> {
+// pages: cuántas páginas traer (~40 listings c/u)
+// startIdx: página inicial (1-based; 0 se trata como 1)
+export async function extractAutocosmos(pages = 10, startIdx = 0): Promise<RawListing[]> {
   const apiKey = process.env.FIRECRAWL_API_KEY
   if (!apiKey) {
     console.error('❌ Autocosmos: FIRECRAWL_API_KEY no configurada')
     return []
   }
 
-  const marcasToProcess = MARCAS.slice(startIdx, startIdx + marcasCount)
-  console.log(`🔄 Extrayendo Autocosmos (marcas: ${marcasToProcess.join(', ')})...`)
+  const startPage = startIdx > 0 ? startIdx : 1
+  const endPage = startPage + pages - 1
+  console.log(`🔄 Extrayendo Autocosmos (páginas ${startPage}–${endPage})...`)
+
   const app = new FirecrawlApp({ apiKey })
   const allListings: RawListing[] = []
   const seen = new Set<string>()
 
-  // Primero la página base (todos)
-  if (startIdx === 0) {
+  for (let page = startPage; page <= endPage; page++) {
+    const url = `${BASE_URL}?pidx=${page}`
     try {
-      console.log(`  🔄 Autocosmos (todos): ${BASE_URL}`)
-      const items = await extractAutocosmosUrl(app, BASE_URL)
-      console.log(`  📊 Todos: ${items.length} anuncios`)
-      for (const item of items) {
-        if (!item.listingUrl || seen.has(item.listingUrl)) continue
-        seen.add(item.listingUrl)
-        allListings.push(toRawListing(item))
-      }
-      await sleep(1100)
-    } catch (err) {
-      console.error('❌ Autocosmos base excepción:', err)
-    }
-  }
-
-  // Luego por marca
-  for (const marca of marcasToProcess) {
-    try {
-      const url = `${BASE_URL}/${marca}`
-      console.log(`  🔄 Autocosmos (${marca}): ${url}`)
+      console.log(`  🔄 Autocosmos página ${page}: ${url}`)
       const items = await extractAutocosmosUrl(app, url)
-      console.log(`  📊 ${marca}: ${items.length} anuncios`)
+
+      if (items.length === 0) {
+        console.log(`  ⚠️ Página ${page} vacía, deteniendo`)
+        break
+      }
+
+      console.log(`  📊 Página ${page}: ${items.length} anuncios`)
 
       for (const item of items) {
         if (!item.listingUrl || seen.has(item.listingUrl)) continue
@@ -138,9 +122,9 @@ export async function extractAutocosmos(marcasCount = MARCAS.length, startIdx = 
         allListings.push(toRawListing(item))
       }
 
-      await sleep(1100)
+      if (page < endPage) await sleep(1100)
     } catch (err) {
-      console.error(`❌ Autocosmos ${marca} excepción:`, err)
+      console.error(`❌ Autocosmos página ${page} excepción:`, err)
     }
   }
 
