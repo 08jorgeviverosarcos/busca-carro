@@ -74,7 +74,7 @@ function vehicleToRawListing(v: VTNVehicle): RawListing | null {
     rawBrand: v.marca ?? '',
     rawModel: v.modelo ?? '',
     images: imageUrl ? [imageUrl] : [],
-    urlOriginal: `${BASE_URL}/vehiculos/${v.id}`,
+    urlOriginal: `${BASE_URL}/vehiculo/${v.id}`,
     scrapedAt: new Date(),
   }
 }
