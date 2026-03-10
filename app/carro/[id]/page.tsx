@@ -7,8 +7,8 @@ import { CarCard } from '@/components/CarCard'
 import { FasecoldaSelector } from '@/components/FasecoldaSelector'
 import type { FasecoldaCandidateSerialized } from '@/components/FasecoldaSelector'
 import { Badge } from '@/components/ui/badge'
+import { NavHeader } from '@/components/NavHeader'
 import type { Metadata } from 'next'
-import Link from 'next/link'
 
 type PageProps = {
   params: Promise<{ id: string }>
@@ -103,17 +103,11 @@ export default async function CarroDetailPage({ params }: PageProps) {
   ]
 
   return (
-    <main className="min-h-screen bg-black">
-      {/* Header */}
-      <div className="border-b border-zinc-800 bg-zinc-900/50 py-4">
-        <div className="max-w-5xl mx-auto px-4 flex items-center gap-3">
-          <Link href="/" className="text-white font-black text-xl tracking-tight">BuscaCarro</Link>
-          <span className="text-zinc-600">/</span>
-          <Link href="/buscar" className="text-zinc-400 hover:text-white text-sm transition-colors">Buscar</Link>
-          <span className="text-zinc-600">/</span>
-          <span className="text-zinc-500 text-sm truncate">{listing.title}</span>
-        </div>
-      </div>
+    <main className="min-h-screen bg-[#0B0B0F]">
+      <NavHeader breadcrumbs={[
+        { label: 'Buscar', href: '/buscar' },
+        { label: listing.title },
+      ]} />
 
       <div className="max-w-5xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -146,15 +140,15 @@ export default async function CarroDetailPage({ params }: PageProps) {
             </div>
 
             {/* Specs en tabla */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden mb-6">
+            <div className="glass-panel rounded-2xl overflow-hidden mb-6">
               {specs.filter((s) => s.value).map((spec, i) => (
                 <div
                   key={spec.label}
                   className={`flex justify-between px-4 py-2.5 text-sm ${
-                    i % 2 === 0 ? 'bg-transparent' : 'bg-zinc-800/30'
+                    i % 2 === 0 ? 'bg-transparent' : 'bg-white/[0.02]'
                   }`}
                 >
-                  <span className="text-zinc-400">{spec.label}</span>
+                  <span className="text-slate-400">{spec.label}</span>
                   <span className="text-white font-medium">{String(spec.value)}</span>
                 </div>
               ))}
@@ -165,7 +159,7 @@ export default async function CarroDetailPage({ params }: PageProps) {
               href={listing.urlOriginal}
               target="_blank"
               rel="noopener noreferrer"
-              className="block w-full text-center bg-white text-black font-bold py-3 rounded-xl hover:bg-zinc-200 transition-colors"
+              className="block w-full text-center ai-gradient text-white font-bold py-3 rounded-xl hover:scale-[1.02] active:scale-95 transition-transform"
             >
               Ver anuncio original →
             </a>
@@ -175,10 +169,10 @@ export default async function CarroDetailPage({ params }: PageProps) {
         {/* Carros similares */}
         {similares.length > 0 && (
           <div className="mt-12">
-            <h2 className="text-white font-bold text-xl mb-4">
+            <h2 className="text-white font-bold text-xl mb-6">
               {listing.brand} {listing.model} similares
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {similares.map((s) => (
                 <CarCard
                   key={s.id}

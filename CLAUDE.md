@@ -124,6 +124,39 @@ NEXT_PUBLIC_APP_URL       # URL pública de la app
 
 Los portales MercadoLibre, TuCarro y OLX están bloqueados o con URLs incorrectas.
 
+## Design System (Stitch)
+
+Referencia visual: `stitch/code.html` + `stitch/screen.png`. Documentación completa: `thoughts/shared/design/DESIGN_SYSTEM.md`.
+
+### Paleta de colores
+- **Fondo app**: `#0B0B0F` (NO usar `bg-black` puro)
+- **Surface**: `#15151A` (inputs, elementos internos)
+- **Glass**: `rgba(255,255,255,0.03)` + `backdrop-blur(12px)` + `border rgba(255,255,255,0.08)` → clase `.glass-panel`
+- **Primary**: `#3c83f6` (azul) — botones, links, precios
+- **Accent**: `#a855f7` (púrpura) — gradientes, glow
+- **Texto**: `text-white` (primario), `text-slate-400` (secundario), `text-slate-500` (terciario)
+- **Bordes**: `border-white/5` (default), `border-white/10` (inputs), `border-white/20` (hover)
+
+### Clases CSS custom (definidas en `globals.css`)
+- `.glass-panel` — Glass morphism para cards, sidebar, modals
+- `.ai-gradient` — `linear-gradient(135deg, #3c83f6, #a855f7)` para CTAs y logo
+- `.text-gradient` — Texto gradiente blanco→púrpura (solo hero h1)
+
+### Reglas obligatorias
+1. **No zinc** — usar `slate` para textos, `white/N` para bordes y superficies
+2. **Cards siempre `.glass-panel`** con `rounded-2xl`
+3. **Imágenes en cards**: `group-hover:scale-110 grayscale-[0.2] group-hover:grayscale-0 duration-700`
+4. **Labels**: siempre `uppercase tracking-wide` o `tracking-widest`
+5. **Botón CTA principal**: `ai-gradient text-white font-bold rounded-lg`
+6. **Botón solid**: `bg-primary text-white font-bold rounded-full`
+7. **Botón ghost**: `glass-panel text-slate-300 hover:bg-white/10 rounded-full`
+8. **Nav header**: `sticky top-0 z-50 bg-[#0B0B0F]/80 backdrop-blur-md border-b border-white/5`
+9. **SearchBar hero**: glass-panel con glow `ai-gradient opacity-20 blur-xl` detrás
+10. **Tipografía hero**: `text-5xl md:text-7xl font-black tracking-tighter` con `.text-gradient`
+
+### Colores de portales (sin cambios)
+ML=yellow, TuCarro=blue, VendeTuNave=green, OLX=orange, Autocosmos=purple
+
 ## Notas de scraping
 
 - **Autocosmos**: URLs por marca (`/auto/usado/{marca}`). Firecrawl cachea querystrings, por eso se usan URLs por marca. Rate limit: 1.1s entre requests.

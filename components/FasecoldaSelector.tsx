@@ -22,7 +22,6 @@ interface FasecoldaSelectorProps {
 
 export function FasecoldaSelector({ listingPrice, candidates }: FasecoldaSelectorProps) {
   const [selectedCodigo, setSelectedCodigo] = useState<string | null>(
-    // Pre-seleccionar si hay un solo candidato o si el primero tiene score > 0 y es único en ese score
     candidates.length === 1
       ? candidates[0].codigo
       : null
@@ -38,7 +37,7 @@ export function FasecoldaSelector({ listingPrice, candidates }: FasecoldaSelecto
     return (
       <div className="mt-2">
         <FasecoldaBadge listingPrice={listingPrice} fasecoldaValue={Number(candidates[0].valueCop)} />
-        <p className="text-xs text-zinc-600 mt-1">
+        <p className="text-xs text-slate-600 mt-1">
           Ref. Fasecolda: {candidates[0].referencia2 ?? candidates[0].referencia1}
           {' '}· {formatPrice(Number(candidates[0].valueCop))}
         </p>
@@ -49,11 +48,11 @@ export function FasecoldaSelector({ listingPrice, candidates }: FasecoldaSelecto
   // Múltiples versiones: mostrar selector
   return (
     <div className="mt-3 space-y-2">
-      <p className="text-xs text-zinc-400">
+      <p className="text-xs text-slate-400">
         Hay {candidates.length} versiones en Fasecolda para este modelo. Selecciona la tuya:
       </p>
       <select
-        className="w-full text-xs bg-zinc-900 border border-zinc-700 text-zinc-200 rounded-lg px-3 py-2 focus:outline-none focus:border-zinc-500 cursor-pointer"
+        className="w-full text-xs bg-[#15151A] border border-white/10 text-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:border-white/20 cursor-pointer"
         value={selectedCodigo ?? ''}
         onChange={(e) => setSelectedCodigo(e.target.value || null)}
       >
@@ -70,7 +69,7 @@ export function FasecoldaSelector({ listingPrice, candidates }: FasecoldaSelecto
       )}
 
       {!selected && (
-        <p className="text-xs text-zinc-600">Selecciona una versión para comparar el precio</p>
+        <p className="text-xs text-slate-600">Selecciona una versión para comparar el precio</p>
       )}
     </div>
   )

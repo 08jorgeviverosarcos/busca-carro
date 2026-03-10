@@ -16,8 +16,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es">
-      <body className={`${inter.className} bg-black text-white antialiased`}>
+    <html lang="es" className="dark">
+      <body className={`${inter.className} bg-[#0B0B0F] text-white antialiased`}>
         <QueryProvider>
           {children}
         </QueryProvider>

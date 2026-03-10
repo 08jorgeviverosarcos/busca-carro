@@ -50,7 +50,7 @@ export function AlertModal({ searchParams }: AlertModalProps) {
       <Button
         onClick={() => setOpen(true)}
         variant="outline"
-        className="border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-500 gap-2"
+        className="border-white/10 text-slate-300 hover:text-white hover:border-white/20 gap-2"
       >
         <Bell className="w-4 h-4" />
         Crear alerta
@@ -58,15 +58,15 @@ export function AlertModal({ searchParams }: AlertModalProps) {
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-zinc-900 border border-zinc-700 rounded-xl p-6 w-full max-w-md">
+          <div className="bg-[#0B0B0F] border border-white/10 rounded-2xl p-6 w-full max-w-md shadow-2xl">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-white font-semibold text-lg">Crear alerta de búsqueda</h2>
-              <button onClick={() => setOpen(false)} className="text-zinc-400 hover:text-white">
+              <button onClick={() => setOpen(false)} className="text-slate-400 hover:text-white transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <p className="text-zinc-400 text-sm mb-4">
+            <p className="text-slate-400 text-sm mb-4">
               Te notificaremos por email cuando aparezcan nuevos carros que coincidan con tus filtros actuales.
             </p>
 
@@ -80,13 +80,13 @@ export function AlertModal({ searchParams }: AlertModalProps) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
+                  className="bg-[#15151A] border-white/10 text-white placeholder:text-slate-500"
                 />
                 {error && <p className="text-red-400 text-sm">{error}</p>}
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-white text-black hover:bg-zinc-200 font-semibold"
+                  className="w-full bg-[#3c83f6] text-white hover:bg-[#3c83f6]/90 font-semibold rounded-xl"
                 >
                   {loading ? 'Creando...' : 'Activar alerta'}
                 </Button>

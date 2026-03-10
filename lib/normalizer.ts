@@ -102,6 +102,78 @@ const BRAND_MAP: Record<string, string> = {
   'chrysler': 'Chrysler',
 }
 
+// Tabla de normalización de modelos — variantes → forma canónica
+const MODEL_CANONICAL_MAP: Record<string, string> = {
+  // Mazda
+  'cx5': 'CX-5', 'cx-5': 'CX-5', 'cx 5': 'CX-5',
+  'cx3': 'CX-3', 'cx-3': 'CX-3', 'cx 3': 'CX-3',
+  'cx30': 'CX-30', 'cx-30': 'CX-30', 'cx 30': 'CX-30',
+  'cx9': 'CX-9', 'cx-9': 'CX-9', 'cx 9': 'CX-9',
+  'cx50': 'CX-50', 'cx-50': 'CX-50', 'cx 50': 'CX-50',
+  // Toyota
+  'rav4': 'RAV4', 'rav-4': 'RAV4', 'rav 4': 'RAV4',
+  'chr': 'C-HR', 'c-hr': 'C-HR', 'c hr': 'C-HR',
+  'fj cruiser': 'FJ Cruiser', 'fjcruiser': 'FJ Cruiser',
+  '4runner': '4Runner', '4 runner': '4Runner',
+  'land cruiser': 'Land Cruiser', 'landcruiser': 'Land Cruiser',
+  // Honda
+  'crv': 'CR-V', 'cr-v': 'CR-V', 'cr v': 'CR-V',
+  'hrv': 'HR-V', 'hr-v': 'HR-V', 'hr v': 'HR-V',
+  'brv': 'BR-V', 'br-v': 'BR-V', 'br v': 'BR-V',
+  // Hyundai
+  'ioniq5': 'Ioniq 5', 'ioniq-5': 'Ioniq 5', 'ioniq 5': 'Ioniq 5',
+  'ioniq6': 'Ioniq 6', 'ioniq-6': 'Ioniq 6', 'ioniq 6': 'Ioniq 6',
+  'i10': 'i10', 'i20': 'i20', 'i30': 'i30', 'i40': 'i40',
+  // Kia
+  'ev6': 'EV6', 'ev 6': 'EV6',
+  'k5': 'K5', 'k 5': 'K5',
+  // Nissan
+  'xtrail': 'X-Trail', 'x-trail': 'X-Trail', 'x trail': 'X-Trail',
+  'xgear': 'X-Gear', 'x-gear': 'X-Gear', 'x gear': 'X-Gear',
+  // Volkswagen
+  't-cross': 'T-Cross', 'tcross': 'T-Cross', 't cross': 'T-Cross',
+  't-roc': 'T-Roc', 'troc': 'T-Roc', 't roc': 'T-Roc',
+  // Suzuki
+  's-cross': 'S-Cross', 'scross': 'S-Cross', 's cross': 'S-Cross',
+  's-presso': 'S-Presso', 'spresso': 'S-Presso', 's presso': 'S-Presso',
+  // Mercedes-Benz
+  'glc300': 'GLC 300', 'glc 300': 'GLC 300',
+  'glc200': 'GLC 200', 'glc 200': 'GLC 200',
+  'gle300': 'GLE 300', 'gle 300': 'GLE 300',
+  'gle350': 'GLE 350', 'gle 350': 'GLE 350',
+  'gla200': 'GLA 200', 'gla 200': 'GLA 200',
+  'glb200': 'GLB 200', 'glb 200': 'GLB 200',
+  'c200': 'C 200', 'c 200': 'C 200',
+  'c300': 'C 300', 'c 300': 'C 300',
+  'e200': 'E 200', 'e 200': 'E 200',
+  'e300': 'E 300', 'e 300': 'E 300',
+  // BMW
+  'x1': 'X1', 'x2': 'X2', 'x3': 'X3', 'x4': 'X4',
+  'x5': 'X5', 'x6': 'X6', 'x7': 'X7',
+  'm3': 'M3', 'm4': 'M4', 'm5': 'M5',
+  // Chery
+  'tiggo 3': 'Tiggo 3', 'tiggo3': 'Tiggo 3',
+  'tiggo 5': 'Tiggo 5', 'tiggo5': 'Tiggo 5',
+  'tiggo 7': 'Tiggo 7', 'tiggo7': 'Tiggo 7',
+  'tiggo 8': 'Tiggo 8', 'tiggo8': 'Tiggo 8',
+  // Haval
+  'h6': 'H6', 'h 6': 'H6',
+  'h2': 'H2', 'h 2': 'H2',
+  // MG
+  'mg zs': 'ZS', 'zs': 'ZS',
+  'mg hs': 'HS', 'hs': 'HS',
+  // Jeep
+  'grand cherokee': 'Grand Cherokee', 'grandcherokee': 'Grand Cherokee',
+  // Ford
+  'f-150': 'F-150', 'f150': 'F-150', 'f 150': 'F-150',
+  'bronco sport': 'Bronco Sport', 'broncosport': 'Bronco Sport',
+  // Land Rover
+  'range rover': 'Range Rover', 'rangerover': 'Range Rover',
+  'range rover sport': 'Range Rover Sport',
+  'range rover evoque': 'Range Rover Evoque',
+  'discovery sport': 'Discovery Sport', 'discoverysport': 'Discovery Sport',
+}
+
 // Tabla de normalización de combustible
 const FUEL_MAP: Record<string, string> = {
   'gasolina': 'Gasolina',
@@ -242,7 +314,19 @@ function normalizeBrand(raw: string, title: string): string | null {
 
 // Normaliza modelo
 function normalizeModel(raw: string, title: string, brand: string | null): string | null {
-  if (raw) return titleCase(raw.trim())
+  if (raw) {
+    const key = raw.toLowerCase().trim()
+    // Buscar coincidencia exacta en el mapa canónico
+    if (MODEL_CANONICAL_MAP[key]) return MODEL_CANONICAL_MAP[key]
+    // Buscar por prefijo (ej. "cx-5 grand touring" → "CX-5 Grand Touring")
+    for (const [mapKey, canonical] of Object.entries(MODEL_CANONICAL_MAP)) {
+      if (key.startsWith(mapKey + ' ') || key.startsWith(mapKey + '-')) {
+        return canonical + ' ' + titleCase(raw.slice(mapKey.length).trim())
+      }
+    }
+    return titleCase(raw.trim())
+  }
+
   if (!title || !brand) return null
 
   // Intentar extraer modelo del título (quitar marca, año, etc.)
@@ -271,6 +355,7 @@ function normalizeTransmission(raw: string): string | null {
 
 export const VALID_BRANDS = [...new Set(Object.values(BRAND_MAP))]
 export const VALID_CITIES = [...new Set(Object.values(CITY_MAP))]
+export const VALID_MODELS = [...new Set(Object.values(MODEL_CANONICAL_MAP))].sort()
 export const VALID_FUEL_TYPES = [...new Set(Object.values(FUEL_MAP))]
 export const VALID_TRANSMISSIONS = [...new Set(Object.values(TRANSMISSION_MAP))]
 

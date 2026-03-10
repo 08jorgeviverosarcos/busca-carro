@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
 import { SearchResults } from '@/components/SearchResults'
+import { NavHeader } from '@/components/NavHeader'
 
 export const metadata = {
   title: 'Buscar carros',
@@ -8,16 +9,11 @@ export const metadata = {
 
 export default function BuscarPage() {
   return (
-    <main className="min-h-screen bg-black">
-      {/* Header */}
-      <div className="border-b border-zinc-800 bg-zinc-900/50 py-4">
-        <div className="max-w-7xl mx-auto px-4">
-          <a href="/" className="text-white font-black text-xl tracking-tight">BuscaCarro</a>
-        </div>
-      </div>
+    <main className="min-h-screen bg-[#0B0B0F]">
+      <NavHeader />
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <Suspense fallback={<div className="text-zinc-400">Cargando...</div>}>
+      <div className="max-w-7xl mx-auto px-6 py-6">
+        <Suspense fallback={<div className="text-slate-400">Cargando...</div>}>
           <SearchResults />
         </Suspense>
       </div>

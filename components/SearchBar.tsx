@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Search, Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { useSearchStore } from '@/store/searchStore'
 import { SearchParams } from '@/lib/types'
 
@@ -67,25 +66,56 @@ export function SearchBar({ large = false, placeholder = 'Buscar marca, modelo, 
     }
   }
 
+  // Variante hero: glass panel con glow
+  if (large) {
+    return (
+      <form onSubmit={handleSubmit} className="w-full max-w-3xl glass-panel p-2 rounded-2xl shadow-2xl relative group">
+        <div className="absolute -inset-1 ai-gradient opacity-20 blur-xl group-focus-within:opacity-40 transition-opacity rounded-2xl" />
+        <div className="relative flex items-center bg-[#15151A] rounded-xl overflow-hidden border border-white/10">
+          <div className="pl-5 text-slate-500">
+            {isParsing ? <Loader2 className="w-5 h-5 animate-spin" /> : <Search className="w-5 h-5" />}
+          </div>
+          <input
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder={placeholder}
+            disabled={isParsing}
+            className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-white py-5 px-4 text-lg placeholder:text-slate-600"
+          />
+          <div className="pr-2">
+            <button
+              type="submit"
+              disabled={isParsing}
+              className="ai-gradient text-white px-8 py-3 rounded-lg font-bold text-sm shadow-lg shadow-[#3c83f6]/20 hover:scale-[1.02] active:scale-95 transition-transform disabled:opacity-50"
+            >
+              Buscar
+            </button>
+          </div>
+        </div>
+      </form>
+    )
+  }
+
+  // Variante compacta: para página de búsqueda
   return (
     <form onSubmit={handleSubmit} className="flex gap-2 w-full">
       <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 w-4 h-4" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
         <Input
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           placeholder={placeholder}
           disabled={isParsing}
-          className={`pl-10 bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-zinc-500 ${large ? 'h-12 text-base' : ''}`}
+          className="pl-10 bg-[#15151A] border-white/10 text-white placeholder:text-slate-500 focus:border-white/20"
         />
       </div>
-      <Button
+      <button
         type="submit"
         disabled={isParsing}
-        className={`bg-white text-black hover:bg-zinc-200 font-semibold ${large ? 'h-12 px-6 text-base' : ''}`}
+        className="bg-[#3c83f6] hover:bg-[#3c83f6]/90 text-white font-bold h-9 px-4 rounded-lg transition-colors disabled:opacity-50"
       >
         {isParsing ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Buscar'}
-      </Button>
+      </button>
     </form>
   )
 }

@@ -18,15 +18,15 @@ export function StatsBar() {
   const stats = data?.data
 
   return (
-    <section className="border-t border-b border-zinc-800 bg-zinc-900/50">
+    <section className="border-t border-b border-white/5 bg-[#0B0B0F]/50 backdrop-blur-sm">
       <div className="max-w-4xl mx-auto px-4 py-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           {isLoading ? (
             <>
               {Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="space-y-1">
-                  <div className="h-7 bg-zinc-800 rounded animate-pulse mx-auto w-20" />
-                  <div className="h-3 bg-zinc-800 rounded animate-pulse mx-auto w-24" />
+                  <div className="h-7 bg-white/5 rounded animate-pulse mx-auto w-20" />
+                  <div className="h-3 bg-white/5 rounded animate-pulse mx-auto w-24" />
                 </div>
               ))}
             </>
@@ -36,14 +36,14 @@ export function StatsBar() {
                 <p className="text-2xl font-black text-white">
                   {stats?.totalActive?.toLocaleString('es-CO') ?? '—'}
                 </p>
-                <p className="text-xs text-zinc-500 uppercase tracking-wide">Anuncios activos</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wide">Anuncios activos</p>
               </div>
               {['mercadolibre', 'tucarro', 'vendetunave'].map((portal) => (
                 <div key={portal}>
                   <p className="text-2xl font-black text-white">
                     {stats?.byPortal?.[portal]?.toLocaleString('es-CO') ?? '0'}
                   </p>
-                  <p className="text-xs text-zinc-500 uppercase tracking-wide">
+                  <p className="text-xs text-slate-500 uppercase tracking-wide">
                     {portal === 'mercadolibre' ? 'MercadoLibre' : portal === 'tucarro' ? 'TuCarro' : 'VendeTuNave'}
                   </p>
                 </div>

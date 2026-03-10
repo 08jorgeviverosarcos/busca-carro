@@ -14,8 +14,8 @@ export function CarDetailGallery({ images, title }: CarDetailGalleryProps) {
 
   if (!images.length) {
     return (
-      <div className="aspect-video bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center">
-        <span className="text-zinc-600">Sin imágenes disponibles</span>
+      <div className="aspect-video glass-panel rounded-2xl flex items-center justify-center">
+        <span className="text-slate-600">Sin imágenes disponibles</span>
       </div>
     )
   }
@@ -26,7 +26,7 @@ export function CarDetailGallery({ images, title }: CarDetailGalleryProps) {
   return (
     <div className="space-y-2">
       {/* Imagen principal */}
-      <div className="relative aspect-video bg-zinc-900 rounded-xl overflow-hidden">
+      <div className="relative aspect-video bg-[#15151A] rounded-2xl overflow-hidden">
         <Image
           src={images[current]}
           alt={`${title} - imagen ${current + 1}`}
@@ -64,7 +64,7 @@ export function CarDetailGallery({ images, title }: CarDetailGalleryProps) {
               key={i}
               onClick={() => setCurrent(i)}
               className={`relative w-16 h-12 shrink-0 rounded-lg overflow-hidden border-2 transition-colors ${
-                i === current ? 'border-white' : 'border-zinc-700 hover:border-zinc-500'
+                i === current ? 'border-[#3c83f6]' : 'border-white/10 hover:border-white/30'
               }`}
             >
               <Image src={img} alt={`Thumb ${i + 1}`} fill className="object-cover" unoptimized />

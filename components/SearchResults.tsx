@@ -110,7 +110,7 @@ export function SearchResults() {
           <div>
             <h1 className="text-white font-bold text-lg">{searchTitle}</h1>
             {!isLoading && meta && (
-              <p className="text-zinc-400 text-sm">
+              <p className="text-slate-400 text-sm">
                 {meta.total.toLocaleString('es-CO')} resultados
               </p>
             )}
@@ -119,12 +119,12 @@ export function SearchResults() {
           <div className="flex items-center gap-2">
             <AlertModal searchParams={searchParams.toString()} />
             <Select value={sortBy} onValueChange={handleSort}>
-              <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white text-sm w-44">
+              <SelectTrigger className="bg-[#15151A] border-white/10 text-white text-sm w-44">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-zinc-800 border-zinc-700">
+              <SelectContent className="bg-[#15151A] border-white/10">
                 {SORT_OPTIONS.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value} className="text-zinc-300">
+                  <SelectItem key={opt.value} value={opt.value} className="text-slate-300">
                     {opt.label}
                   </SelectItem>
                 ))}
@@ -143,12 +143,12 @@ export function SearchResults() {
               variant="outline"
               onClick={() => handlePage(page - 1)}
               disabled={page <= 1}
-              className="border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-500"
+              className="border-white/10 text-slate-300 hover:text-white hover:border-white/20"
             >
               <ChevronLeft className="w-4 h-4" />
             </Button>
 
-            <span className="text-zinc-400 text-sm px-4">
+            <span className="text-slate-400 text-sm px-4">
               Página {page} de {meta.totalPages}
             </span>
 
@@ -156,7 +156,7 @@ export function SearchResults() {
               variant="outline"
               onClick={() => handlePage(page + 1)}
               disabled={page >= meta.totalPages}
-              className="border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-500"
+              className="border-white/10 text-slate-300 hover:text-white hover:border-white/20"
             >
               <ChevronRight className="w-4 h-4" />
             </Button>

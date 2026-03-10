@@ -13,7 +13,7 @@ export function FasecoldaBadge({ listingPrice, fasecoldaValue }: FasecoldaBadgeP
 
   if (absDiff <= 5) {
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-zinc-800 text-zinc-300 border border-zinc-700">
+      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-white/5 text-slate-300 border border-white/10">
         Precio acorde a Fasecolda
       </span>
     )

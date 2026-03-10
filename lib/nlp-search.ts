@@ -1,7 +1,7 @@
 // Módulo de parsing de lenguaje natural → SearchParams usando Claude Haiku
 
 import Anthropic from '@anthropic-ai/sdk'
-import { VALID_BRANDS, VALID_CITIES, VALID_FUEL_TYPES, VALID_TRANSMISSIONS } from '@/lib/normalizer'
+import { VALID_BRANDS, VALID_CITIES, VALID_FUEL_TYPES, VALID_TRANSMISSIONS, VALID_MODELS } from '@/lib/normalizer'
 import { SearchParams } from '@/lib/types'
 
 const client = new Anthropic({
@@ -21,7 +21,7 @@ const EXTRACT_TOOL: Anthropic.Tool = {
       },
       model: {
         type: 'string',
-        description: 'Modelo del vehículo, tal como lo menciona el usuario. Ej: CX-5, Spark, Tucson',
+        description: `Modelo del vehículo en su forma canónica. Modelos conocidos: ${VALID_MODELS.slice(0, 50).join(', ')}. Si el usuario escribe una variante (cx5, rav4, crv), usa la forma canónica (CX-5, RAV4, CR-V).`,
       },
       city: {
         type: 'string',

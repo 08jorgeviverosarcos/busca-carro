@@ -1,7 +1,6 @@
 'use client'
 
 import { CarCard } from '@/components/CarCard'
-import { Skeleton } from '@/components/ui/skeleton'
 
 type Listing = {
   id: string
@@ -28,14 +27,14 @@ type CarGridProps = {
 export function CarGrid({ listings, isLoading = false }: CarGridProps) {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-            <Skeleton className="aspect-video bg-zinc-800" />
-            <div className="p-3 space-y-2">
-              <Skeleton className="h-4 bg-zinc-800 rounded w-3/4" />
-              <Skeleton className="h-3 bg-zinc-800 rounded w-1/2" />
-              <Skeleton className="h-5 bg-zinc-800 rounded w-1/3 mt-3" />
+          <div key={i} className="glass-panel rounded-2xl overflow-hidden">
+            <div className="aspect-[16/10] bg-white/5 animate-pulse" />
+            <div className="p-6 space-y-3">
+              <div className="h-5 bg-white/5 rounded w-3/4 animate-pulse" />
+              <div className="h-4 bg-white/5 rounded w-1/2 animate-pulse" />
+              <div className="h-4 bg-white/5 rounded w-1/3 animate-pulse mt-3" />
             </div>
           </div>
         ))}
@@ -46,14 +45,14 @@ export function CarGrid({ listings, isLoading = false }: CarGridProps) {
   if (listings.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <p className="text-zinc-400 text-lg mb-2">No se encontraron anuncios</p>
-        <p className="text-zinc-600 text-sm">Intenta cambiar los filtros o buscar otra marca</p>
+        <p className="text-slate-400 text-lg mb-2">No se encontraron anuncios</p>
+        <p className="text-slate-600 text-sm">Intenta cambiar los filtros o buscar otra marca</p>
       </div>
     )
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {listings.map((listing) => (
         <CarCard key={listing.id} {...listing} />
       ))}

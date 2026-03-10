@@ -52,7 +52,15 @@ export async function GET(req: NextRequest) {
       where.brand = { equals: brand, mode: 'insensitive' }
     }
     if (model) {
-      where.model = { contains: model, mode: 'insensitive' }
+      const modelStripped = model.replace(/[-\s]/g, '')
+      if (modelStripped !== model) {
+        where.OR = [
+          { model: { contains: model, mode: 'insensitive' } },
+          { model: { contains: modelStripped, mode: 'insensitive' } },
+        ]
+      } else {
+        where.model = { contains: model, mode: 'insensitive' }
+      }
     }
     if (yearMin || yearMax) {
       where.year = {}

@@ -3,8 +3,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Heart } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
 import { useSearchStore } from '@/store/searchStore'
 import { formatPrice, formatMileage, PORTAL_COLORS, PORTAL_LABELS, cn } from '@/lib/utils'
 
@@ -36,7 +34,6 @@ export function CarCard({
   transmission,
   city,
   images,
-  urlOriginal,
   avgPrice,
 }: CarCardProps) {
   const { toggleFavorite, isFavorite } = useSearchStore()
@@ -47,9 +44,9 @@ export function CarCard({
   if (priceCop && avgPrice) {
     const diff = (priceCop - avgPrice) / avgPrice
     if (diff <= -0.1) {
-      priceIndicator = { label: '✓ Buen precio', color: 'text-green-400' }
+      priceIndicator = { label: 'Buen precio', color: 'text-green-400' }
     } else if (diff >= 0.1) {
-      priceIndicator = { label: '↑ Sobre precio', color: 'text-red-400' }
+      priceIndicator = { label: 'Sobre precio', color: 'text-red-400' }
     }
   }
 
@@ -57,16 +54,16 @@ export function CarCard({
   const portalLabel = PORTAL_LABELS[sourcePortal] ?? sourcePortal
 
   return (
-    <Card className="bg-zinc-900 border-zinc-800 hover:border-zinc-600 transition-colors overflow-hidden">
+    <div className="group relative overflow-hidden rounded-2xl glass-panel transition-all hover:border-white/20">
       {/* Imagen */}
-      <div className="relative aspect-video bg-zinc-800 overflow-hidden">
+      <div className="relative aspect-[16/10] overflow-hidden">
         <Link href={`/carro/${id}`}>
           {images[0] ? (
             <Image
               src={images[0]}
               alt={title}
               fill
-              className="object-cover hover:scale-105 transition-transform duration-300"
+              className="object-cover grayscale-[0.2] group-hover:scale-110 group-hover:grayscale-0 transition-all duration-700"
               onError={(e) => {
                 const target = e.target as HTMLImageElement
                 target.style.display = 'none'
@@ -74,7 +71,7 @@ export function CarCard({
               unoptimized
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-zinc-600">
+            <div className="w-full h-full flex items-center justify-center text-slate-600">
               <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
@@ -83,9 +80,9 @@ export function CarCard({
         </Link>
 
         {/* Badge portal */}
-        <Badge className={cn('absolute top-2 left-2 text-xs font-semibold', portalColor)}>
+        <span className={cn('absolute top-2 left-2 text-xs font-semibold px-2 py-0.5 rounded-full', portalColor)}>
           {portalLabel}
-        </Badge>
+        </span>
 
         {/* Botón favorito */}
         <button
@@ -100,47 +97,42 @@ export function CarCard({
       </div>
 
       {/* Contenido */}
-      <CardContent className="p-3">
-        <Link href={`/carro/${id}`} className="block hover:text-zinc-300 transition-colors">
-          <h3 className="text-white font-semibold text-sm line-clamp-2 mb-2">{title}</h3>
-        </Link>
-
-        {/* Specs secundarios */}
-        <div className="flex flex-wrap gap-1 text-xs text-zinc-400 mb-2">
-          {year && <span>{year}</span>}
-          {year && mileage !== null && <span>·</span>}
-          {mileage !== null && mileage !== undefined && <span>{formatMileage(mileage)}</span>}
-          {city && (mileage !== null || year) && <span>·</span>}
-          {city && <span>{city}</span>}
-        </div>
-
-        <div className="flex flex-wrap gap-1 text-xs text-zinc-500 mb-3">
-          {fuelType && <span>{fuelType}</span>}
-          {fuelType && transmission && <span>·</span>}
-          {transmission && <span>{transmission}</span>}
-        </div>
-
-        {/* Precio e indicador */}
-        <div className="flex items-end justify-between">
-          <div>
-            <p className="text-white font-bold text-base">
-              {priceCop ? formatPrice(priceCop) : 'Consultar'}
+      <div className="p-6">
+        <div className="flex justify-between items-start mb-4">
+          <div className="min-w-0 flex-1 mr-3">
+            <Link href={`/carro/${id}`} className="block hover:text-slate-300 transition-colors">
+              <h3 className="text-xl font-bold text-white line-clamp-2">{title}</h3>
+            </Link>
+            <p className="text-slate-500 text-sm mt-1">
+              {[year, mileage !== null && mileage !== undefined ? formatMileage(mileage) : null, city].filter(Boolean).join(' · ')}
             </p>
+          </div>
+          <div className="text-right shrink-0">
+            <span className="text-[#3c83f6] font-bold">
+              {priceCop ? formatPrice(priceCop) : 'Consultar'}
+            </span>
             {priceIndicator && (
-              <p className={cn('text-xs font-medium', priceIndicator.color)}>
+              <p className={cn('text-xs font-medium mt-0.5', priceIndicator.color)}>
                 {priceIndicator.label}
               </p>
             )}
           </div>
-
-          <Link
-            href={`/carro/${id}`}
-            className="text-xs text-zinc-400 hover:text-white transition-colors"
-          >
-            Ver →
-          </Link>
         </div>
-      </CardContent>
-    </Card>
+
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2">
+          {fuelType && (
+            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded bg-white/5 text-slate-400">
+              {fuelType}
+            </span>
+          )}
+          {transmission && (
+            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded bg-white/5 text-slate-400">
+              {transmission}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
   )
 }

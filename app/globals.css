@@ -124,3 +124,29 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* === BuscaCarro Design System (Stitch) === */
+:root {
+  --bc-bg: #0B0B0F;
+  --bc-surface: #15151A;
+  --bc-primary: #3c83f6;
+  --bc-accent: #a855f7;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ai-gradient {
+  background: linear-gradient(135deg, #3c83f6 0%, #a855f7 100%);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #fff 30%, #a855f7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
