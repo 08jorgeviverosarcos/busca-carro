@@ -60,7 +60,7 @@ export function CarCard({
     <Card className="bg-zinc-900 border-zinc-800 hover:border-zinc-600 transition-colors overflow-hidden">
       {/* Imagen */}
       <div className="relative aspect-video bg-zinc-800 overflow-hidden">
-        <a href={urlOriginal} target="_blank" rel="noopener noreferrer">
+        <Link href={`/carro/${id}`}>
           {images[0] ? (
             <Image
               src={images[0]}
@@ -80,7 +80,7 @@ export function CarCard({
               </svg>
             </div>
           )}
-        </a>
+        </Link>
 
         {/* Badge portal */}
         <Badge className={cn('absolute top-2 left-2 text-xs font-semibold', portalColor)}>
@@ -133,14 +133,12 @@ export function CarCard({
             )}
           </div>
 
-          <a
-            href={urlOriginal}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href={`/carro/${id}`}
             className="text-xs text-zinc-400 hover:text-white transition-colors"
           >
             Ver →
-          </a>
+          </Link>
         </div>
       </CardContent>
     </Card>

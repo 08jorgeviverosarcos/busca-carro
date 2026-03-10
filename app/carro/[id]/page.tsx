@@ -1,8 +1,10 @@
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { formatPrice, formatMileage, PORTAL_LABELS } from '@/lib/utils'
+import { getFasecoldaValue } from '@/lib/fasecolda/lookup'
 import { CarDetailGallery } from '@/components/CarDetailGallery'
 import { CarCard } from '@/components/CarCard'
+import { FasecoldaBadge } from '@/components/FasecoldaBadge'
 import { Badge } from '@/components/ui/badge'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -63,6 +65,13 @@ export default async function CarroDetailPage({ params }: PageProps) {
   const price = listing.priceCop ? Number(listing.priceCop) : null
   const portalLabel = PORTAL_LABELS[listing.sourcePortal] ?? listing.sourcePortal
 
+  // Buscar valor de referencia Fasecolda
+  const fasecoldaData =
+    listing.brand && listing.year
+      ? await getFasecoldaValue(listing.brand, listing.year, listing.model ?? undefined)
+      : null
+  const fasecoldaPrice = fasecoldaData ? Number(fasecoldaData.valueCop) : null
+
   const specs = [
     { label: 'Marca', value: listing.brand },
     { label: 'Modelo', value: listing.model },
@@ -73,6 +82,10 @@ export default async function CarroDetailPage({ params }: PageProps) {
     { label: 'Ciudad', value: listing.city },
     { label: 'Departamento', value: listing.department },
     { label: 'Portal', value: portalLabel },
+    {
+      label: 'Valor Fasecolda',
+      value: fasecoldaPrice ? formatPrice(fasecoldaPrice) : null,
+    },
   ]
 
   return (
@@ -110,6 +123,11 @@ export default async function CarroDetailPage({ params }: PageProps) {
               <p className="text-3xl font-black text-white">
                 {price ? formatPrice(price) : 'Precio a consultar'}
               </p>
+              {price && fasecoldaPrice && (
+                <div className="mt-2">
+                  <FasecoldaBadge listingPrice={price} fasecoldaValue={fasecoldaPrice} />
+                </div>
+              )}
             </div>
 
             {/* Specs en tabla */}

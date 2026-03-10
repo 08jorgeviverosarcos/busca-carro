@@ -68,3 +68,41 @@ model ScrapeLog {
   errors         String?
   createdAt      DateTime  @default(now())
 }
+
+model FasecoldaCode {
+  codigo         String   @id          // "00601228"
+  homologoCodigo String?
+  marca          String                // "CHEVROLET", "TOYOTA"
+  clase          String                // "AUTOMOVIL", "CAMPERO"
+  referencia1    String?               // "COROLLA", "RS3"
+  referencia2    String?               // "1.8 SEG CVT"
+  referencia3    String?               // "AT 1800CC T CT"
+  um             Int      @default(0)  // 0=miles COP, 1=otro
+  values         FasecoldaValue[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([marca])
+  @@index([marca, clase])
+  @@index([clase])
+}
+
+model FasecoldaValue {
+  id       String        @id @default(cuid())
+  codigo   String
+  code     FasecoldaCode @relation(fields: [codigo], references: [codigo], onDelete: Cascade)
+  year     Int                        // año del modelo: 2024, 2025...
+  period   String                     // "2026-02" — mes del Excel
+  valueCop BigInt                     // valor en COP (ya multiplicado x1000)
+
+  @@unique([codigo, year, period])
+  @@index([codigo, year])
+  @@index([period])
+}
+
+model FasecoldaAbreviatura {
+  id          String @id @default(cuid())
+  abreviatura String @unique            // "AT", "MT", "CC"
+  definicion  String                    // "AUTOMATICO", "MECANICO"
+  createdAt   DateTime @default(now())
+}
