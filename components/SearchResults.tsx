@@ -30,6 +30,7 @@ type Listing = {
   city: string | null
   images: string[]
   urlOriginal: string
+  avgPrice?: number | null
 }
 
 type ApiMeta = {

@@ -99,8 +99,45 @@ export async function GET(req: NextRequest) {
       prisma.listing.count({ where }),
     ])
 
-    const response: ApiResponse<ReturnType<typeof serializeListing>[]> = {
-      data: listings.map((l) => serializeListing(l as unknown as Record<string, unknown>)),
+    // Calcular precio promedio de mercado por brand+model+year
+    const avgPriceMap = new Map<string, number>()
+    const brands = [...new Set(listings.filter((l) => l.brand).map((l) => l.brand!))]
+    const models = [...new Set(listings.filter((l) => l.model).map((l) => l.model!))]
+    const years = [...new Set(listings.filter((l) => l.year).map((l) => l.year!))]
+
+    if (brands.length > 0 && models.length > 0 && years.length > 0) {
+      try {
+        type AvgRow = { brand: string; model: string; year: number; avg_price: string }
+        const avgRows = await prisma.$queryRaw<AvgRow[]>(
+          Prisma.sql`
+            SELECT brand, model, year,
+                   (AVG("priceCop"::float8))::bigint::text AS avg_price
+            FROM "Listing"
+            WHERE "isActive" = true
+              AND "priceCop" IS NOT NULL
+              AND brand IN (${Prisma.join(brands)})
+              AND model IN (${Prisma.join(models)})
+              AND year IN (${Prisma.join(years)})
+            GROUP BY brand, model, year
+          `
+        )
+        for (const row of avgRows) {
+          if (row.brand && row.model && row.year && row.avg_price) {
+            avgPriceMap.set(`${row.brand}|${row.model}|${row.year}`, Number(row.avg_price))
+          }
+        }
+      } catch (avgErr) {
+        console.warn('⚠️ No se pudo calcular avgPrice:', avgErr)
+      }
+    }
+
+    const response: ApiResponse<Record<string, unknown>[]> = {
+      data: listings.map((l) => ({
+        ...serializeListing(l as unknown as Record<string, unknown>),
+        avgPrice: l.brand && l.model && l.year
+          ? (avgPriceMap.get(`${l.brand}|${l.model}|${l.year}`) ?? null)
+          : null,
+      })),
       error: null,
       meta: {
         total,
