@@ -1,33 +1,38 @@
 import { prisma } from '@/lib/prisma'
 import { BUSCACARRO_TO_FASECOLDA } from './brand-map'
+import { parseRef3 } from './abbreviations'
 
-export interface FasecoldaResult {
-  valueCop: bigint
-  referencia: string
+export interface FasecoldaCandidate {
   codigo: string
+  referencia: string       // referencia1 + referencia2 + referencia3 joined
+  referencia1: string | null
+  referencia2: string | null
+  referencia3: string | null
+  valueCop: bigint
   clase: string
+  score: number
 }
 
-// Lookup directo desde servidor (para páginas de detalle)
-// Retorna el primer resultado que coincida por marca+año, opcionalmente filtrado por modelo
-export async function getFasecoldaValue(
+// Retorna todos los candidatos Fasecolda que coinciden por marca+modelo+año,
+// ordenados por score desc (transmisión/combustible) y luego valueCop asc.
+// score > 0 significa que hubo señales de transmisión/combustible para discriminar.
+export async function getFasecoldaCandidates(
   brand: string,
   year: number,
-  model?: string
-): Promise<FasecoldaResult | null> {
-  // Mapear marca canónica BuscaCarro → marca FASECOLDA
+  model?: string,
+  transmission?: string | null,
+  fuelType?: string | null
+): Promise<FasecoldaCandidate[]> {
   const fasecoldaBrand = BUSCACARRO_TO_FASECOLDA[brand] ?? brand.toUpperCase()
 
-  // Obtener el período más reciente disponible
   const latestPeriod = await prisma.fasecoldaValue.findFirst({
     select: { period: true },
     orderBy: { period: 'desc' },
   })
-  if (!latestPeriod) return null
+  if (!latestPeriod) return []
 
   const whereCode = {
     marca: fasecoldaBrand,
-    // Solo códigos que tienen valor para el año+período solicitado
     values: { some: { year, period: latestPeriod.period } },
     ...(model
       ? {
@@ -39,7 +44,7 @@ export async function getFasecoldaValue(
       : {}),
   }
 
-  const result = await prisma.fasecoldaCode.findFirst({
+  const rows = await prisma.fasecoldaCode.findMany({
     where: whereCode,
     include: {
       values: {
@@ -47,19 +52,39 @@ export async function getFasecoldaValue(
         take: 1,
       },
     },
+    take: 100,
   })
 
-  if (!result || result.values.length === 0) return null
+  const valid = rows.filter((c) => c.values.length > 0)
+  if (valid.length === 0) return []
 
-  const value = result.values[0]
-  const referencia = [result.referencia1, result.referencia2, result.referencia3]
-    .filter(Boolean)
-    .join(' ')
+  const scored: FasecoldaCandidate[] = valid.map((c) => {
+    const parsed = parseRef3(c.referencia3)
+    let score = 0
 
-  return {
-    valueCop: value.valueCop,
-    referencia,
-    codigo: result.codigo,
-    clase: result.clase,
-  }
+    if (transmission && parsed.transmission === transmission) score += 2
+    if (fuelType) {
+      if (fuelType === 'Diésel' && parsed.fuel === 'Diésel') score += 2
+      else if (fuelType === 'Gasolina' && parsed.fuel === null && c.referencia3 !== null) score += 2
+    }
+
+    return {
+      codigo: c.codigo,
+      referencia: [c.referencia1, c.referencia2, c.referencia3].filter(Boolean).join(' '),
+      referencia1: c.referencia1,
+      referencia2: c.referencia2,
+      referencia3: c.referencia3,
+      valueCop: c.values[0].valueCop,
+      clase: c.clase,
+      score,
+    }
+  })
+
+  // Ordenar: mayor score primero, luego valueCop ascendente (versión más barata arriba)
+  scored.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score
+    return a.valueCop < b.valueCop ? -1 : a.valueCop > b.valueCop ? 1 : 0
+  })
+
+  return scored
 }

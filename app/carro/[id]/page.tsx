@@ -1,10 +1,11 @@
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { formatPrice, formatMileage, PORTAL_LABELS } from '@/lib/utils'
-import { getFasecoldaValue } from '@/lib/fasecolda/lookup'
+import { getFasecoldaCandidates } from '@/lib/fasecolda/lookup'
 import { CarDetailGallery } from '@/components/CarDetailGallery'
 import { CarCard } from '@/components/CarCard'
-import { FasecoldaBadge } from '@/components/FasecoldaBadge'
+import { FasecoldaSelector } from '@/components/FasecoldaSelector'
+import type { FasecoldaCandidateSerialized } from '@/components/FasecoldaSelector'
 import { Badge } from '@/components/ui/badge'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -65,12 +66,25 @@ export default async function CarroDetailPage({ params }: PageProps) {
   const price = listing.priceCop ? Number(listing.priceCop) : null
   const portalLabel = PORTAL_LABELS[listing.sourcePortal] ?? listing.sourcePortal
 
-  // Buscar valor de referencia Fasecolda
-  const fasecoldaData =
-    listing.brand && listing.year
-      ? await getFasecoldaValue(listing.brand, listing.year, listing.model ?? undefined)
-      : null
-  const fasecoldaPrice = fasecoldaData ? Number(fasecoldaData.valueCop) : null
+  // Obtener candidatos Fasecolda ordenados por score (transmisión/combustible)
+  const fasecoldaCandidates = listing.brand && listing.year
+    ? await getFasecoldaCandidates(
+        listing.brand,
+        listing.year,
+        listing.model ?? undefined,
+        listing.transmission ?? null,
+        listing.fuelType ?? null
+      )
+    : []
+
+  // Serializar BigInt a string para pasar al componente cliente
+  const serializedCandidates: FasecoldaCandidateSerialized[] = fasecoldaCandidates.map((c) => ({
+    ...c,
+    valueCop: c.valueCop.toString(),
+  }))
+
+  // Para la tabla de specs: si hay un único candidato, mostrar el valor directamente
+  const singleCandidate = fasecoldaCandidates.length === 1 ? fasecoldaCandidates[0] : null
 
   const specs = [
     { label: 'Marca', value: listing.brand },
@@ -84,7 +98,7 @@ export default async function CarroDetailPage({ params }: PageProps) {
     { label: 'Portal', value: portalLabel },
     {
       label: 'Valor Fasecolda',
-      value: fasecoldaPrice ? formatPrice(fasecoldaPrice) : null,
+      value: singleCandidate ? formatPrice(Number(singleCandidate.valueCop)) : null,
     },
   ]
 
@@ -118,15 +132,16 @@ export default async function CarroDetailPage({ params }: PageProps) {
               {listing.title}
             </h1>
 
-            {/* Precio */}
+            {/* Precio + comparación Fasecolda */}
             <div className="mb-6">
               <p className="text-3xl font-black text-white">
                 {price ? formatPrice(price) : 'Precio a consultar'}
               </p>
-              {price && fasecoldaPrice && (
-                <div className="mt-2">
-                  <FasecoldaBadge listingPrice={price} fasecoldaValue={fasecoldaPrice} />
-                </div>
+              {price && serializedCandidates.length > 0 && (
+                <FasecoldaSelector
+                  listingPrice={price}
+                  candidates={serializedCandidates}
+                />
               )}
             </div>
 

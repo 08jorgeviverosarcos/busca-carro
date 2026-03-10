@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { getRedis } from '@/lib/redis'
 import { BUSCACARRO_TO_FASECOLDA } from '@/lib/fasecolda/brand-map'
 
-// GET /api/fasecolda/lookup?brand=Toyota&year=2024&q=Corolla
+// GET /api/fasecolda/lookup?brand=Toyota&year=2024&q=Corolla&transmission=Automático&fuelType=Gasolina
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl
   const brand = searchParams.get('brand')
