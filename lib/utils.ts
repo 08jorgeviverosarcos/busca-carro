@@ -53,6 +53,12 @@ export function serializeListing<T extends Record<string, unknown>>(obj: T): Rec
   )
 }
 
+// Formatea una fecha en español colombiano
+// Ejemplo: 2026-01-16T00:06:57 → "16 de enero de 2026"
+export function formatDate(date: Date): string {
+  return date.toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })
+}
+
 // Colores de badge por portal
 export const PORTAL_COLORS: Record<string, string> = {
   mercadolibre: 'bg-yellow-400 text-yellow-900',

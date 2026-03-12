@@ -37,6 +37,7 @@ export async function upsertListings(listings: NormalizedListing[]): Promise<Syn
             department: listing.department,
             images: listing.images,
             urlOriginal: listing.urlOriginal,
+            sourcePage: listing.sourcePage ?? null,
             isActive: true,
             firstSeenAt: listing.scrapedAt,
             scrapedAt: listing.scrapedAt,
@@ -59,12 +60,13 @@ export async function upsertListings(listings: NormalizedListing[]): Promise<Syn
         const newPrice = listing.priceCop !== null ? BigInt(listing.priceCop) : null
         const priceChanged = newPrice !== null && existing.priceCop !== newPrice
 
-        // Actualizar precio, imágenes y marcar como activo
+        // Actualizar precio, imágenes, página de origen y marcar como activo
         await prisma.listing.update({
           where: { id: existing.id },
           data: {
             priceCop: newPrice !== null ? newPrice : existing.priceCop,
             images: listing.images.length > 0 ? listing.images : existing.images,
+            sourcePage: listing.sourcePage ?? existing.sourcePage,
             isActive: true,
             scrapedAt: listing.scrapedAt,
           },
@@ -92,6 +94,23 @@ export async function upsertListings(listings: NormalizedListing[]): Promise<Syn
   return { inserted, updated, skipped }
 }
 
+// Marcar inactivos los anuncios del portal que NO estuvieron en el scrape actual
+// Usar solo cuando se recorrió toda la paginación (reachedEnd = true)
+export async function deactivateMissingListings(portal: string, seenExternalIds: string[]): Promise<number> {
+  if (seenExternalIds.length === 0) return 0
+
+  const result = await prisma.listing.updateMany({
+    where: {
+      sourcePortal: portal,
+      isActive: true,
+      externalId: { notIn: seenExternalIds },
+    },
+    data: { isActive: false },
+  })
+
+  return result.count
+}
+
 // Marcar inactivos anuncios no vistos en los últimos 7 días por portal
 export async function deactivateStaleListings(portal: string): Promise<number> {
   const threshold = new Date()
@@ -107,6 +126,36 @@ export async function deactivateStaleListings(portal: string): Promise<number> {
   })
 
   return result.count
+}
+
+// Actualizar campos de detalle de un listing (scraping on-demand)
+export type DetailUpdate = {
+  description?: string
+  color?: string
+  engineSize?: number
+  condition?: string
+  publishedAt?: Date
+  viewCount?: number
+  permuta?: boolean
+  financiacion?: boolean
+  blindado?: boolean
+  plateDigit?: string
+  fuelType?: string
+  transmission?: string
+  images?: string[]
+}
+
+export async function updateListingDetail(id: string, data: DetailUpdate): Promise<void> {
+  const { images, ...rest } = data
+  await prisma.listing.update({
+    where: { id },
+    data: {
+      ...rest,
+      // Solo actualizar imágenes si vinieron datos (no sobrescribir con array vacío)
+      ...(images && images.length > 0 ? { images } : {}),
+      detailScrapedAt: new Date(),
+    },
+  })
 }
 
 // Stats globales para homepage y dashboard

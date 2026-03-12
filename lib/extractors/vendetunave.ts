@@ -56,7 +56,7 @@ async function fetchPage(page: number): Promise<VTNVehicle[]> {
   }
 }
 
-function vehicleToRawListing(v: VTNVehicle): RawListing | null {
+function vehicleToRawListing(v: VTNVehicle, page: number): RawListing | null {
   const imageUrl = v.nameImage && v.extension
     ? `${IMG_BASE}/${v.nameImage}.${v.extension}`
     : undefined
@@ -76,18 +76,21 @@ function vehicleToRawListing(v: VTNVehicle): RawListing | null {
     images: imageUrl ? [imageUrl] : [],
     urlOriginal: `${BASE_URL}/vehiculo/${v.id}`,
     scrapedAt: new Date(),
+    sourcePage: page,
   }
 }
 
 // pages: cuántas páginas traer (20 vehículos c/u)
 // startIdx: página inicial (1-based; 0 se trata como 1)
-export async function extractVendeTuNave(pages = 10, startIdx = 0): Promise<RawListing[]> {
+// Retorna listings y si se llegó al final de la paginación (página vacía encontrada)
+export async function extractVendeTuNave(pages = 10, startIdx = 0): Promise<{ listings: RawListing[]; reachedEnd: boolean }> {
   const startPage = startIdx > 0 ? startIdx : 1
   const endPage = startPage + pages - 1
   console.log(`🔄 Extrayendo VendeTuNave (páginas ${startPage}–${endPage})...`)
 
   const allListings: RawListing[] = []
   const seen = new Set<string>()
+  let reachedEnd = false
 
   for (let page = startPage; page <= endPage; page++) {
     try {
@@ -96,13 +99,14 @@ export async function extractVendeTuNave(pages = 10, startIdx = 0): Promise<RawL
 
       if (vehicles.length === 0) {
         console.log(`  ⚠️ Página ${page} vacía, deteniendo`)
+        reachedEnd = true
         break
       }
 
       console.log(`  📊 Página ${page}: ${vehicles.length} vehículos`)
 
       for (const v of vehicles) {
-        const listing = vehicleToRawListing(v)
+        const listing = vehicleToRawListing(v, page)
         if (!listing || seen.has(listing.externalId)) continue
         seen.add(listing.externalId)
         allListings.push(listing)
@@ -114,6 +118,6 @@ export async function extractVendeTuNave(pages = 10, startIdx = 0): Promise<RawL
     }
   }
 
-  console.log(`✅ VendeTuNave: ${allListings.length} anuncios extraídos`)
-  return allListings
+  console.log(`✅ VendeTuNave: ${allListings.length} anuncios extraídos${reachedEnd ? ' (fin de paginación)' : ''}`)
+  return { listings: allListings, reachedEnd }
 }

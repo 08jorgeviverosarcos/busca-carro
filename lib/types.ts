@@ -15,6 +15,7 @@ export type RawListing = {
   images: string[]
   urlOriginal: string
   scrapedAt: Date
+  sourcePage?: number
 }
 
 export type NormalizedListing = {
@@ -33,6 +34,7 @@ export type NormalizedListing = {
   images: string[]
   urlOriginal: string
   scrapedAt: Date
+  sourcePage?: number
 }
 
 export type NormalizationStats = {

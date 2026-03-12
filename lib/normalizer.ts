@@ -397,6 +397,7 @@ export function normalizeListings(rawListings: RawListing[]): {
       images: raw.images,
       urlOriginal: raw.urlOriginal,
       scrapedAt: raw.scrapedAt,
+      sourcePage: raw.sourcePage,
     })
   }
 

@@ -68,40 +68,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Stats en vivo */}
-      <StatsBar />
-
-      {/* Portales */}
-      <section className="max-w-5xl mx-auto px-6 py-16">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight text-white">Portales incluidos</h2>
-            <p className="text-slate-500 mt-1">Agregamos anuncios de múltiples fuentes en tiempo real.</p>
-          </div>
-          <Link href="/buscar" className="text-[#3c83f6] text-sm font-bold flex items-center gap-1 group">
-            Ver todos
-            <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { name: 'MercadoLibre', color: 'text-yellow-400 border-yellow-400/20 bg-yellow-400/5' },
-            { name: 'TuCarro', color: 'text-blue-400 border-blue-500/20 bg-blue-500/5' },
-            { name: 'VendeTuNave', color: 'text-green-400 border-green-500/20 bg-green-500/5' },
-            { name: 'OLX', color: 'text-orange-400 border-orange-500/20 bg-orange-500/5' },
-          ].map((portal) => (
-            <div
-              key={portal.name}
-              className={`rounded-2xl border p-4 text-center font-semibold text-sm ${portal.color}`}
-            >
-              {portal.name}
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* CTA Section — igual al Stitch */}
       <section className="max-w-5xl mx-auto px-6 pb-24">
         <div className="relative rounded-3xl p-[1px]" style={{ background: 'linear-gradient(135deg, #3c83f6, #a855f7)' }}>

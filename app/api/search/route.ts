@@ -86,7 +86,11 @@ export async function GET(req: NextRequest) {
     }
 
     // Ordenamiento
-    let orderBy: Prisma.ListingOrderByWithRelationInput = { scrapedAt: 'desc' }
+    // Por defecto: primero los de las páginas iniciales del portal, luego los más recientes dentro de la misma página
+    let orderBy: Prisma.ListingOrderByWithRelationInput | Prisma.ListingOrderByWithRelationInput[] = [
+      { sourcePage: { sort: 'asc', nulls: 'last' } },
+      { scrapedAt: 'desc' },
+    ]
     switch (sortBy) {
       case 'price_asc':
         orderBy = { priceCop: 'asc' }

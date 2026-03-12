@@ -23,7 +23,21 @@ model Listing {
   department   String?
   images       String[]
   description  String?
+
+  // Campos de detalle (populados on-demand al visitar la vista de detalle)
+  color            String?
+  engineSize       Int?       // cilindraje en cc
+  condition        String?    // "Usado" / "Nuevo"
+  publishedAt      DateTime?  // fecha de publicación en el portal
+  viewCount        Int?       // visitas al anuncio
+  permuta          Boolean?   // acepta permuta
+  financiacion     Boolean?   // acepta financiación
+  blindado         Boolean?   // vehículo blindado
+  plateDigit       String?    // último dígito de placa (pico y placa)
+  detailScrapedAt  DateTime?  // null = no scrapeado aún; timestamp = última vez
+
   urlOriginal  String
+  sourcePage   Int?     // página del portal donde apareció por última vez (para ordenamiento)
   isActive     Boolean  @default(true)
   firstSeenAt  DateTime @default(now())
   scrapedAt    DateTime @default(now())

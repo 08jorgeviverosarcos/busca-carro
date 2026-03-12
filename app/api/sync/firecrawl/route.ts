@@ -6,7 +6,7 @@ import { extractVendeTuNave } from '@/lib/extractors/vendetunave'
 import { extractOLX } from '@/lib/extractors/olx'
 import { extractAutocosmos } from '@/lib/extractors/autocosmos'
 import { normalizeListings } from '@/lib/normalizer'
-import { upsertListings, deactivateStaleListings } from '@/lib/storage'
+import { upsertListings, deactivateStaleListings, deactivateMissingListings } from '@/lib/storage'
 import { prisma } from '@/lib/prisma'
 
 const PORTALES_VALIDOS = ['tucarro', 'vendetunave', 'olx', 'autocosmos'] as const
@@ -48,14 +48,19 @@ export async function POST(req: NextRequest) {
 
     // CAPA 1: Extracción según portal
     let rawListings = []
+    let reachedEnd = false
     if (portal === 'tucarro') {
       rawListings = await extractTuCarro(pages)
     } else if (portal === 'vendetunave') {
-      rawListings = await extractVendeTuNave(pages, startIdx)
+      const result = await extractVendeTuNave(pages, startIdx)
+      rawListings = result.listings
+      reachedEnd = result.reachedEnd
     } else if (portal === 'olx') {
       rawListings = await extractOLX(pages)
     } else {
-      rawListings = await extractAutocosmos(pages, startIdx)
+      const result = await extractAutocosmos(pages, startIdx)
+      rawListings = result.listings
+      reachedEnd = result.reachedEnd
     }
 
     // CAPA 2: Normalización
@@ -63,7 +68,18 @@ export async function POST(req: NextRequest) {
 
     // CAPA 3: Almacenamiento
     const syncStats = await upsertListings(normalized)
-    const deactivated = await deactivateStaleListings(portal)
+
+    // Desactivar listings no encontrados:
+    // - Si recorrimos toda la paginación: desactivar inmediatamente los que no aparecieron
+    // - Si fue scrape parcial: usar lógica de 7 días (no sabemos si siguen activos)
+    let deactivated: number
+    if (reachedEnd) {
+      const seenIds = normalized.map((l) => l.externalId)
+      deactivated = await deactivateMissingListings(portal, seenIds)
+      console.log(`🗑️ Sync completo — ${deactivated} anuncios desactivados (no encontrados en scrape)`)
+    } else {
+      deactivated = await deactivateStaleListings(portal)
+    }
 
     const finishedAt = new Date()
 

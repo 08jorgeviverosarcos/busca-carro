@@ -88,11 +88,12 @@ export async function extractAutocosmosUrl(app: FirecrawlApp, url: string): Prom
 
 // pages: cuántas páginas traer (~40 listings c/u)
 // startIdx: página inicial (1-based; 0 se trata como 1)
-export async function extractAutocosmos(pages = 10, startIdx = 0): Promise<RawListing[]> {
+// Retorna listings y si se llegó al final de la paginación (página vacía encontrada)
+export async function extractAutocosmos(pages = 10, startIdx = 0): Promise<{ listings: RawListing[]; reachedEnd: boolean }> {
   const apiKey = process.env.FIRECRAWL_API_KEY
   if (!apiKey) {
     console.error('❌ Autocosmos: FIRECRAWL_API_KEY no configurada')
-    return []
+    return { listings: [], reachedEnd: false }
   }
 
   const startPage = startIdx > 0 ? startIdx : 1
@@ -102,6 +103,7 @@ export async function extractAutocosmos(pages = 10, startIdx = 0): Promise<RawLi
   const app = new FirecrawlApp({ apiKey })
   const allListings: RawListing[] = []
   const seen = new Set<string>()
+  let reachedEnd = false
 
   for (let page = startPage; page <= endPage; page++) {
     const url = `${BASE_URL}?pidx=${page}`
@@ -111,6 +113,7 @@ export async function extractAutocosmos(pages = 10, startIdx = 0): Promise<RawLi
 
       if (items.length === 0) {
         console.log(`  ⚠️ Página ${page} vacía, deteniendo`)
+        reachedEnd = true
         break
       }
 
@@ -119,7 +122,7 @@ export async function extractAutocosmos(pages = 10, startIdx = 0): Promise<RawLi
       for (const item of items) {
         if (!item.listingUrl || seen.has(item.listingUrl)) continue
         seen.add(item.listingUrl)
-        allListings.push(toRawListing(item))
+        allListings.push(toRawListing(item, page))
       }
 
       if (page < endPage) await sleep(1100)
@@ -128,11 +131,11 @@ export async function extractAutocosmos(pages = 10, startIdx = 0): Promise<RawLi
     }
   }
 
-  console.log(`✅ Autocosmos: ${allListings.length} anuncios extraídos`)
-  return allListings
+  console.log(`✅ Autocosmos: ${allListings.length} anuncios extraídos${reachedEnd ? ' (fin de paginación)' : ''}`)
+  return { listings: allListings, reachedEnd }
 }
 
-function toRawListing(item: ParsedListing): RawListing {
+function toRawListing(item: ParsedListing, page: number): RawListing {
   return {
     sourcePortal: 'autocosmos',
     externalId: item.listingUrl,
@@ -148,5 +151,6 @@ function toRawListing(item: ParsedListing): RawListing {
     images: item.imageUrl ? [item.imageUrl] : [],
     urlOriginal: item.listingUrl,
     scrapedAt: new Date(),
+    sourcePage: page,
   }
 }
