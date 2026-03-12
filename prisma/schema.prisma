@@ -39,6 +39,7 @@ model Listing {
   urlOriginal  String
   sourcePage   Int?     // página del portal donde apareció por última vez (para ordenamiento)
   isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
   firstSeenAt  DateTime @default(now())
   scrapedAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -58,6 +59,8 @@ model PriceHistory {
   listing    Listing  @relation(fields: [listingId], references: [id])
   priceCop   BigInt
   recordedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 
   @@index([listingId, recordedAt])
 }
@@ -69,6 +72,7 @@ model Alert {
   lastSentAt  DateTime?
   isActive    Boolean   @default(true)
   createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
 }
 
 model ScrapeLog {
@@ -81,6 +85,7 @@ model ScrapeLog {
   countDiscarded Int       @default(0)
   errors         String?
   createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now()) @updatedAt
 }
 
 model FasecoldaCode {
@@ -108,6 +113,8 @@ model FasecoldaValue {
   year     Int                        // año del modelo: 2024, 2025...
   period   String                     // "2026-02" — mes del Excel
   valueCop BigInt                     // valor en COP (ya multiplicado x1000)
+  createdAt DateTime                  @default(now())
+  updatedAt DateTime                  @default(now()) @updatedAt
 
   @@unique([codigo, year, period])
   @@index([codigo, year])
@@ -119,4 +126,5 @@ model FasecoldaAbreviatura {
   abreviatura String @unique            // "AT", "MT", "CC"
   definicion  String                    // "AUTOMATICO", "MECANICO"
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 }
