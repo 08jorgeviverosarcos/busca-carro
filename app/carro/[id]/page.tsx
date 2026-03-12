@@ -121,7 +121,8 @@ export default async function CarroDetailPage({ params }: PageProps) {
           listing.year,
           listing.model ?? undefined,
           listing.transmission ?? null,
-          listing.fuelType ?? null
+          listing.fuelType ?? null,
+          listing.engineSize ?? null
         )
       : []
 

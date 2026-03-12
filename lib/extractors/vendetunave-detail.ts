@@ -90,7 +90,12 @@ export async function scrapeVendeTuNaveDetail(externalId: string): Promise<VTNDe
 
     // Parsear cilindrada
     const engineSizeRaw = vehiculo.cilindraje ? parseInt(String(vehiculo.cilindraje), 10) : NaN
-    const engineSize = !isNaN(engineSizeRaw) && engineSizeRaw > 0 ? engineSizeRaw : undefined
+    // VTN a veces devuelve cilindraje en unidades de 100cc (ej. 15 → 1500cc).
+    // Si el valor es < 100, lo multiplicamos por 100 para convertir a cc.
+    const engineSizeNorm = !isNaN(engineSizeRaw) && engineSizeRaw > 0
+      ? (engineSizeRaw < 100 ? engineSizeRaw * 100 : engineSizeRaw)
+      : NaN
+    const engineSize = !isNaN(engineSizeNorm) && engineSizeNorm > 0 ? engineSizeNorm : undefined
 
     // Parsear fecha de publicación
     let publishedAt: Date | undefined
