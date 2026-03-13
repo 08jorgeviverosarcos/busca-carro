@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { CircleGauge, Heart, MapPin } from 'lucide-react'
 import { useSearchStore } from '@/store/searchStore'
 import { formatPrice, formatMileage, PORTAL_COLORS, PORTAL_LABELS, cn } from '@/lib/utils'
+import { track, MP_CAR_CARD_CLICKED, MP_FAVORITE_TOGGLED } from '@/lib/mixpanel'
 
 type CarCardProps = {
   id: string
@@ -39,6 +40,15 @@ export function CarCard({
   const { toggleFavorite, isFavorite } = useSearchStore()
   const favorite = isFavorite(id)
 
+  const handleCardClick = () => {
+    track(MP_CAR_CARD_CLICKED, { listingId: id, title, sourcePortal, priceCop })
+  }
+
+  const handleFavoriteToggle = () => {
+    track(MP_FAVORITE_TOGGLED, { listingId: id, action: favorite ? 'remove' : 'add', title })
+    toggleFavorite(id)
+  }
+
   // Indicador vs mercado
   let priceIndicator: { label: string; color: string; tone: string } | null = null
   if (priceCop && avgPrice) {
@@ -68,7 +78,7 @@ export function CarCard({
     <article className="group relative overflow-hidden rounded-2xl glass-panel transition-all duration-300 hover:border-white/20 hover:-translate-y-0.5">
       {/* Imagen */}
       <div className="relative aspect-[16/10] overflow-hidden">
-        <Link href={`/carro/${id}`}>
+        <Link href={`/carro/${id}`} onClick={handleCardClick}>
           {images[0] ? (
             <Image
               src={images[0]}
@@ -103,7 +113,7 @@ export function CarCard({
 
         {/* Botón favorito */}
         <button
-          onClick={() => toggleFavorite(id)}
+          onClick={handleFavoriteToggle}
           className="absolute top-3 right-3 p-1.5 rounded-full glass-panel hover:bg-white/10 transition-colors"
           aria-label={favorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
         >
@@ -117,7 +127,7 @@ export function CarCard({
       <div className="p-4">
         <div className="flex justify-between items-start gap-3 mb-2">
           <div className="min-w-0 flex-1">
-            <Link href={`/carro/${id}`} className="block hover:text-slate-300 transition-colors">
+            <Link href={`/carro/${id}`} onClick={handleCardClick} className="block hover:text-slate-300 transition-colors">
               <h3 className="text-base font-bold text-white line-clamp-2 leading-snug">{title}</h3>
             </Link>
           </div>

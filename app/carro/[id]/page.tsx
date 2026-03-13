@@ -12,6 +12,7 @@ import type { FasecoldaCandidateSerialized } from '@/components/FasecoldaSelecto
 import { Badge } from '@/components/ui/badge'
 import { GradientButton } from '@/components/ui/gradient-button'
 import { NavHeader } from '@/components/NavHeader'
+import { TrackedExternalLink } from '@/components/TrackedExternalLink'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import appIcon from '@/app/apple-touch-icon.png'
@@ -429,10 +430,16 @@ export default async function CarroDetailPage({ params }: PageProps) {
 
               <div className="space-y-3">
                 <GradientButton asChild fullWidth size="lg" className="h-auto py-3 gap-2">
-                  <a href={listing.urlOriginal} target="_blank" rel="noopener noreferrer">
+                  <TrackedExternalLink
+                    href={listing.urlOriginal}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    eventName="External Link Clicked"
+                    eventProperties={{ listingId: listing.id, portal: listing.sourcePortal, url: listing.urlOriginal }}
+                  >
                     <MessageCircle className="w-4 h-4" />
                     Ver anuncio original
-                  </a>
+                  </TrackedExternalLink>
                 </GradientButton>
                 <button
                   type="button"
@@ -516,12 +523,12 @@ export default async function CarroDetailPage({ params }: PageProps) {
               <div className="flex items-center gap-2.5 mb-3">
                 <Image
                   src={appIcon}
-                  alt="BuscaCarro"
+                  alt="Carli"
                   width={28}
                   height={28}
                   className="size-7 rounded-lg shrink-0"
                 />
-                <p className="text-white font-bold">BuscaCarro</p>
+                <p className="text-white font-bold">Carli</p>
               </div>
               <p className="text-slate-500 text-sm max-w-md">
                 Compara anuncios de múltiples portales en una sola vista y encuentra oportunidades
@@ -560,7 +567,7 @@ export default async function CarroDetailPage({ params }: PageProps) {
           </div>
 
           <div className="mt-8 pt-5 border-t border-white/5 text-xs text-slate-500">
-            © {new Date().getFullYear()} BuscaCarro. Todos los derechos reservados.
+            © {new Date().getFullYear()} Carli. Todos los derechos reservados.
           </div>
         </footer>
       </div>

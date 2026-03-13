@@ -1,4 +1,4 @@
-# BuscaCarro
+# Carli
 
 Meta-buscador de carros usados en Colombia. Agrega anuncios de múltiples portales (Autocosmos, VendeTuNave) en una sola interfaz con filtros, búsqueda y alertas.
 
@@ -10,6 +10,7 @@ Meta-buscador de carros usados en Colombia. Agrega anuncios de múltiples portal
 - **Cache**: Upstash Redis (búsquedas 30min, stats 5min)
 - **Scraping**: Firecrawl (Autocosmos) + fetch directo (VendeTuNave)
 - **State**: Zustand v5 (filtros + favoritos) + TanStack Query v5
+- **Analytics**: Mixpanel + Firebase Analytics — dual-track desde una sola función `track()`
 - **Email**: Resend (alertas)
 
 ## Arquitectura de 4 capas
@@ -59,6 +60,8 @@ app/
       mercadolibre/route.ts # POST — sync MercadoLibre (bloqueado)
 
 lib/
+  mixpanel.ts             # API pública analytics: track(), initMixpanel(), constantes MP_*
+  firebase.ts             # Firebase Analytics internals (solo usado por mixpanel.ts)
   types.ts                # RawListing, NormalizedListing, ApiResponse, SearchParams
   prisma.ts               # Singleton con lazy Proxy (PrismaPg adapter)
   redis.ts                # Singleton Upstash, retorna null si no hay credenciales
@@ -73,6 +76,9 @@ lib/
     olx.ts                # Bloqueado
 
 components/
+  MixpanelProvider.tsx    # Init Mixpanel + auto page view tracking
+  TrackedLink.tsx         # Link con tracking para server components
+  TrackedExternalLink.tsx # <a> externo con tracking para server components
   SearchBar.tsx           # Barra de búsqueda principal
   FilterSidebar.tsx       # Panel lateral de filtros
   CarGrid.tsx             # Grilla de resultados
@@ -113,6 +119,12 @@ FIRECRAWL_API_KEY         # Firecrawl API key (para Autocosmos)
 RESEND_API_KEY            # Resend API key (para alertas email)
 SYNC_SECRET               # Secret para autenticación de sync APIs
 NEXT_PUBLIC_APP_URL       # URL pública de la app
+NEXT_PUBLIC_MIXPANEL_TOKEN          # Mixpanel project token (analytics)
+NEXT_PUBLIC_FIREBASE_API_KEY        # Firebase config
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN    # Firebase config
+NEXT_PUBLIC_FIREBASE_PROJECT_ID     # Firebase config
+NEXT_PUBLIC_FIREBASE_APP_ID         # Firebase config
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID # Firebase Analytics measurement ID (ej: G-XXXXXXXXXX)
 ```
 
 ## Fuentes de datos activas
@@ -161,3 +173,54 @@ ML=yellow, TuCarro=blue, VendeTuNave=green, OLX=orange, Autocosmos=purple
 
 - **Autocosmos**: URLs por marca (`/auto/usado/{marca}`). Firecrawl cachea querystrings, por eso se usan URLs por marca. Rate limit: 1.1s entre requests.
 - **VendeTuNave**: `?pagina=N` no funciona server-side, se usa `?marca=BRAND`. Datos en `__NEXT_DATA__` → `props.pageProps.data.vehicles[]`. Rate limit: 600ms. Excluye motos automáticamente.
+
+## Analytics (Mixpanel)
+
+### Setup
+- **Librerías**: `mixpanel-browser` + `firebase` (ambas client-side only)
+- **API pública**: `lib/mixpanel.ts` — exporta `track()`, `initMixpanel()`, `trackPageView()`, constantes `MP_*`
+- **Internals**: `lib/firebase.ts` — init y track de Firebase Analytics (nunca importar directamente desde componentes)
+- **Provider**: `components/MixpanelProvider.tsx` — wraps app en `layout.tsx`, inicia ambas plataformas y trackea page views automáticamente
+- **Una sola llamada**: `track("My Event", { prop: value })` → envía a Mixpanel Y Firebase Analytics simultáneamente
+- **Env vars necesarias**: `NEXT_PUBLIC_MIXPANEL_TOKEN` para Mixpanel, `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID` (+ otras `FIREBASE_*`) para Firebase
+- **Graceful degradation**: si falta cualquier env var, esa plataforma es un no-op silencioso. La otra sigue funcionando
+- **Helpers para server components**: `components/TrackedLink.tsx` y `components/TrackedExternalLink.tsx`
+
+### Conversión de nombres de evento
+- **Mixpanel**: PascalCase con espacios → `"Search Submitted"`, `"Car Card Clicked"`
+- **Firebase**: `lib/firebase.ts` convierte automáticamente a snake_case → `"search_submitted"`, `"car_card_clicked"` (≤40 chars)
+
+### Eventos actuales
+
+| Evento | Componente | Propiedades |
+|--------|-----------|-------------|
+| `Page Viewed` | MixpanelProvider (auto) | `page`, `path`, `brand?`, `city?`, `query?`, `listingId?` |
+| `Search Submitted` | SearchBar | `query`, `variant` (hero/compact) |
+| `Search NLP Parsed` | SearchBar | `query`, `parsedFilters` |
+| `Search NLP Failed` | SearchBar | `query`, `reason` (no_filters_returned/api_error) |
+| `Search Results Loaded` | SearchResults | `total`, `page`, `totalPages`, `query`, `brand`, `city`, `sortBy` |
+| `Filters Applied` | FilterSidebar | Filtros activos (brand, yearMin, priceMax, etc.) |
+| `Filters Reset` | FilterSidebar | — |
+| `Sort Changed` | SearchResults | `sortBy` |
+| `Page Changed` | SearchResults | `page`, `direction` (next/previous) |
+| `Car Card Clicked` | CarCard | `listingId`, `title`, `sourcePortal`, `priceCop` |
+| `Favorite Toggled` | CarCard | `listingId`, `action` (add/remove), `title` |
+| `External Link Clicked` | CarroDetailPage | `listingId`, `portal`, `url` |
+| `Gallery Image Changed` | CarDetailGallery | `direction` (previous/next/thumbnail), `totalImages`, `imageIndex?` |
+| `Alert Modal Opened` | AlertModal | — |
+| `Alert Created` | AlertModal | `filters` |
+| `Alert Failed` | AlertModal | `filters` |
+| `Fasecolda Version Selected` | FasecoldaSelector | `codigo`, `referencia`, `valueCop` |
+| `Quick Filter Clicked` | HomePage | `label`, `href` |
+| `CTA Clicked` | HomePage | `cta` (nombre del botón) |
+
+### Constantes de eventos
+Todas definidas en `lib/mixpanel.ts` como `MP_*` (ej: `MP_SEARCH_SUBMITTED`, `MP_FAVORITE_TOGGLED`).
+
+### Reglas obligatorias para nuevas features
+1. **Cada nueva página** debe ser registrada en `MixpanelProvider.tsx` → `PAGE_NAMES` para tracking automático de page views
+2. **Cada nueva interacción de usuario** (click, submit, toggle) debe tener un `track()` call con un evento descriptivo en PascalCase
+3. **Agregar constante** `MP_*` en `lib/mixpanel.ts` para cada evento nuevo
+4. **Actualizar la tabla de eventos** en esta sección de CLAUDE.md
+5. **Para server components**: usar `TrackedLink` o `TrackedExternalLink` en lugar de `Link` o `<a>` cuando se necesite tracking
+6. **No trackear datos sensibles**: nunca enviar emails, passwords o datos personales a Mixpanel

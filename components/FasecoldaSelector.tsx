@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { formatPrice } from '@/lib/utils'
 import { FasecoldaBadge } from './FasecoldaBadge'
+import { track, MP_FASECOLDA_VERSION_SELECTED } from '@/lib/mixpanel'
 
 export interface FasecoldaCandidateSerialized {
   codigo: string
@@ -54,7 +55,18 @@ export function FasecoldaSelector({ listingPrice, candidates }: FasecoldaSelecto
       <select
         className="w-full text-xs bg-[#15151A] border border-white/10 text-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:border-white/20 cursor-pointer"
         value={selectedCodigo ?? ''}
-        onChange={(e) => setSelectedCodigo(e.target.value || null)}
+        onChange={(e) => {
+          const codigo = e.target.value || null
+          setSelectedCodigo(codigo)
+          if (codigo) {
+            const candidate = candidates.find((c) => c.codigo === codigo)
+            track(MP_FASECOLDA_VERSION_SELECTED, {
+              codigo,
+              referencia: candidate?.referencia,
+              valueCop: candidate?.valueCop,
+            })
+          }
+        }}
       >
         <option value="">— Seleccionar versión —</option>
         {candidates.map((c) => (

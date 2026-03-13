@@ -3,8 +3,8 @@ import appIcon from './apple-touch-icon.png'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'BuscaCarro',
-    short_name: 'BuscaCarro',
+    name: 'Carli',
+    short_name: 'Carli',
     theme_color: '#0B0B0F',
     background_color: '#0B0B0F',
     display: 'standalone',

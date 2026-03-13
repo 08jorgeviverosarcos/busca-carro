@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { GradientButton } from '@/components/ui/gradient-button'
 import { useSearchStore } from '@/store/searchStore'
 import { SearchParams } from '@/lib/types'
+import { track, MP_SEARCH_SUBMITTED, MP_SEARCH_NLP_PARSED, MP_SEARCH_NLP_FAILED } from '@/lib/mixpanel'
 
 type SearchBarProps = {
   large?: boolean
@@ -28,6 +29,8 @@ export function SearchBar({ large = false, placeholder = 'Buscar marca, modelo, 
       return
     }
 
+    track(MP_SEARCH_SUBMITTED, { query: text, variant: large ? 'hero' : 'compact' })
+
     setIsParsing(true)
     try {
       const res = await fetch('/api/search/parse', {
@@ -41,6 +44,7 @@ export function SearchBar({ large = false, placeholder = 'Buscar marca, modelo, 
       const hasFilters = Object.keys(parsed).length > 0
 
       if (hasFilters) {
+        track(MP_SEARCH_NLP_PARSED, { query: text, parsedFilters: parsed })
         if (parsed.brand) params.set('brand', parsed.brand)
         if (parsed.model) params.set('model', parsed.model)
         if (parsed.city) params.set('city', parsed.city)
@@ -52,12 +56,14 @@ export function SearchBar({ large = false, placeholder = 'Buscar marca, modelo, 
         if (parsed.transmission) params.set('transmission', parsed.transmission)
         setFilter('q', '')
       } else {
+        track(MP_SEARCH_NLP_FAILED, { query: text, reason: 'no_filters_returned' })
         params.set('q', text)
         setFilter('q', text)
       }
 
       router.push(`/buscar?${params.toString()}`)
     } catch {
+      track(MP_SEARCH_NLP_FAILED, { query: text, reason: 'api_error' })
       setFilter('q', text)
       const params = new URLSearchParams()
       params.set('q', text)

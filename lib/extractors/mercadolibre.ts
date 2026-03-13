@@ -3,8 +3,10 @@
 
 import { RawListing } from '@/lib/types'
 import { sleep } from '@/lib/utils'
+import { getRedis } from '@/lib/redis'
 
 const ML_API_BASE = 'https://api.mercadolibre.com'
+const REDIS_KEY_REFRESH_TOKEN = 'ml:refresh_token'
 const CATEGORY_AUTOS = 'MCO1744'
 const MARCAS_POPULARES = [
   'Chevrolet', 'Renault', 'Mazda', 'Toyota', 'Kia',
@@ -41,15 +43,20 @@ type MLSearchResponse = {
   }
 }
 
-// Obtiene access_token usando el refresh_token almacenado en .env
+// Obtiene access_token usando el refresh_token — persiste el nuevo refresh_token en Redis
 async function getAccessToken(): Promise<string> {
   const clientId = process.env.ML_CLIENT_ID
   const clientSecret = process.env.ML_CLIENT_SECRET
-  const refreshToken = process.env.ML_REFRESH_TOKEN
 
   if (!clientId || !clientSecret) {
     throw new Error('ML_CLIENT_ID o ML_CLIENT_SECRET no configurados en .env')
   }
+
+  // Leer refresh_token desde Redis primero, caer a .env como fallback
+  const redis = getRedis()
+  const refreshTokenFromRedis = redis ? await redis.get<string>(REDIS_KEY_REFRESH_TOKEN) : null
+  const refreshToken = refreshTokenFromRedis ?? process.env.ML_REFRESH_TOKEN
+
   if (!refreshToken) {
     throw new Error('ML_REFRESH_TOKEN no configurado — ejecuta: node scripts/ml-auth.mjs')
   }
@@ -70,7 +77,14 @@ async function getAccessToken(): Promise<string> {
     throw new Error(`ML OAuth error ${res.status}: ${body}`)
   }
 
-  const data: MLTokenResponse = await res.json()
+  const data: MLTokenResponse & { refresh_token?: string } = await res.json()
+
+  // Persistir el nuevo refresh_token en Redis (los tokens de ML son de un solo uso)
+  if (data.refresh_token && redis) {
+    await redis.set(REDIS_KEY_REFRESH_TOKEN, data.refresh_token)
+    console.log('✅ ML refresh_token actualizado en Redis')
+  }
+
   return data.access_token
 }
 

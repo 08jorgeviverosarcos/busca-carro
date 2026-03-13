@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { track, MP_GALLERY_IMAGE_CHANGED } from '@/lib/mixpanel'
 
 type CarDetailGalleryProps = {
   images: string[]
@@ -21,8 +22,18 @@ export function CarDetailGallery({ images, title, badges = [] }: CarDetailGaller
     )
   }
 
-  const prev = () => setCurrent((c) => (c === 0 ? images.length - 1 : c - 1))
-  const next = () => setCurrent((c) => (c === images.length - 1 ? 0 : c + 1))
+  const prev = () => {
+    track(MP_GALLERY_IMAGE_CHANGED, { direction: 'previous', totalImages: images.length })
+    setCurrent((c) => (c === 0 ? images.length - 1 : c - 1))
+  }
+  const next = () => {
+    track(MP_GALLERY_IMAGE_CHANGED, { direction: 'next', totalImages: images.length })
+    setCurrent((c) => (c === images.length - 1 ? 0 : c + 1))
+  }
+  const goToImage = (index: number) => {
+    track(MP_GALLERY_IMAGE_CHANGED, { direction: 'thumbnail', imageIndex: index, totalImages: images.length })
+    setCurrent(index)
+  }
   const hasOneImage = images.length === 1
   const hasTwoImages = images.length === 2
   const hasThreeOrMoreImages = images.length >= 3
@@ -89,7 +100,7 @@ export function CarDetailGallery({ images, title, badges = [] }: CarDetailGaller
 
         {hasTwoImages && sideTop && (
           <button
-            onClick={() => setCurrent(1)}
+            onClick={() => goToImage(1)}
             className="hidden lg:block relative h-[500px] rounded-2xl overflow-hidden group"
             aria-label="Ver segunda imagen"
           >
@@ -106,7 +117,7 @@ export function CarDetailGallery({ images, title, badges = [] }: CarDetailGaller
         {hasThreeOrMoreImages && sideTop && sideBottom && (
           <div className="hidden lg:grid grid-rows-2 gap-4">
             <button
-              onClick={() => setCurrent(1)}
+              onClick={() => goToImage(1)}
               className="relative rounded-2xl overflow-hidden group"
               aria-label="Ver segunda imagen"
             >
@@ -119,7 +130,7 @@ export function CarDetailGallery({ images, title, badges = [] }: CarDetailGaller
               />
             </button>
             <button
-              onClick={() => setCurrent(2)}
+              onClick={() => goToImage(2)}
               className="relative rounded-2xl overflow-hidden group"
               aria-label="Ver tercera imagen"
             >
@@ -145,7 +156,7 @@ export function CarDetailGallery({ images, title, badges = [] }: CarDetailGaller
           {images.map((img, i) => (
             <button
               key={i}
-              onClick={() => setCurrent(i)}
+              onClick={() => goToImage(i)}
               className={`relative w-20 h-14 shrink-0 rounded-xl overflow-hidden border transition-colors ${
                 i === current ? 'border-[#3c83f6]' : 'border-white/10 hover:border-white/30'
               }`}

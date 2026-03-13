@@ -5,6 +5,7 @@ import { Bell, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { GradientButton } from '@/components/ui/gradient-button'
 import { Input } from '@/components/ui/input'
+import { track, MP_ALERT_MODAL_OPENED, MP_ALERT_CREATED, MP_ALERT_FAILED } from '@/lib/mixpanel'
 
 type AlertModalProps = {
   searchParams?: string
@@ -33,6 +34,7 @@ export function AlertModal({ searchParams }: AlertModalProps) {
 
       if (!res.ok) throw new Error('Error al crear alerta')
 
+      track(MP_ALERT_CREATED, { filters: searchParams })
       setSuccess(true)
       setTimeout(() => {
         setOpen(false)
@@ -40,6 +42,7 @@ export function AlertModal({ searchParams }: AlertModalProps) {
         setEmail('')
       }, 2000)
     } catch {
+      track(MP_ALERT_FAILED, { filters: searchParams })
       setError('No se pudo crear la alerta. Intenta más tarde.')
     } finally {
       setLoading(false)
@@ -49,7 +52,7 @@ export function AlertModal({ searchParams }: AlertModalProps) {
   return (
     <>
       <Button
-        onClick={() => setOpen(true)}
+        onClick={() => { track(MP_ALERT_MODAL_OPENED); setOpen(true) }}
         variant="outline"
         className="border-white/10 text-slate-300 hover:text-white hover:border-white/20 gap-2"
       >

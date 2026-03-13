@@ -13,12 +13,12 @@ export function NavHeader({ breadcrumbs }: NavHeaderProps) {
         <Link href="/" className="flex items-center gap-2.5">
           <Image
             src={appIcon}
-            alt="BuscaCarro"
+            alt="Carli"
             width={32}
             height={32}
             className="size-8 rounded-lg shrink-0"
           />
-          <span className="text-xl font-bold tracking-tight">BuscaCarro</span>
+          <span className="text-xl font-bold tracking-tight">Carli</span>
         </Link>
 
         {breadcrumbs && breadcrumbs.length > 0 && (

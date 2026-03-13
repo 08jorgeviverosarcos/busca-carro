@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { FilterSidebar } from '@/components/FilterSidebar'
@@ -15,6 +16,7 @@ import {
 } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { track, MP_SORT_CHANGED, MP_PAGE_CHANGED, MP_SEARCH_RESULTS_LOADED } from '@/lib/mixpanel'
 
 type Listing = {
   id: string
@@ -72,7 +74,22 @@ export function SearchResults() {
   const listings = data?.data ?? []
   const meta = data?.meta
 
+  useEffect(() => {
+    if (meta) {
+      track(MP_SEARCH_RESULTS_LOADED, {
+        total: meta.total,
+        page: meta.page,
+        totalPages: meta.totalPages,
+        query: q,
+        brand,
+        city,
+        sortBy,
+      })
+    }
+  }, [meta, q, brand, city, sortBy])
+
   const handleSort = (value: string) => {
+    track(MP_SORT_CHANGED, { sortBy: value })
     const params = new URLSearchParams(searchParams.toString())
     params.set('sortBy', value)
     params.delete('page')
@@ -80,6 +97,7 @@ export function SearchResults() {
   }
 
   const handlePage = (newPage: number) => {
+    track(MP_PAGE_CHANGED, { page: newPage, direction: newPage > page ? 'next' : 'previous' })
     const params = new URLSearchParams(searchParams.toString())
     params.set('page', String(newPage))
     router.push(`/buscar?${params.toString()}`)

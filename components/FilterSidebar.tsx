@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useSearchStore } from '@/store/searchStore'
+import { track, MP_FILTERS_APPLIED, MP_FILTERS_RESET } from '@/lib/mixpanel'
 
 const MARCAS = [
   'Chevrolet', 'Renault', 'Mazda', 'Toyota', 'Kia',
@@ -62,6 +63,11 @@ export function FilterSidebar() {
   }, [searchParams])
 
   const applyFilters = () => {
+    const activeFilters = Object.fromEntries(
+      Object.entries(localFilters).filter(([, v]) => v)
+    )
+    track(MP_FILTERS_APPLIED, activeFilters)
+
     const params = new URLSearchParams(searchParams.toString())
     Object.entries(localFilters).forEach(([key, value]) => {
       if (value) {
@@ -75,6 +81,7 @@ export function FilterSidebar() {
   }
 
   const handleReset = () => {
+    track(MP_FILTERS_RESET)
     resetFilters()
     const q = searchParams.get('q')
     router.push(q ? `/buscar?q=${q}` : '/buscar')

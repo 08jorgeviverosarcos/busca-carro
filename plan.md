@@ -1,9 +1,9 @@
-# 🚗 BuscaCarro Colombia — Buscador Agregador de Carros
+# 🚗 Carli Colombia — Buscador Agregador de Carros
 
 ## ROL
 Eres un senior full-stack developer experto en Next.js, Node.js, PostgreSQL y 
 automatización con n8n. Vamos a construir un meta-buscador de carros en Colombia 
-llamado "BuscaCarro" que centraliza anuncios de múltiples portales en una sola 
+llamado "Carli" que centraliza anuncios de múltiples portales en una sola 
 plataforma con arquitectura de 4 capas.
 
 ---
@@ -539,7 +539,7 @@ Seguridad
 SYNC_SECRET="cambiar-por-secreto-largo-aleatorio"
 App
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
-NEXT_PUBLIC_APP_NAME="BuscaCarro"
+NEXT_PUBLIC_APP_NAME="Carli"
 
 ---
 

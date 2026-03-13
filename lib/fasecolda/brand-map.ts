@@ -1,4 +1,4 @@
-// Mapeo de marcas FASECOLDA (uppercase) → marcas canónicas BuscaCarro
+// Mapeo de marcas FASECOLDA (uppercase) → marcas canónicas Carli
 export const FASECOLDA_BRAND_MAP: Record<string, string> = {
   CHEVROLET: 'Chevrolet',
   TOYOTA: 'Toyota',
@@ -54,7 +54,7 @@ export const FASECOLDA_BRAND_MAP: Record<string, string> = {
   BAJAJ: 'Bajaj',
 }
 
-// Mapa inverso: marca canónica BuscaCarro → marca FASECOLDA
+// Mapa inverso: marca canónica Carli → marca FASECOLDA
 export const BUSCACARRO_TO_FASECOLDA: Record<string, string> = Object.fromEntries(
   Object.entries(FASECOLDA_BRAND_MAP).map(([fasecolda, buscacarro]) => [buscacarro, fasecolda])
 )

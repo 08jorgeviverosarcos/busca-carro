@@ -1,6 +1,7 @@
 import { SearchBar } from '@/components/SearchBar'
 import { NavHeader } from '@/components/NavHeader'
 import { GradientButton } from '@/components/ui/gradient-button'
+import { TrackedLink } from '@/components/TrackedLink'
 import Link from 'next/link'
 
 const FILTROS_RAPIDOS = [
@@ -45,7 +46,7 @@ export default function HomePage() {
           </h1>
 
           <p className="text-slate-400 text-lg md:text-xl max-w-2xl mb-12 font-light mx-auto">
-            Dile a BuscaCarro qué buscas. Sin filtros, sin ir portal por portal. Solo lenguaje natural.
+            Dile a Carli qué buscas. Sin filtros, sin ir portal por portal. Solo lenguaje natural.
           </p>
 
           {/* Buscador principal con glow */}
@@ -56,13 +57,15 @@ export default function HomePage() {
           {/* Filtros rápidos — fila única */}
           <div className="flex flex-wrap justify-center gap-3">
             {FILTROS_RAPIDOS.map((f) => (
-              <Link
+              <TrackedLink
                 key={f.label}
                 href={f.href}
+                eventName="Quick Filter Clicked"
+                eventProperties={{ label: f.label, href: f.href }}
                 className="glass-panel px-4 py-2 rounded-full text-xs font-medium text-slate-300 hover:bg-white/10 transition-colors"
               >
                 {f.label}
-              </Link>
+              </TrackedLink>
             ))}
           </div>
         </div>
@@ -78,14 +81,18 @@ export default function HomePage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <GradientButton asChild size="lg">
-                <Link href="/buscar">Buscar carros</Link>
+                <TrackedLink href="/buscar" eventName="CTA Clicked" eventProperties={{ cta: 'Buscar carros' }}>
+                  Buscar carros
+                </TrackedLink>
               </GradientButton>
-              <Link
+              <TrackedLink
                 href="/buscar"
+                eventName="CTA Clicked"
+                eventProperties={{ cta: 'Ver todo el inventario' }}
                 className="glass-panel text-white font-bold h-12 px-8 rounded-xl inline-flex items-center justify-center hover:bg-white/10 transition-colors"
               >
                 Ver todo el inventario
-              </Link>
+              </TrackedLink>
             </div>
           </div>
         </div>
