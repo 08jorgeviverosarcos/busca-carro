@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   if (error) {
     return html(`
       <h1 style="color:red">❌ Error de autorización</h1>
-      <p>${error}: ${searchParams.get('error_description') ?? ''}</p>
+      <p>${escapeHtml(error)}: ${escapeHtml(searchParams.get('error_description'))}</p>
     `)
   }
 
@@ -46,8 +46,8 @@ export async function GET(req: NextRequest) {
 
   if (!res.ok) {
     return html(`
-      <h1 style="color:red">❌ Error al obtener tokens (${res.status})</h1>
-      <pre>${JSON.stringify(data, null, 2)}</pre>
+      <h1 style="color:red">❌ Error al obtener tokens (${escapeHtml(res.status)})</h1>
+      <pre>${escapeHtml(JSON.stringify(data, null, 2))}</pre>
     `)
   }
 
@@ -55,13 +55,22 @@ export async function GET(req: NextRequest) {
 
   return html(`
     <h1 style="color:green">✅ Autenticación exitosa</h1>
-    <p><b>User ID:</b> ${user_id}</p>
-    <p><b>Access token</b> (expira en ${Math.round(expires_in / 3600)}h): <code>${access_token?.substring(0, 40)}...</code></p>
+    <p><b>User ID:</b> ${escapeHtml(user_id)}</p>
+    <p><b>Access token</b> (expira en ${escapeHtml(Math.round(expires_in / 3600))}h): <code>${escapeHtml(access_token?.substring(0, 40))}...</code></p>
     <hr/>
     <h2>📋 Agrega esto a tu <code>.env</code>:</h2>
-    <pre style="background:#1e1e1e;color:#4ec9b0;padding:16px;border-radius:8px;font-size:14px">ML_REFRESH_TOKEN="${refresh_token}"</pre>
+    <pre style="background:#1e1e1e;color:#4ec9b0;padding:16px;border-radius:8px;font-size:14px">ML_REFRESH_TOKEN=&quot;${escapeHtml(refresh_token)}&quot;</pre>
     <p style="color:#888">Una vez copiado, reinicia el servidor y ejecuta <code>npm run sync:all</code></p>
   `)
+}
+
+function escapeHtml(value: unknown): string {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
 }
 
 function html(body: string) {
