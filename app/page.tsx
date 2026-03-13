@@ -1,6 +1,6 @@
 import { SearchBar } from '@/components/SearchBar'
-import { StatsBar } from '@/components/StatsBar'
 import { NavHeader } from '@/components/NavHeader'
+import { GradientButton } from '@/components/ui/gradient-button'
 import Link from 'next/link'
 
 const FILTROS_RAPIDOS = [
@@ -77,12 +77,9 @@ export default function HomePage() {
               Miles de anuncios de todos los portales, actualizados diariamente. Empieza a buscar ahora.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/buscar"
-                className="ai-gradient text-white font-bold h-12 px-8 rounded-xl inline-flex items-center justify-center hover:scale-[1.02] active:scale-95 transition-transform"
-              >
-                Buscar carros
-              </Link>
+              <GradientButton asChild size="lg">
+                <Link href="/buscar">Buscar carros</Link>
+              </GradientButton>
               <Link
                 href="/buscar"
                 className="glass-panel text-white font-bold h-12 px-8 rounded-xl inline-flex items-center justify-center hover:bg-white/10 transition-colors"

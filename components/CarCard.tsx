@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { Heart } from 'lucide-react'
+import { CircleGauge, Heart, MapPin } from 'lucide-react'
 import { useSearchStore } from '@/store/searchStore'
 import { formatPrice, formatMileage, PORTAL_COLORS, PORTAL_LABELS, cn } from '@/lib/utils'
 
@@ -40,21 +40,32 @@ export function CarCard({
   const favorite = isFavorite(id)
 
   // Indicador vs mercado
-  let priceIndicator: { label: string; color: string } | null = null
+  let priceIndicator: { label: string; color: string; tone: string } | null = null
   if (priceCop && avgPrice) {
     const diff = (priceCop - avgPrice) / avgPrice
     if (diff <= -0.1) {
-      priceIndicator = { label: 'Buen precio', color: 'text-green-400' }
+      priceIndicator = {
+        label: 'Buen precio',
+        color: 'text-emerald-300',
+        tone: 'bg-emerald-500/10 border-emerald-500/30',
+      }
     } else if (diff >= 0.1) {
-      priceIndicator = { label: 'Sobre precio', color: 'text-red-400' }
+      priceIndicator = {
+        label: 'Sobre precio',
+        color: 'text-rose-300',
+        tone: 'bg-rose-500/10 border-rose-500/30',
+      }
     }
   }
 
   const portalColor = PORTAL_COLORS[sourcePortal] ?? 'bg-gray-500 text-white'
   const portalLabel = PORTAL_LABELS[sourcePortal] ?? sourcePortal
+  const subtitle = [year, mileage !== null && mileage !== undefined ? formatMileage(mileage) : null, city]
+    .filter(Boolean)
+    .join(' · ')
 
   return (
-    <div className="group relative overflow-hidden rounded-2xl glass-panel transition-all hover:border-white/20">
+    <article className="group relative overflow-hidden rounded-2xl glass-panel transition-all duration-300 hover:border-white/20 hover:-translate-y-0.5">
       {/* Imagen */}
       <div className="relative aspect-[16/10] overflow-hidden">
         <Link href={`/carro/${id}`}>
@@ -78,16 +89,22 @@ export function CarCard({
             </div>
           )}
         </Link>
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/60 to-transparent" />
 
         {/* Badge portal */}
-        <span className={cn('absolute top-2 left-2 text-xs font-semibold px-2 py-0.5 rounded-full', portalColor)}>
+        <span
+          className={cn(
+            'absolute top-3 left-3 text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-full',
+            portalColor
+          )}
+        >
           {portalLabel}
         </span>
 
         {/* Botón favorito */}
         <button
           onClick={() => toggleFavorite(id)}
-          className="absolute top-2 right-2 p-1.5 rounded-full bg-black/50 hover:bg-black/70 transition-colors"
+          className="absolute top-3 right-3 p-1.5 rounded-full glass-panel hover:bg-white/10 transition-colors"
           aria-label={favorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
         >
           <Heart
@@ -97,42 +114,63 @@ export function CarCard({
       </div>
 
       {/* Contenido */}
-      <div className="p-6">
-        <div className="flex justify-between items-start mb-4">
-          <div className="min-w-0 flex-1 mr-3">
+      <div className="p-4">
+        <div className="flex justify-between items-start gap-3 mb-2">
+          <div className="min-w-0 flex-1">
             <Link href={`/carro/${id}`} className="block hover:text-slate-300 transition-colors">
-              <h3 className="text-xl font-bold text-white line-clamp-2">{title}</h3>
+              <h3 className="text-base font-bold text-white line-clamp-2 leading-snug">{title}</h3>
             </Link>
-            <p className="text-slate-500 text-sm mt-1">
-              {[year, mileage !== null && mileage !== undefined ? formatMileage(mileage) : null, city].filter(Boolean).join(' · ')}
-            </p>
           </div>
           <div className="text-right shrink-0">
-            <span className="text-[#3c83f6] font-bold">
+            <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-0.5">Precio</p>
+            <span className="text-[#3c83f6] font-bold text-sm">
               {priceCop ? formatPrice(priceCop) : 'Consultar'}
             </span>
-            {priceIndicator && (
-              <p className={cn('text-xs font-medium mt-0.5', priceIndicator.color)}>
-                {priceIndicator.label}
-              </p>
-            )}
           </div>
         </div>
 
+        <p className="text-xs text-slate-500 mb-3 line-clamp-1">{subtitle || 'Sin datos de kilometraje o ubicación'}</p>
+
+        <div className="flex items-center gap-3 text-[11px] text-slate-400 mb-3">
+          {city && (
+            <span className="inline-flex items-center gap-1">
+              <MapPin className="w-3.5 h-3.5 text-slate-500" />
+              <span className="line-clamp-1">{city}</span>
+            </span>
+          )}
+          {mileage !== null && mileage !== undefined && (
+            <span className="inline-flex items-center gap-1">
+              <CircleGauge className="w-3.5 h-3.5 text-slate-500" />
+              {formatMileage(mileage)}
+            </span>
+          )}
+        </div>
+
         {/* Tags */}
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {fuelType && (
-            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded bg-white/5 text-slate-400">
+            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded-full bg-white/5 text-slate-400 border border-white/10">
               {fuelType}
             </span>
           )}
           {transmission && (
-            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded bg-white/5 text-slate-400">
+            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded-full bg-white/5 text-slate-400 border border-white/10">
               {transmission}
+            </span>
+          )}
+          {priceIndicator && (
+            <span
+              className={cn(
+                'text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded-full border',
+                priceIndicator.color,
+                priceIndicator.tone
+              )}
+            >
+              {priceIndicator.label}
             </span>
           )}
         </div>
       </div>
-    </div>
+    </article>
   )
 }

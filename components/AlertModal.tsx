@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Bell, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { GradientButton } from '@/components/ui/gradient-button'
 import { Input } from '@/components/ui/input'
 
 type AlertModalProps = {
@@ -83,13 +84,15 @@ export function AlertModal({ searchParams }: AlertModalProps) {
                   className="bg-[#15151A] border-white/10 text-white placeholder:text-slate-500"
                 />
                 {error && <p className="text-red-400 text-sm">{error}</p>}
-                <Button
+                <GradientButton
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-[#3c83f6] text-white hover:bg-[#3c83f6]/90 font-semibold rounded-xl"
+                  size="lg"
+                  fullWidth
+                  className="font-semibold"
                 >
                   {loading ? 'Creando...' : 'Activar alerta'}
-                </Button>
+                </GradientButton>
               </form>
             )}
           </div>

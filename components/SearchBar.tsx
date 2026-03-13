@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Search, Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
+import { GradientButton } from '@/components/ui/gradient-button'
 import { useSearchStore } from '@/store/searchStore'
 import { SearchParams } from '@/lib/types'
 
@@ -83,13 +84,13 @@ export function SearchBar({ large = false, placeholder = 'Buscar marca, modelo, 
             className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-white py-5 px-4 text-lg placeholder:text-slate-600"
           />
           <div className="pr-2">
-            <button
+            <GradientButton
               type="submit"
               disabled={isParsing}
-              className="ai-gradient text-white px-8 py-3 rounded-lg font-bold text-sm shadow-lg shadow-[#3c83f6]/20 hover:scale-[1.02] active:scale-95 transition-transform disabled:opacity-50"
+              size="md"
             >
               Buscar
-            </button>
+            </GradientButton>
           </div>
         </div>
       </form>
@@ -109,13 +110,13 @@ export function SearchBar({ large = false, placeholder = 'Buscar marca, modelo, 
           className="pl-10 bg-[#15151A] border-white/10 text-white placeholder:text-slate-500 focus:border-white/20"
         />
       </div>
-      <button
+      <GradientButton
         type="submit"
         disabled={isParsing}
-        className="bg-[#3c83f6] hover:bg-[#3c83f6]/90 text-white font-bold h-9 px-4 rounded-lg transition-colors disabled:opacity-50"
+        size="sm"
       >
         {isParsing ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Buscar'}
-      </button>
+      </GradientButton>
     </form>
   )
 }

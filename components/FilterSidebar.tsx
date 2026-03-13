@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { GradientButton } from '@/components/ui/gradient-button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -220,12 +220,14 @@ export function FilterSidebar() {
           </Select>
         </div>
 
-        <Button
+        <GradientButton
           onClick={applyFilters}
-          className="w-full bg-[#3c83f6] text-white hover:bg-[#3c83f6]/90 font-semibold rounded-xl"
+          size="lg"
+          fullWidth
+          className="font-semibold"
         >
           Aplicar filtros
-        </Button>
+        </GradientButton>
       </div>
     </aside>
   )
