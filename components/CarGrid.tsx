@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { CarCard } from '@/components/CarCard'
 
 type Listing = {
@@ -25,6 +26,8 @@ type CarGridProps = {
 }
 
 export function CarGrid({ listings, isLoading = false }: CarGridProps) {
+  const t = useTranslations('search')
+
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -45,8 +48,8 @@ export function CarGrid({ listings, isLoading = false }: CarGridProps) {
   if (listings.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <p className="text-slate-400 text-lg mb-2">No se encontraron anuncios</p>
-        <p className="text-slate-600 text-sm">Intenta cambiar los filtros o buscar otra marca</p>
+        <p className="text-slate-400 text-lg mb-2">{t('empty.title')}</p>
+        <p className="text-slate-600 text-sm">{t('empty.subtitle')}</p>
       </div>
     )
   }

@@ -1,8 +1,8 @@
+import { getTranslations } from 'next-intl/server'
 import { SearchBar } from '@/components/SearchBar'
 import { NavHeader } from '@/components/NavHeader'
 import { GradientButton } from '@/components/ui/gradient-button'
 import { TrackedLink } from '@/components/TrackedLink'
-import Link from 'next/link'
 
 const FILTROS_RAPIDOS = [
   { label: 'Toyota', href: '/buscar?brand=Toyota' },
@@ -16,7 +16,10 @@ const FILTROS_RAPIDOS = [
   { label: 'Cali', href: '/buscar?city=Cali' },
 ]
 
-export default function HomePage() {
+export default async function HomePage() {
+  const t = await getTranslations('home')
+  const tc = await getTranslations('common')
+
   return (
     <main className="min-h-screen bg-[#0B0B0F]">
       <NavHeader />
@@ -34,7 +37,7 @@ export default function HomePage() {
             <svg className="w-3.5 h-3.5 text-[#3c83f6]" fill="currentColor" viewBox="0 0 20 20">
               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
             </svg>
-            <span className="text-xs font-bold text-[#3c83f6] uppercase tracking-widest">Búsqueda inteligente con IA</span>
+            <span className="text-xs font-bold text-[#3c83f6] uppercase tracking-widest">{t('badge')}</span>
           </div>
 
           {/* H1 con gradient igual al Stitch — usando Tailwind utilities directo */}
@@ -42,16 +45,16 @@ export default function HomePage() {
             className="text-5xl md:text-7xl font-black tracking-tighter mb-6 max-w-4xl mx-auto bg-clip-text text-transparent"
             style={{ backgroundImage: 'linear-gradient(135deg, #ffffff 30%, #a855f7 100%)' }}
           >
-            La forma más inteligente de encontrar tu próximo carro.
+            {t('title')}
           </h1>
 
           <p className="text-slate-400 text-lg md:text-xl max-w-2xl mb-12 font-light mx-auto">
-            Dile a Carli qué buscas. Sin filtros, sin ir portal por portal. Solo lenguaje natural.
+            {t('subtitle')}
           </p>
 
           {/* Buscador principal con glow */}
           <div className="w-full flex justify-center mb-10">
-            <SearchBar large placeholder="Busca con IA: SUV bajo 80 millones en Bogotá..." />
+            <SearchBar large placeholder={t('searchPlaceholder')} />
           </div>
 
           {/* Filtros rápidos — fila única */}
@@ -75,14 +78,14 @@ export default function HomePage() {
       <section className="max-w-5xl mx-auto px-6 pb-24">
         <div className="relative rounded-3xl p-[1px]" style={{ background: 'linear-gradient(135deg, #3c83f6, #a855f7)' }}>
           <div className="bg-[#0B0B0F] rounded-[22px] p-12 text-center">
-            <h2 className="text-4xl font-bold tracking-tight mb-4">¿Listo para encontrar tu carro?</h2>
+            <h2 className="text-4xl font-bold tracking-tight mb-4">{t('cta.title')}</h2>
             <p className="text-slate-400 mb-8 max-w-lg mx-auto">
-              Miles de anuncios de todos los portales, actualizados diariamente. Empieza a buscar ahora.
+              {t('cta.subtitle')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <GradientButton asChild size="lg">
                 <TrackedLink href="/buscar" eventName="CTA Clicked" eventProperties={{ cta: 'Buscar carros' }}>
-                  Buscar carros
+                  {t('cta.searchCars')}
                 </TrackedLink>
               </GradientButton>
               <TrackedLink
@@ -91,7 +94,7 @@ export default function HomePage() {
                 eventProperties={{ cta: 'Ver todo el inventario' }}
                 className="glass-panel text-white font-bold h-12 px-8 rounded-xl inline-flex items-center justify-center hover:bg-white/10 transition-colors"
               >
-                Ver todo el inventario
+                {t('cta.viewInventory')}
               </TrackedLink>
             </div>
           </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { formatPrice } from '@/lib/utils'
 import { FasecoldaBadge } from './FasecoldaBadge'
 import { track, MP_FASECOLDA_VERSION_SELECTED } from '@/lib/mixpanel'
@@ -27,6 +28,7 @@ export function FasecoldaSelector({ listingPrice, candidates }: FasecoldaSelecto
       ? candidates[0].codigo
       : null
   )
+  const t = useTranslations('fasecolda')
 
   if (candidates.length === 0) return null
 
@@ -39,7 +41,7 @@ export function FasecoldaSelector({ listingPrice, candidates }: FasecoldaSelecto
       <div className="mt-2">
         <FasecoldaBadge listingPrice={listingPrice} fasecoldaValue={Number(candidates[0].valueCop)} />
         <p className="text-xs text-slate-600 mt-1">
-          Ref. Fasecolda: {candidates[0].referencia2 ?? candidates[0].referencia1}
+          {t('refLabel')} {candidates[0].referencia2 ?? candidates[0].referencia1}
           {' '}· {formatPrice(Number(candidates[0].valueCop))}
         </p>
       </div>
@@ -50,7 +52,7 @@ export function FasecoldaSelector({ listingPrice, candidates }: FasecoldaSelecto
   return (
     <div className="mt-3 space-y-2">
       <p className="text-xs text-slate-400">
-        Hay {candidates.length} versiones en Fasecolda para este modelo. Selecciona la tuya:
+        {t('versionsAvailable', { count: candidates.length })}
       </p>
       <select
         className="w-full text-xs bg-[#15151A] border border-white/10 text-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:border-white/20 cursor-pointer"
@@ -68,7 +70,7 @@ export function FasecoldaSelector({ listingPrice, candidates }: FasecoldaSelecto
           }
         }}
       >
-        <option value="">— Seleccionar versión —</option>
+        <option value="">{t('selectVersion')}</option>
         {candidates.map((c) => (
           <option key={c.codigo} value={c.codigo}>
             {[c.referencia2, c.referencia3].filter(Boolean).join(' · ')} — {formatPrice(Number(c.valueCop))}
@@ -81,7 +83,7 @@ export function FasecoldaSelector({ listingPrice, candidates }: FasecoldaSelecto
       )}
 
       {!selected && (
-        <p className="text-xs text-slate-600">Selecciona una versión para comparar el precio</p>
+        <p className="text-xs text-slate-600">{t('selectToCompare')}</p>
       )}
     </div>
   )

@@ -1,0 +1,21 @@
+{
+  "appName": "Carli",
+  "search": "Buscar",
+  "price": "Precio",
+  "priceConsult": "Consultar",
+  "priceAsk": "Precio a consultar",
+  "noData": "Sin dato",
+  "loading": "Cargando...",
+  "locationUnavailable": "Ubicación no disponible",
+  "breadcrumbSearch": "Buscar",
+  "footer": {
+    "description": "Compara anuncios de múltiples portales en una sola vista y encuentra oportunidades con datos de mercado en Colombia.",
+    "company": "Compañía",
+    "home": "Inicio",
+    "searchCars": "Buscar carros",
+    "support": "Soporte",
+    "viewOriginal": "Ver publicación original",
+    "exploreInventory": "Explorar inventario",
+    "copyright": "© {year} Carli. Todos los derechos reservados."
+  }
+}

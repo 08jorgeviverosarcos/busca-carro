@@ -1,0 +1,23 @@
+{
+  "pageTitle": "Buscar carros",
+  "pageDescription": "Busca y filtra carros usados en Colombia de todos los portales.",
+  "searchPlaceholder": "Buscar marca, modelo, año...",
+  "refineSearch": "Refinar búsqueda...",
+  "resultsFor": "Resultados para \"{query}\"",
+  "brandForSale": "{brand} en venta",
+  "carsIn": "Carros en {city}",
+  "allCars": "Todos los carros",
+  "resultsCount": "{count} resultados",
+  "pagination": "Página {page} de {totalPages}",
+  "sort": {
+    "recent": "Más recientes",
+    "priceAsc": "Menor precio",
+    "priceDesc": "Mayor precio",
+    "yearDesc": "Más nuevos",
+    "mileageAsc": "Menor km"
+  },
+  "empty": {
+    "title": "No se encontraron anuncios",
+    "subtitle": "Intenta cambiar los filtros o buscar otra marca"
+  }
+}

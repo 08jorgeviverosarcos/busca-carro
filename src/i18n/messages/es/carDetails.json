@@ -1,0 +1,63 @@
+{
+  "notFound": "Anuncio no encontrado",
+  "inactive": {
+    "title": "Este anuncio ya no está disponible",
+    "subtitle": "El anuncio fue eliminado o vendido en el portal de origen.",
+    "backToSearch": "← Volver a buscar"
+  },
+  "published": "Publicado {date}",
+  "verified": "Verificado",
+  "aiPriceIntelligence": "AI Price Intelligence",
+  "insight": {
+    "below": "Este carro está {percent}% por debajo del valor de referencia en Fasecolda.",
+    "above": "Este carro está {percent}% por encima del valor de referencia en Fasecolda.",
+    "aligned": "Este carro está alineado con el valor de referencia actual en Fasecolda.",
+    "noReference": "Aún no tenemos una referencia única de Fasecolda para estimar el precio de mercado."
+  },
+  "flags": {
+    "permuta": "Acepta permuta",
+    "financiacion": "Acepta financiación",
+    "blindado": "Blindado"
+  },
+  "specs": {
+    "title": "Especificaciones técnicas",
+    "mileage": "Kilometraje",
+    "transmission": "Transmisión",
+    "color": "Color",
+    "fuel": "Combustible"
+  },
+  "description": {
+    "title": "Descripción",
+    "empty": "El portal no proporcionó una descripción adicional para este vehículo."
+  },
+  "moreDetails": {
+    "title": "Más detalles",
+    "engineSize": "Cilindraje",
+    "condition": "Condición",
+    "plateDigit": "Dígito placa",
+    "portal": "Portal",
+    "published": "Publicado",
+    "fasecoldaRef": "Referencia Fasecolda"
+  },
+  "market": {
+    "title": "Comparación de mercado",
+    "low": "Mercado bajo",
+    "thisCar": "Este carro",
+    "publishedPrice": "Precio publicado",
+    "high": "Mercado alto"
+  },
+  "seller": {
+    "title": "Información del vendedor",
+    "portalLabel": "Portal de publicación",
+    "viewOriginal": "Ver anuncio original",
+    "contactPortal": "Contacto en portal",
+    "location": "Ubicación"
+  },
+  "quickSummary": "Resumen rápido",
+  "brandLabel": "Marca",
+  "modelLabel": "Modelo",
+  "fuelNotSpecified": "Combustible no especificado",
+  "similarVehicles": "Vehículos similares",
+  "noImages": "Sin imágenes disponibles",
+  "extraPhotos": "+{count} fotos"
+}

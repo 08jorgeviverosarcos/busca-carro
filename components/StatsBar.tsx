@@ -1,6 +1,7 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
+import { useTranslations } from 'next-intl'
 
 type StatsData = {
   totalActive: number
@@ -16,6 +17,7 @@ export function StatsBar() {
   })
 
   const stats = data?.data
+  const t = useTranslations('stats')
 
   return (
     <section className="border-t border-b border-white/5 bg-[#0B0B0F]/50 backdrop-blur-sm">
@@ -36,7 +38,7 @@ export function StatsBar() {
                 <p className="text-2xl font-black text-white">
                   {stats?.totalActive?.toLocaleString('es-CO') ?? '—'}
                 </p>
-                <p className="text-xs text-slate-500 uppercase tracking-wide">Anuncios activos</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wide">{t('activeListings')}</p>
               </div>
               {['mercadolibre', 'tucarro', 'vendetunave'].map((portal) => (
                 <div key={portal}>

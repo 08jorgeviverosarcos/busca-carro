@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { CircleGauge, Heart, MapPin } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useSearchStore } from '@/store/searchStore'
 import { formatPrice, formatMileage, PORTAL_COLORS, PORTAL_LABELS, cn } from '@/lib/utils'
 import { track, MP_CAR_CARD_CLICKED, MP_FAVORITE_TOGGLED } from '@/lib/mixpanel'
@@ -39,6 +40,8 @@ export function CarCard({
 }: CarCardProps) {
   const { toggleFavorite, isFavorite } = useSearchStore()
   const favorite = isFavorite(id)
+  const t = useTranslations('carCard')
+  const tc = useTranslations('common')
 
   const handleCardClick = () => {
     track(MP_CAR_CARD_CLICKED, { listingId: id, title, sourcePortal, priceCop })
@@ -55,13 +58,13 @@ export function CarCard({
     const diff = (priceCop - avgPrice) / avgPrice
     if (diff <= -0.1) {
       priceIndicator = {
-        label: 'Buen precio',
+        label: t('goodPrice'),
         color: 'text-emerald-300',
         tone: 'bg-emerald-500/10 border-emerald-500/30',
       }
     } else if (diff >= 0.1) {
       priceIndicator = {
-        label: 'Sobre precio',
+        label: t('overpriced'),
         color: 'text-rose-300',
         tone: 'bg-rose-500/10 border-rose-500/30',
       }
@@ -115,7 +118,7 @@ export function CarCard({
         <button
           onClick={handleFavoriteToggle}
           className="absolute top-3 right-3 p-1.5 rounded-full glass-panel hover:bg-white/10 transition-colors"
-          aria-label={favorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+          aria-label={favorite ? t('removeFavorite') : t('addFavorite')}
         >
           <Heart
             className={cn('w-4 h-4', favorite ? 'fill-red-500 text-red-500' : 'text-white')}
@@ -132,14 +135,14 @@ export function CarCard({
             </Link>
           </div>
           <div className="text-right shrink-0">
-            <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-0.5">Precio</p>
+            <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-0.5">{tc('price')}</p>
             <span className="text-[#3c83f6] font-bold text-sm">
-              {priceCop ? formatPrice(priceCop) : 'Consultar'}
+              {priceCop ? formatPrice(priceCop) : tc('priceConsult')}
             </span>
           </div>
         </div>
 
-        <p className="text-xs text-slate-500 mb-3 line-clamp-1">{subtitle || 'Sin datos de kilometraje o ubicación'}</p>
+        <p className="text-xs text-slate-500 mb-3 line-clamp-1">{subtitle || t('noSubtitle')}</p>
 
         <div className="flex items-center gap-3 text-[11px] text-slate-400 mb-3">
           {city && (

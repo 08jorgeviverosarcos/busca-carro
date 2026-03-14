@@ -9,6 +9,7 @@ Meta-buscador de carros usados en Colombia. Agrega anuncios de múltiples portal
 - **Database**: PostgreSQL via Prisma 7 con PrismaPg adapter
 - **Cache**: Upstash Redis (búsquedas 30min, stats 5min)
 - **Scraping**: Firecrawl (Autocosmos) + fetch directo (VendeTuNave)
+- **i18n**: next-intl (textos centralizados en `src/i18n/messages/es/`)
 - **State**: Zustand v5 (filtros + favoritos) + TanStack Query v5
 - **Analytics**: Mixpanel + Firebase Analytics — dual-track desde una sola función `track()`
 - **Email**: Resend (alertas)
@@ -91,6 +92,20 @@ components/
   QueryProvider.tsx       # TanStack Query provider (client component)
   ui/                     # Componentes shadcn/ui
 
+src/
+  i18n/
+    request.ts              # next-intl config (locale + messages)
+    messages/es/
+      common.json           # Textos compartidos (app name, footer, precio, etc.)
+      home.json             # Landing page
+      search.json           # Página de búsqueda y resultados
+      filters.json          # Panel de filtros
+      carDetails.json       # Detalle de vehículo
+      carCard.json          # Tarjeta de vehículo
+      alerts.json           # Modal de alertas
+      stats.json            # Barra de estadísticas
+      fasecolda.json        # Badges y selector Fasecolda
+
 store/
   searchStore.ts          # Zustand: filtros + favoritos (localStorage persist)
 
@@ -108,6 +123,18 @@ prisma.config.ts          # datasource URL (NO va en schema.prisma en Prisma 7)
 - **Firecrawl**: No acepta schemas Zod v4 — usar solo `prompt` sin `schema` en extract
 - **Zod**: v4 instalado, pero Firecrawl SDK espera v3 (incompatible)
 - **APIs protegidas**: Rutas de sync usan header `x-sync-secret` para autenticación
+
+### Internacionalización (next-intl)
+
+- **UI text must never be hardcoded** en componentes React. Todo texto visible al usuario debe venir de archivos de traducción.
+- **Todos los strings** viven en `src/i18n/messages/es/` organizados por pantalla/feature.
+- **Strings reutilizables** (app name, precio, loading, footer) van en `common.json`.
+- **Client components**: usar `useTranslations('namespace')` de `next-intl`.
+- **Server components**: usar `await getTranslations('namespace')` de `next-intl/server`.
+- **Nunca importar JSON** directamente desde componentes. Solo usar los helpers de next-intl.
+- **Keys semánticas**: usar nombres descriptivos (`search.title`, `filters.apply`), nunca genéricos (`text1`, `labelA`).
+- **No extraer**: console.log, variable names, API strings, database fields.
+- **Cada nueva pantalla** requiere un nuevo archivo JSON en `src/i18n/messages/es/` y registrarlo en `src/i18n/request.ts`.
 
 ## Variables de entorno
 

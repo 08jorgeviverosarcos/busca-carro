@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { GradientButton } from '@/components/ui/gradient-button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -34,6 +35,7 @@ export function FilterSidebar() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { filters, setFilter, resetFilters } = useSearchStore()
+  const t = useTranslations('filters')
 
   const [localFilters, setLocalFilters] = useState({
     brand: filters.brand,
@@ -91,18 +93,18 @@ export function FilterSidebar() {
     <aside className="w-full lg:w-64 shrink-0">
       <div className="glass-panel rounded-2xl p-4 sticky top-20">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-white font-semibold">Filtros</h2>
+          <h2 className="text-white font-semibold">{t('title')}</h2>
           <button
             onClick={handleReset}
             className="text-xs text-slate-400 hover:text-white transition-colors"
           >
-            Limpiar
+            {t('clear')}
           </button>
         </div>
 
         {/* Marca */}
         <div className="mb-4">
-          <p className="text-slate-400 text-xs font-medium mb-2 uppercase tracking-wide">Marca</p>
+          <p className="text-slate-400 text-xs font-medium mb-2 uppercase tracking-wide">{t('brand')}</p>
           <div className="space-y-1.5 max-h-48 overflow-y-auto">
             {MARCAS.map((marca) => (
               <label key={marca} className="flex items-center gap-2 cursor-pointer group">
@@ -123,16 +125,16 @@ export function FilterSidebar() {
 
         {/* Año */}
         <div className="mb-4">
-          <p className="text-slate-400 text-xs font-medium mb-2 uppercase tracking-wide">Año</p>
+          <p className="text-slate-400 text-xs font-medium mb-2 uppercase tracking-wide">{t('year')}</p>
           <div className="flex gap-2">
             <Input
-              placeholder="Desde"
+              placeholder={t('yearFrom')}
               value={localFilters.yearMin}
               onChange={(e) => setLocalFilters({ ...localFilters, yearMin: e.target.value })}
               className="bg-[#15151A] border-white/10 text-white placeholder:text-slate-600 text-sm h-8"
             />
             <Input
-              placeholder="Hasta"
+              placeholder={t('yearTo')}
               value={localFilters.yearMax}
               onChange={(e) => setLocalFilters({ ...localFilters, yearMax: e.target.value })}
               className="bg-[#15151A] border-white/10 text-white placeholder:text-slate-600 text-sm h-8"
@@ -142,16 +144,16 @@ export function FilterSidebar() {
 
         {/* Precio */}
         <div className="mb-4">
-          <p className="text-slate-400 text-xs font-medium mb-2 uppercase tracking-wide">Precio COP</p>
+          <p className="text-slate-400 text-xs font-medium mb-2 uppercase tracking-wide">{t('priceCop')}</p>
           <div className="flex gap-2">
             <Input
-              placeholder="Mínimo"
+              placeholder={t('priceMin')}
               value={localFilters.priceMin}
               onChange={(e) => setLocalFilters({ ...localFilters, priceMin: e.target.value })}
               className="bg-[#15151A] border-white/10 text-white placeholder:text-slate-600 text-sm h-8"
             />
             <Input
-              placeholder="Máximo"
+              placeholder={t('priceMax')}
               value={localFilters.priceMax}
               onChange={(e) => setLocalFilters({ ...localFilters, priceMax: e.target.value })}
               className="bg-[#15151A] border-white/10 text-white placeholder:text-slate-600 text-sm h-8"
@@ -161,9 +163,9 @@ export function FilterSidebar() {
 
         {/* Ciudad */}
         <div className="mb-4">
-          <p className="text-slate-400 text-xs font-medium mb-2 uppercase tracking-wide">Ciudad</p>
+          <p className="text-slate-400 text-xs font-medium mb-2 uppercase tracking-wide">{t('city')}</p>
           <Input
-            placeholder="Ej: Bogotá, Medellín..."
+            placeholder={t('cityPlaceholder')}
             value={localFilters.city}
             onChange={(e) => setLocalFilters({ ...localFilters, city: e.target.value })}
             className="bg-[#15151A] border-white/10 text-white placeholder:text-slate-600 text-sm h-8"
@@ -172,16 +174,16 @@ export function FilterSidebar() {
 
         {/* Combustible */}
         <div className="mb-4">
-          <p className="text-slate-400 text-xs font-medium mb-2 uppercase tracking-wide">Combustible</p>
+          <p className="text-slate-400 text-xs font-medium mb-2 uppercase tracking-wide">{t('fuel')}</p>
           <Select
             value={localFilters.fuelType}
             onValueChange={(v) => setLocalFilters({ ...localFilters, fuelType: v === 'all' ? '' : v })}
           >
             <SelectTrigger className="bg-[#15151A] border-white/10 text-sm h-8 text-white">
-              <SelectValue placeholder="Todos" />
+              <SelectValue placeholder={t('all')} />
             </SelectTrigger>
             <SelectContent className="bg-[#15151A] border-white/10">
-              <SelectItem value="all" className="text-slate-300">Todos</SelectItem>
+              <SelectItem value="all" className="text-slate-300">{t('all')}</SelectItem>
               {COMBUSTIBLES.map((c) => (
                 <SelectItem key={c} value={c} className="text-slate-300">{c}</SelectItem>
               ))}
@@ -191,18 +193,18 @@ export function FilterSidebar() {
 
         {/* Transmisión */}
         <div className="mb-4">
-          <p className="text-slate-400 text-xs font-medium mb-2 uppercase tracking-wide">Transmisión</p>
+          <p className="text-slate-400 text-xs font-medium mb-2 uppercase tracking-wide">{t('transmission')}</p>
           <Select
             value={localFilters.transmission}
             onValueChange={(v) => setLocalFilters({ ...localFilters, transmission: v === 'all' ? '' : v })}
           >
             <SelectTrigger className="bg-[#15151A] border-white/10 text-sm h-8 text-white">
-              <SelectValue placeholder="Todas" />
+              <SelectValue placeholder={t('allFeminine')} />
             </SelectTrigger>
             <SelectContent className="bg-[#15151A] border-white/10">
-              <SelectItem value="all" className="text-slate-300">Todas</SelectItem>
-              {TRANSMISIONES.map((t) => (
-                <SelectItem key={t} value={t} className="text-slate-300">{t}</SelectItem>
+              <SelectItem value="all" className="text-slate-300">{t('allFeminine')}</SelectItem>
+              {TRANSMISIONES.map((tr) => (
+                <SelectItem key={tr} value={tr} className="text-slate-300">{tr}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -210,16 +212,16 @@ export function FilterSidebar() {
 
         {/* Portal */}
         <div className="mb-5">
-          <p className="text-slate-400 text-xs font-medium mb-2 uppercase tracking-wide">Portal</p>
+          <p className="text-slate-400 text-xs font-medium mb-2 uppercase tracking-wide">{t('portal')}</p>
           <Select
             value={localFilters.portal}
             onValueChange={(v) => setLocalFilters({ ...localFilters, portal: v === 'all' ? '' : v })}
           >
             <SelectTrigger className="bg-[#15151A] border-white/10 text-sm h-8 text-white">
-              <SelectValue placeholder="Todos" />
+              <SelectValue placeholder={t('all')} />
             </SelectTrigger>
             <SelectContent className="bg-[#15151A] border-white/10">
-              <SelectItem value="all" className="text-slate-300">Todos</SelectItem>
+              <SelectItem value="all" className="text-slate-300">{t('all')}</SelectItem>
               {PORTALES.map((p) => (
                 <SelectItem key={p.value} value={p.value} className="text-slate-300">{p.label}</SelectItem>
               ))}
@@ -233,7 +235,7 @@ export function FilterSidebar() {
           fullWidth
           className="font-semibold"
         >
-          Aplicar filtros
+          {t('apply')}
         </GradientButton>
       </div>
     </aside>

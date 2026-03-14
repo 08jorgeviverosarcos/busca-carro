@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { track, MP_GALLERY_IMAGE_CHANGED } from '@/lib/mixpanel'
 
 type CarDetailGalleryProps = {
@@ -13,11 +14,12 @@ type CarDetailGalleryProps = {
 
 export function CarDetailGallery({ images, title, badges = [] }: CarDetailGalleryProps) {
   const [current, setCurrent] = useState(0)
+  const t = useTranslations('carDetails')
 
   if (!images.length) {
     return (
       <div className="h-[320px] md:h-[500px] glass-panel rounded-2xl flex items-center justify-center">
-        <span className="text-slate-600">Sin imágenes disponibles</span>
+        <span className="text-slate-600">{t('noImages')}</span>
       </div>
     )
   }
@@ -143,7 +145,7 @@ export function CarDetailGallery({ images, title, badges = [] }: CarDetailGaller
               />
               {extraPhotos > 0 && (
                 <div className="absolute inset-0 bg-black/45 flex items-center justify-center">
-                  <span className="text-white text-sm font-bold">+{extraPhotos} fotos</span>
+                  <span className="text-white text-sm font-bold">{t('extraPhotos', { count: extraPhotos })}</span>
                 </div>
               )}
             </button>

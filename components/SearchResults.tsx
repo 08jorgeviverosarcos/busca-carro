@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
+import { useTranslations } from 'next-intl'
 import { FilterSidebar } from '@/components/FilterSidebar'
 import { CarGrid } from '@/components/CarGrid'
 import { SearchBar } from '@/components/SearchBar'
@@ -48,23 +49,24 @@ type ApiResponse = {
   meta?: ApiMeta
 }
 
-const SORT_OPTIONS = [
-  { value: 'recent', label: 'Más recientes' },
-  { value: 'price_asc', label: 'Menor precio' },
-  { value: 'price_desc', label: 'Mayor precio' },
-  { value: 'year_desc', label: 'Más nuevos' },
-  { value: 'mileage_asc', label: 'Menor km' },
-]
-
 export function SearchResults() {
   const searchParams = useSearchParams()
   const router = useRouter()
+  const t = useTranslations('search')
 
   const q = searchParams.get('q') ?? ''
   const brand = searchParams.get('brand') ?? ''
   const city = searchParams.get('city') ?? ''
   const sortBy = searchParams.get('sortBy') ?? 'recent'
   const page = parseInt(searchParams.get('page') ?? '1')
+
+  const SORT_OPTIONS = [
+    { value: 'recent', label: t('sort.recent') },
+    { value: 'price_asc', label: t('sort.priceAsc') },
+    { value: 'price_desc', label: t('sort.priceDesc') },
+    { value: 'year_desc', label: t('sort.yearDesc') },
+    { value: 'mileage_asc', label: t('sort.mileageAsc') },
+  ]
 
   const { data, isLoading } = useQuery<ApiResponse>({
     queryKey: ['search', searchParams.toString()],
@@ -106,12 +108,12 @@ export function SearchResults() {
 
   // Título descriptivo
   const searchTitle = q
-    ? `Resultados para "${q}"`
+    ? t('resultsFor', { query: q })
     : brand
-      ? `${brand} en venta`
+      ? t('brandForSale', { brand })
       : city
-        ? `Carros en ${city}`
-        : 'Todos los carros'
+        ? t('carsIn', { city })
+        : t('allCars')
 
   return (
     <div className="flex flex-col lg:flex-row gap-6">
@@ -120,7 +122,7 @@ export function SearchResults() {
       <div className="flex-1 min-w-0">
         {/* Barra de búsqueda */}
         <div className="mb-4">
-          <SearchBar placeholder="Refinar búsqueda..." />
+          <SearchBar placeholder={t('refineSearch')} />
         </div>
 
         {/* Header de resultados */}
@@ -129,7 +131,7 @@ export function SearchResults() {
             <h1 className="text-white font-bold text-lg">{searchTitle}</h1>
             {!isLoading && meta && (
               <p className="text-slate-400 text-sm">
-                {meta.total.toLocaleString('es-CO')} resultados
+                {t('resultsCount', { count: meta.total.toLocaleString('es-CO') })}
               </p>
             )}
           </div>
@@ -167,7 +169,7 @@ export function SearchResults() {
             </Button>
 
             <span className="text-slate-400 text-sm px-4">
-              Página {page} de {meta.totalPages}
+              {t('pagination', { page, totalPages: meta.totalPages })}
             </span>
 
             <Button

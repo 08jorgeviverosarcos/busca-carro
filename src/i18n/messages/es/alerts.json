@@ -1,0 +1,10 @@
+{
+  "createAlert": "Crear alerta",
+  "modalTitle": "Crear alerta de búsqueda",
+  "modalDescription": "Te notificaremos por email cuando aparezcan nuevos carros que coincidan con tus filtros actuales.",
+  "emailPlaceholder": "tu@email.com",
+  "submit": "Activar alerta",
+  "submitting": "Creando...",
+  "success": "✅ Alerta creada correctamente",
+  "error": "No se pudo crear la alerta. Intenta más tarde."
+}

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Search, Loader2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { Input } from '@/components/ui/input'
 import { GradientButton } from '@/components/ui/gradient-button'
 import { useSearchStore } from '@/store/searchStore'
@@ -14,7 +15,9 @@ type SearchBarProps = {
   placeholder?: string
 }
 
-export function SearchBar({ large = false, placeholder = 'Buscar marca, modelo, año...' }: SearchBarProps) {
+export function SearchBar({ large = false, placeholder }: SearchBarProps) {
+  const t = useTranslations('search')
+  const tc = useTranslations('common')
   const router = useRouter()
   const { filters, setFilter } = useSearchStore()
   const [inputValue, setInputValue] = useState(filters.q)
@@ -85,7 +88,7 @@ export function SearchBar({ large = false, placeholder = 'Buscar marca, modelo, 
           <input
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder={placeholder}
+            placeholder={placeholder ?? t('searchPlaceholder')}
             disabled={isParsing}
             className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-white py-5 px-4 text-lg placeholder:text-slate-600"
           />
@@ -95,7 +98,7 @@ export function SearchBar({ large = false, placeholder = 'Buscar marca, modelo, 
               disabled={isParsing}
               size="md"
             >
-              Buscar
+              {tc('search')}
             </GradientButton>
           </div>
         </div>
@@ -111,7 +114,7 @@ export function SearchBar({ large = false, placeholder = 'Buscar marca, modelo, 
         <Input
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          placeholder={placeholder}
+          placeholder={placeholder ?? t('searchPlaceholder')}
           disabled={isParsing}
           className="pl-10 bg-[#15151A] border-white/10 text-white placeholder:text-slate-500 focus:border-white/20"
         />
@@ -121,7 +124,7 @@ export function SearchBar({ large = false, placeholder = 'Buscar marca, modelo, 
         disabled={isParsing}
         size="sm"
       >
-        {isParsing ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Buscar'}
+        {isParsing ? <Loader2 className="w-4 h-4 animate-spin" /> : tc('search')}
       </GradientButton>
     </form>
   )

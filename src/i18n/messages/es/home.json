@@ -1,0 +1,12 @@
+{
+  "badge": "Búsqueda inteligente con IA",
+  "title": "La forma más inteligente de encontrar tu próximo carro.",
+  "subtitle": "Dile a Carli qué buscas. Sin filtros, sin ir portal por portal. Solo lenguaje natural.",
+  "searchPlaceholder": "Busca con IA: SUV bajo 80 millones en Bogotá...",
+  "cta": {
+    "title": "¿Listo para encontrar tu carro?",
+    "subtitle": "Miles de anuncios de todos los portales, actualizados diariamente. Empieza a buscar ahora.",
+    "searchCars": "Buscar carros",
+    "viewInventory": "Ver todo el inventario"
+  }
+}

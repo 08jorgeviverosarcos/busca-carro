@@ -1,0 +1,9 @@
+{
+  "priceAligned": "Precio acorde a Fasecolda",
+  "belowFasecolda": "{percent}% por debajo de Fasecolda",
+  "aboveFasecolda": "{percent}% por encima de Fasecolda",
+  "versionsAvailable": "Hay {count} versiones en Fasecolda para este modelo. Selecciona la tuya:",
+  "selectVersion": "— Seleccionar versión —",
+  "selectToCompare": "Selecciona una versión para comparar el precio",
+  "refLabel": "Ref. Fasecolda:"
+}

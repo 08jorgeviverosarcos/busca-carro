@@ -1,0 +1,19 @@
+{
+  "title": "Filtros",
+  "clear": "Limpiar",
+  "apply": "Aplicar filtros",
+  "brand": "Marca",
+  "year": "Año",
+  "yearFrom": "Desde",
+  "yearTo": "Hasta",
+  "priceCop": "Precio COP",
+  "priceMin": "Mínimo",
+  "priceMax": "Máximo",
+  "city": "Ciudad",
+  "cityPlaceholder": "Ej: Bogotá, Medellín...",
+  "fuel": "Combustible",
+  "transmission": "Transmisión",
+  "portal": "Portal",
+  "all": "Todos",
+  "allFeminine": "Todas"
+}
