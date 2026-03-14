@@ -6,7 +6,7 @@ import { extractVendeTuNave } from '@/lib/extractors/vendetunave'
 import { extractOLX } from '@/lib/extractors/olx'
 import { extractAutocosmos } from '@/lib/extractors/autocosmos'
 import { normalizeListings } from '@/lib/normalizer'
-import { upsertListings, deactivateStaleListings, deactivateMissingListings } from '@/lib/storage'
+import { upsertListings, deactivateStaleListings } from '@/lib/storage'
 import { prisma } from '@/lib/prisma'
 
 const PORTALES_VALIDOS = ['tucarro', 'vendetunave', 'olx', 'autocosmos'] as const
@@ -69,17 +69,10 @@ export async function POST(req: NextRequest) {
     // CAPA 3: Almacenamiento
     const syncStats = await upsertListings(normalized)
 
-    // Desactivar listings no encontrados:
-    // - Si recorrimos toda la paginación: desactivar inmediatamente los que no aparecieron
-    // - Si fue scrape parcial: usar lógica de 7 días (no sabemos si siguen activos)
-    let deactivated: number
-    if (reachedEnd) {
-      const seenIds = normalized.map((l) => l.externalId)
-      deactivated = await deactivateMissingListings(portal, seenIds)
-      console.log(`🗑️ Sync completo — ${deactivated} anuncios desactivados (no encontrados en scrape)`)
-    } else {
-      deactivated = await deactivateStaleListings(portal)
-    }
+    // Desactivar listings no actualizados en los últimos 7 días.
+    // No usamos deactivateMissingListings por lote porque el sync corre en múltiples
+    // lotes parciales — cada lote solo ve un subconjunto de IDs y desactivaría el resto.
+    const deactivated = await deactivateStaleListings(portal)
 
     const finishedAt = new Date()
 

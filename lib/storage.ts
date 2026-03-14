@@ -60,12 +60,20 @@ export async function upsertListings(listings: NormalizedListing[]): Promise<Syn
         const newPrice = listing.priceCop !== null ? BigInt(listing.priceCop) : null
         const priceChanged = newPrice !== null && existing.priceCop !== newPrice
 
+        // Si ya se hizo scraping de detalle, proteger imágenes (son de mayor calidad)
+        const detailScrapped = existing.detailScrapedAt !== null
+        const newImages = !detailScrapped && listing.images.length > 0 ? listing.images : existing.images
+
+        const imagesChanged = !detailScrapped &&
+          listing.images.length > 0 &&
+          JSON.stringify(listing.images) !== JSON.stringify(existing.images)
+
         // Actualizar precio, imágenes, página de origen y marcar como activo
         await prisma.listing.update({
           where: { id: existing.id },
           data: {
             priceCop: newPrice !== null ? newPrice : existing.priceCop,
-            images: listing.images.length > 0 ? listing.images : existing.images,
+            images: newImages,
             sourcePage: listing.sourcePage ?? existing.sourcePage,
             isActive: true,
             scrapedAt: listing.scrapedAt,
@@ -83,7 +91,7 @@ export async function upsertListings(listings: NormalizedListing[]): Promise<Syn
           })
         }
 
-        updated++
+        if (priceChanged || imagesChanged) updated++
       }
     } catch (err) {
       console.error(`❌ Error guardando ${listing.sourcePortal}/${listing.externalId}:`, err)
