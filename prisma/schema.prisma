@@ -14,6 +14,7 @@ model Listing {
   title        String
   brand        String?
   model        String?
+  trim         String?    // versión/paquete del modelo (ej: "2.0 Touring Mecanico Nueva Generacion")
   year         Int?
   priceCop     BigInt?
   mileage      Int?

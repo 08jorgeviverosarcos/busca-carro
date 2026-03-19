@@ -16,7 +16,8 @@
     "sync:olx": "node scripts/sync.mjs olx",
     "sync:autocosmos": "node scripts/sync.mjs autocosmos",
     "sync:vendetunave": "node scripts/sync.mjs vendetunave",
-    "sync:all": "npm run sync:autocosmos && npm run sync:vendetunave",
+    "sync:carroya": "node scripts/sync.mjs carroya",
+    "sync:all": "npm run sync:autocosmos && npm run sync:vendetunave && npm run sync:carroya",
     "db:fix-vtn-urls": "node scripts/fix-vendetunave-urls.mjs",
     "db:backfill-prices": "node scripts/backfill-price-history.mjs",
     "sync:fasecolda": "node scripts/import-fasecolda.mjs"

@@ -28,6 +28,7 @@ export async function upsertListings(listings: NormalizedListing[]): Promise<Syn
             title: listing.title,
             brand: listing.brand,
             model: listing.model,
+            trim: listing.trim ?? null,
             year: listing.year,
             priceCop: listing.priceCop !== null ? BigInt(listing.priceCop) : null,
             mileage: listing.mileage,

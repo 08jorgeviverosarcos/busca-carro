@@ -7,6 +7,7 @@ import { prisma } from '@/lib/prisma'
 import { updateListingDetail } from '@/lib/storage'
 import { scrapeVendeTuNaveDetail, type VTNDetailData } from '@/lib/extractors/vendetunave-detail'
 import { scrapeAutocosmosDetail, type AutocosmosDetailData } from '@/lib/extractors/autocosmos-detail'
+import { scrapeCarroyaDetail, type CarroyaDetailData } from '@/lib/extractors/carroya-detail'
 
 const DETAIL_STALE_DAYS = 7
 const SCRAPE_TIMEOUT_MS = 10_000
@@ -37,12 +38,14 @@ export async function POST(req: Request, { params }: RouteContext) {
   }
 
   // Seleccionar extractor según portal
-  let scrapePromise: Promise<VTNDetailData | AutocosmosDetailData | null>
+  let scrapePromise: Promise<VTNDetailData | AutocosmosDetailData | CarroyaDetailData | null>
 
   if (listing.sourcePortal === 'vendetunave') {
     scrapePromise = scrapeVendeTuNaveDetail(listing.externalId)
   } else if (listing.sourcePortal === 'autocosmos') {
     scrapePromise = scrapeAutocosmosDetail(listing.urlOriginal)
+  } else if (listing.sourcePortal === 'carroya') {
+    scrapePromise = scrapeCarroyaDetail(listing.urlOriginal)
   } else {
     return NextResponse.json({ enriched: false, reason: 'unsupported' })
   }

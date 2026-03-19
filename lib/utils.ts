@@ -66,6 +66,7 @@ export const PORTAL_COLORS: Record<string, string> = {
   vendetunave: 'bg-green-500 text-white',
   olx: 'bg-orange-500 text-white',
   autocosmos: 'bg-purple-500 text-white',
+  carroya: 'bg-red-500 text-white',
 }
 
 export const PORTAL_LABELS: Record<string, string> = {
@@ -74,4 +75,5 @@ export const PORTAL_LABELS: Record<string, string> = {
   vendetunave: 'VendeTuNave',
   olx: 'OLX',
   autocosmos: 'Autocosmos',
+  carroya: 'CarroYa',
 }

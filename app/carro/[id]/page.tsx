@@ -5,6 +5,7 @@ import { formatPrice, formatMileage, formatDate, PORTAL_LABELS } from '@/lib/uti
 import { updateListingDetail } from '@/lib/storage'
 import { scrapeVendeTuNaveDetail, type VTNDetailData } from '@/lib/extractors/vendetunave-detail'
 import { scrapeAutocosmosDetail, type AutocosmosDetailData } from '@/lib/extractors/autocosmos-detail'
+import { scrapeCarroyaDetail, type CarroyaDetailData } from '@/lib/extractors/carroya-detail'
 import { getFasecoldaCandidates } from '@/lib/fasecolda/lookup'
 import { CarDetailGallery } from '@/components/CarDetailGallery'
 import { CarCard } from '@/components/CarCard'
@@ -97,11 +98,13 @@ export default async function CarroDetailPage({ params }: PageProps) {
     // Si la promesa tarda más de 10s, resolve(null) y se continúa con datos básicos
     const timeout = new Promise<null>((resolve) => setTimeout(() => resolve(null), 10_000))
 
-    let scrapePromise: Promise<VTNDetailData | AutocosmosDetailData | null> | null = null
+    let scrapePromise: Promise<VTNDetailData | AutocosmosDetailData | CarroyaDetailData | null> | null = null
     if (listing.sourcePortal === 'vendetunave') {
       scrapePromise = scrapeVendeTuNaveDetail(listing.externalId)
     } else if (listing.sourcePortal === 'autocosmos') {
       scrapePromise = scrapeAutocosmosDetail(listing.urlOriginal)
+    } else if (listing.sourcePortal === 'carroya') {
+      scrapePromise = scrapeCarroyaDetail(listing.urlOriginal)
     }
 
     if (scrapePromise) {
@@ -285,6 +288,9 @@ export default async function CarroDetailPage({ params }: PageProps) {
                   <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-tight text-white">
                     {listing.title}
                   </h1>
+                  {listing.trim && (
+                    <p className="mt-1 text-sm text-slate-400 font-medium">{listing.trim}</p>
+                  )}
                   <div className="mt-3 flex flex-wrap items-center gap-3 text-slate-400 text-sm">
                     <span className="inline-flex items-center gap-1.5">
                       <MapPin className="w-4 h-4 text-slate-500" />

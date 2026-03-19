@@ -12,6 +12,7 @@ export type RawListing = {
   rawTransmission: string
   rawBrand: string
   rawModel: string
+  rawTrim?: string       // versión detallada del modelo (clinea2 en CarroYa, vacío en otros portales)
   images: string[]
   urlOriginal: string
   scrapedAt: Date
@@ -24,6 +25,7 @@ export type NormalizedListing = {
   title: string
   brand: string | null
   model: string | null
+  trim: string | null    // versión/paquete del modelo
   year: number | null
   priceCop: number | null
   mileage: number | null

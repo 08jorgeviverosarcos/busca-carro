@@ -27,6 +27,7 @@ const command = process.argv[2] // 'ml', 'tucarro', 'vendetunave', 'olx', 'autoc
 const PORTAL_CONFIG = {
   autocosmos: { total: 10, batchSize: 5, unit: 'páginas' }, // ~40 listings/página × 10 páginas ≈ 408 vehículos
   vendetunave: { total: 604, batchSize: 20, unit: 'páginas' }, // 20 vehículos/página × 604 páginas ≈ 12,000 vehículos
+  carroya: { total: 1489, batchSize: 20, unit: 'páginas' }, // 20 listings/página × 1489 páginas ≈ 29,777 vehículos
 }
 
 async function syncBatch(portal, startIdx, batchSize) {

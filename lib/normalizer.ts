@@ -387,6 +387,7 @@ export function normalizeListings(rawListings: RawListing[]): {
       title: raw.rawTitle,
       brand,
       model,
+      trim: raw.rawTrim ? titleCase(raw.rawTrim.trim()) : null,
       year,
       priceCop: normalizePrice(raw.rawPrice),
       mileage,

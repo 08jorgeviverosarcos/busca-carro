@@ -5,11 +5,12 @@ import { extractTuCarro } from '@/lib/extractors/tucarro'
 import { extractVendeTuNave } from '@/lib/extractors/vendetunave'
 import { extractOLX } from '@/lib/extractors/olx'
 import { extractAutocosmos } from '@/lib/extractors/autocosmos'
+import { extractCarroya, type CarroyaExtraFields } from '@/lib/extractors/carroya'
 import { normalizeListings } from '@/lib/normalizer'
-import { upsertListings, deactivateStaleListings } from '@/lib/storage'
+import { upsertListings, deactivateStaleListings, updateListingDetail } from '@/lib/storage'
 import { prisma } from '@/lib/prisma'
 
-const PORTALES_VALIDOS = ['tucarro', 'vendetunave', 'olx', 'autocosmos'] as const
+const PORTALES_VALIDOS = ['tucarro', 'vendetunave', 'olx', 'autocosmos', 'carroya'] as const
 type Portal = (typeof PORTALES_VALIDOS)[number]
 
 export async function POST(req: NextRequest) {
@@ -49,6 +50,7 @@ export async function POST(req: NextRequest) {
     // CAPA 1: Extracción según portal
     let rawListings = []
     let reachedEnd = false
+    let carroyaExtraFields: CarroyaExtraFields[] = []
     if (portal === 'tucarro') {
       rawListings = await extractTuCarro(pages)
     } else if (portal === 'vendetunave') {
@@ -57,6 +59,11 @@ export async function POST(req: NextRequest) {
       reachedEnd = result.reachedEnd
     } else if (portal === 'olx') {
       rawListings = await extractOLX(pages)
+    } else if (portal === 'carroya') {
+      const result = await extractCarroya(pages, startIdx)
+      rawListings = result.listings
+      reachedEnd = result.reachedEnd
+      carroyaExtraFields = result.extraFields
     } else {
       const result = await extractAutocosmos(pages, startIdx)
       rawListings = result.listings
@@ -68,6 +75,23 @@ export async function POST(req: NextRequest) {
 
     // CAPA 3: Almacenamiento
     const syncStats = await upsertListings(normalized)
+
+    // PASO EXTRA CarroYa: inyectar campos extra del bulk (color, engineSize, condition)
+    // que no caben en RawListing/NormalizedListing — solo para listings nuevos (sin detailScrapedAt)
+    if (portal === 'carroya' && carroyaExtraFields.length > 0) {
+      for (const extra of carroyaExtraFields) {
+        const existing = await prisma.listing.findUnique({
+          where: { sourcePortal_externalId: { sourcePortal: 'carroya', externalId: extra.externalId } },
+          select: { id: true, detailScrapedAt: true },
+        })
+        if (!existing || existing.detailScrapedAt) continue
+        await updateListingDetail(existing.id, {
+          color: extra.color,
+          engineSize: extra.engineSize,
+          condition: extra.condition,
+        })
+      }
+    }
 
     // Desactivar listings no actualizados en los últimos 7 días.
     // No usamos deactivateMissingListings por lote porque el sync corre en múltiples
