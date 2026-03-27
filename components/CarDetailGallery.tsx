@@ -59,8 +59,8 @@ export function CarDetailGallery({ images, title, badges = [] }: CarDetailGaller
             src={images[current]}
             alt={`${title} - imagen ${current + 1}`}
             fill
+            priority
             className="object-cover grayscale-[0.2] group-hover:scale-105 group-hover:grayscale-0 transition-all duration-700"
-            unoptimized
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
 
@@ -111,7 +111,6 @@ export function CarDetailGallery({ images, title, badges = [] }: CarDetailGaller
               alt={`${title} - imagen secundaria`}
               fill
               className="object-cover grayscale-[0.2] group-hover:scale-105 group-hover:grayscale-0 transition-all duration-700"
-              unoptimized
             />
           </button>
         )}
@@ -128,7 +127,6 @@ export function CarDetailGallery({ images, title, badges = [] }: CarDetailGaller
                 alt={`${title} - imagen secundaria 1`}
                 fill
                 className="object-cover grayscale-[0.2] group-hover:scale-105 group-hover:grayscale-0 transition-all duration-700"
-                unoptimized
               />
             </button>
             <button
@@ -141,7 +139,6 @@ export function CarDetailGallery({ images, title, badges = [] }: CarDetailGaller
                 alt={`${title} - imagen secundaria 2`}
                 fill
                 className="object-cover grayscale-[0.2] group-hover:scale-105 group-hover:grayscale-0 transition-all duration-700"
-                unoptimized
               />
               {extraPhotos > 0 && (
                 <div className="absolute inset-0 bg-black/45 flex items-center justify-center">
@@ -164,7 +161,7 @@ export function CarDetailGallery({ images, title, badges = [] }: CarDetailGaller
               }`}
               aria-label={`Ver imagen ${i + 1}`}
             >
-              <Image src={img} alt={`Thumb ${i + 1}`} fill className="object-cover" unoptimized />
+              <Image src={img} alt={`Thumb ${i + 1}`} fill className="object-cover" />
             </button>
           ))}
         </div>

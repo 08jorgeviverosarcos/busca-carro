@@ -15,6 +15,7 @@ import { Badge } from '@/components/ui/badge'
 import { GradientButton } from '@/components/ui/gradient-button'
 import { NavHeader } from '@/components/NavHeader'
 import { TrackedExternalLink } from '@/components/TrackedExternalLink'
+import { JsonLd } from '@/components/JsonLd'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import appIcon from '@/app/apple-touch-icon.png'
@@ -70,11 +71,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: title.trim(),
-    description,
+    description: description || undefined,
+    alternates: {
+      canonical: `/carro/${id}`,
+    },
     openGraph: {
       title: title.trim(),
-      description,
+      description: description || undefined,
       images: listing.images[0] ? [{ url: listing.images[0] }] : [],
+      url: `/carro/${id}`,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: title.trim(),
+      description: description || undefined,
+      images: listing.images[0] ? [listing.images[0]] : undefined,
     },
   }
 }
@@ -169,6 +181,33 @@ export default async function CarroDetailPage({ params }: PageProps) {
   }))
 
   const priceReference = fasecoldaCandidates[0] ? Number(fasecoldaCandidates[0].valueCop) : null
+
+  const vehicleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Vehicle',
+    name: listing.title,
+    brand: listing.brand ? { '@type': 'Brand', name: listing.brand } : undefined,
+    model: listing.model ?? undefined,
+    vehicleModelDate: listing.year?.toString() ?? undefined,
+    mileageFromOdometer: listing.mileage
+      ? { '@type': 'QuantitativeValue', value: listing.mileage, unitCode: 'KMT' }
+      : undefined,
+    fuelType: listing.fuelType ?? undefined,
+    vehicleTransmission: listing.transmission ?? undefined,
+    description: listing.description ?? undefined,
+    image: listing.images.length > 0 ? listing.images : undefined,
+    offers: listing.priceCop
+      ? {
+          '@type': 'Offer',
+          price: Number(listing.priceCop),
+          priceCurrency: 'COP',
+          availability: listing.isActive
+            ? 'https://schema.org/InStock'
+            : 'https://schema.org/Discontinued',
+          url: listing.urlOriginal,
+        }
+      : undefined,
+  }
   const location = [listing.city, listing.department].filter(Boolean).join(', ')
   const marketLow = priceReference ? Math.round(priceReference * 0.92) : null
   const marketHigh = priceReference ? Math.round(priceReference * 1.08) : null
@@ -247,6 +286,7 @@ export default async function CarroDetailPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-[#0B0B0F]">
+      <JsonLd data={vehicleJsonLd} />
       <NavHeader
         breadcrumbs={[
           { label: tc('breadcrumbSearch'), href: '/buscar' },

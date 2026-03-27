@@ -3,9 +3,25 @@ import { getTranslations } from 'next-intl/server'
 import { SearchResults } from '@/components/SearchResults'
 import { NavHeader } from '@/components/NavHeader'
 
-export const metadata = {
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
   title: 'Buscar carros',
-  description: 'Busca y filtra carros usados en Colombia de todos los portales.',
+  description: 'Busca y filtra carros usados en Colombia de todos los portales. Filtra por marca, ciudad, precio y más.',
+  alternates: {
+    canonical: '/buscar',
+  },
+  openGraph: {
+    title: 'Buscar carros usados en Colombia | Carli',
+    description: 'Busca y filtra carros usados en Colombia de todos los portales.',
+    url: '/buscar',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Buscar carros usados en Colombia | Carli',
+    description: 'Busca y filtra carros usados en Colombia de todos los portales.',
+  },
 }
 
 export default async function BuscarPage() {

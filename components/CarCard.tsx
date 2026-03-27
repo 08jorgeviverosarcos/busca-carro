@@ -92,7 +92,6 @@ export function CarCard({
                 const target = e.target as HTMLImageElement
                 target.style.display = 'none'
               }}
-              unoptimized
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-slate-600">

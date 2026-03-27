@@ -1,8 +1,29 @@
+import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
+
+export const metadata: Metadata = {
+  title: 'Carli — Todos los carros de Colombia en un solo lugar',
+  description: 'Meta-buscador de carros usados en Colombia. Busca y compara carros usados de Autocosmos, VendeTuNave y más portales en un solo lugar.',
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: 'Carli — Todos los carros de Colombia en un solo lugar',
+    description: 'Meta-buscador de carros usados en Colombia. Busca y compara carros usados de Autocosmos, VendeTuNave y más portales.',
+    url: '/',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Carli — Todos los carros de Colombia en un solo lugar',
+    description: 'Meta-buscador de carros usados en Colombia.',
+  },
+}
 import { SearchBar } from '@/components/SearchBar'
 import { NavHeader } from '@/components/NavHeader'
 import { GradientButton } from '@/components/ui/gradient-button'
 import { TrackedLink } from '@/components/TrackedLink'
+import { JsonLd } from '@/components/JsonLd'
 
 const FILTROS_RAPIDOS = [
   { label: 'Toyota', href: '/buscar?brand=Toyota' },
@@ -73,6 +94,21 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      <JsonLd data={{
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'Carli',
+        url: process.env.NEXT_PUBLIC_APP_URL,
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: `${process.env.NEXT_PUBLIC_APP_URL}/buscar?q={search_term_string}`,
+          },
+          'query-input': 'required name=search_term_string',
+        },
+      }} />
 
       {/* CTA Section — igual al Stitch */}
       <section className="max-w-5xl mx-auto px-6 pb-24">

@@ -18,11 +18,26 @@ export const metadata: Metadata = {
   description: 'Meta-buscador de carros usados en Colombia. Agrega anuncios de MercadoLibre, TuCarro, VendeTuNave y OLX.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'),
   icons: {
-    icon: appIcon.src,
+    icon: [
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
     shortcut: appIcon.src,
     apple: appIcon.src,
   },
   manifest: '/manifest.webmanifest',
+  openGraph: {
+    type: 'website',
+    locale: 'es_CO',
+    siteName: 'Carli',
+    title: 'Carli — Todos los carros de Colombia en un solo lugar',
+    description: 'Meta-buscador de carros usados en Colombia. Agrega anuncios de Carroya, VendeTuNave, Autocosmos.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Carli — Todos los carros de Colombia en un solo lugar',
+    description: 'Meta-buscador de carros usados en Colombia.',
+  },
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
