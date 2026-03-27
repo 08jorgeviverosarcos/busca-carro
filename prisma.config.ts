@@ -3,12 +3,19 @@
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
+// Schema de PostgreSQL según entorno — mismo criterio que lib/prisma.ts
+const DB_SCHEMA = process.env.DB_SCHEMA ?? 'public'
+const baseUrl = process.env["DATABASE_URL"] ?? ''
+const datasourceUrl = baseUrl.includes('?')
+  ? `${baseUrl}&schema=${DB_SCHEMA}`
+  : `${baseUrl}?schema=${DB_SCHEMA}`
+
 export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
+    url: datasourceUrl,
   },
 });

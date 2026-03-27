@@ -4,13 +4,17 @@ import { PrismaClient } from '@/lib/generated/prisma'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { Pool } from 'pg'
 
+// Schema de PostgreSQL según entorno — controlado por DB_SCHEMA en Vercel/local
+// Vercel Production=public, Vercel Preview=staging, local=dev
+const DB_SCHEMA = process.env.DB_SCHEMA ?? 'public'
+
 function createPrismaClient(): PrismaClient {
   const connectionString = process.env.DATABASE_URL
   if (!connectionString) {
     throw new Error('DATABASE_URL no está configurada en .env')
   }
   const pool = new Pool({ connectionString })
-  const adapter = new PrismaPg(pool)
+  const adapter = new PrismaPg(pool, { schema: DB_SCHEMA })
   return new PrismaClient({ adapter })
 }
 

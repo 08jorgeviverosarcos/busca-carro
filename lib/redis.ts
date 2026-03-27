@@ -3,8 +3,9 @@ import { Redis } from '@upstash/redis'
 
 let redisClient: Redis | null = null
 
-// Prefijo de entorno para separar keys dev/prod en la misma instancia de Upstash
-const ENV_PREFIX = process.env.NODE_ENV === 'production' ? 'prod:' : 'dev:'
+// Prefijo de entorno — usa DB_SCHEMA para consistencia con PostgreSQL
+// Vercel Production=prod:, Vercel Preview=staging:, local=dev:
+const ENV_PREFIX = `${process.env.DB_SCHEMA ?? 'public'}:`
 
 /** Prefija cualquier key Redis con el entorno actual (dev: / prod:) */
 export function redisKey(key: string): string {
