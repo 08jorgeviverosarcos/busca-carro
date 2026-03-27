@@ -201,6 +201,43 @@ ML=yellow, TuCarro=blue, VendeTuNave=green, OLX=orange, Autocosmos=purple
 - **Autocosmos**: URLs por marca (`/auto/usado/{marca}`). Firecrawl cachea querystrings, por eso se usan URLs por marca. Rate limit: 1.1s entre requests.
 - **VendeTuNave**: `?pagina=N` no funciona server-side, se usa `?marca=BRAND`. Datos en `__NEXT_DATA__` → `props.pageProps.data.vehicles[]`. Rate limit: 600ms. Excluye motos automáticamente.
 
+## Protocolo de Sync
+
+### Estrategias
+
+| Modo | Comando | Cuándo usar |
+|------|---------|-------------|
+| Incremental | `npm run sync:incremental` | Uso normal diario — inserta nuevos, para cuando no hay inserts nuevos. **No desactiva listings.** |
+| Full | `npm run sync:full` | Semanal o después de >5 días sin sync — recorre todo, actualiza campos, desactiva listings desaparecidos. |
+| Por portal | `npm run sync:autocosmos` etc. | Sync puntual de un portal en modo incremental |
+
+### Regla crítica: nunca incremental después de >5 días sin sync
+
+Si llevas >5 días sin sync, **siempre empezar con `sync:full`**. El motivo:
+
+- `sync:incremental` para al primer batch con `inserted = 0` (todos los listings ya existen)
+- `deactivateStaleListings` (7 días) solo corre en modo `full` — no en incremental
+- Si corres incremental después de 7+ días, los listings antiguos quedan sin actualizar su `scrapedAt` pero NO se desactivan (correcto desde el fix del 2026-03-26)
+- Sin embargo, después de suficiente tiempo sin full sync, los listings desaparecidos del portal nunca se desactivarán
+
+### Recuperación de listings desactivados por error
+
+Los listings con `isActive = false` NO se borran de la DB. Un `sync:full` los reactiva al actualizar su `scrapedAt` y hacer `isActive: true` en el upsert.
+
+```bash
+# Verificar cuántos están inactivos por portal
+docker exec cop-dress-db psql -U cop -d busca_carro -c \
+  "SELECT \"sourcePortal\", COUNT(*) FROM \"Listing\" WHERE \"isActive\" = false GROUP BY \"sourcePortal\";"
+
+# Recuperar todo con full sync
+npm run sync:full
+```
+
+### Cómo funciona `deactivateStaleListings` vs `deactivateMissingListings`
+
+- `deactivateStaleListings(portal)` — desactiva listings cuyo `scrapedAt` sea > 7 días. Corre por batch en modo **full** únicamente (en `route.ts`). Safety net para listings que dejan de aparecer.
+- `deactivateMissingListings(portal, seenIds)` — desactiva listings del portal que NO estuvieron en el conjunto de IDs vistos. Corre al final del full sync completo (vía `/api/sync/deactivate`). Más preciso que el anterior.
+
 ## Analytics (Mixpanel)
 
 ### Setup

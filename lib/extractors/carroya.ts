@@ -97,32 +97,26 @@ function vehicleToExtraFields(v: CarroyaVehicle): CarroyaExtraFields {
 }
 
 async function fetchPage(page: number): Promise<{ vehicles: CarroyaVehicle[]; totalPages: number }> {
-  try {
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        seoArray: ['carros-y-camionetas', 'usado'],
-        params: { page: String(page) },
-      }),
-    })
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      seoArray: ['carros-y-camionetas', 'usado'],
+      params: { page: String(page) },
+    }),
+  })
 
-    if (!res.ok) {
-      console.error(`❌ CarroYa página ${page}: HTTP ${res.status}`)
-      return { vehicles: [], totalPages: 0 }
-    }
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status}`)
+  }
 
-    const data: CarroyaResponse = await res.json()
-    const mega = data.results?.megaHighlights ?? []
-    const super_ = data.results?.superHighlights ?? []
+  const data: CarroyaResponse = await res.json()
+  const mega = data.results?.megaHighlights ?? []
+  const super_ = data.results?.superHighlights ?? []
 
-    return {
-      vehicles: [...mega, ...super_],
-      totalPages: data.pages ?? 0,
-    }
-  } catch (err) {
-    console.error(`❌ CarroYa página ${page} excepción:`, err)
-    return { vehicles: [], totalPages: 0 }
+  return {
+    vehicles: [...mega, ...super_],
+    totalPages: data.pages ?? 0,
   }
 }
 
@@ -131,6 +125,7 @@ async function fetchPage(page: number): Promise<{ vehicles: CarroyaVehicle[]; to
 export async function extractCarroya(pages = 10, startIdx = 0): Promise<{
   listings: RawListing[]
   reachedEnd: boolean
+  hadError: boolean
   extraFields: CarroyaExtraFields[]
 }> {
   const startPage = startIdx > 0 ? startIdx : 1
@@ -141,6 +136,7 @@ export async function extractCarroya(pages = 10, startIdx = 0): Promise<{
   const allExtraFields: CarroyaExtraFields[] = []
   const seen = new Set<string>()
   let reachedEnd = false
+  let hadError = false
 
   for (let page = startPage; page <= endPage; page++) {
     try {
@@ -172,9 +168,11 @@ export async function extractCarroya(pages = 10, startIdx = 0): Promise<{
       if (page < endPage) await sleep(600)
     } catch (err) {
       console.error(`❌ CarroYa página ${page} excepción:`, err)
+      hadError = true
+      break
     }
   }
 
-  console.log(`✅ CarroYa: ${allListings.length} anuncios extraídos${reachedEnd ? ' (fin de paginación)' : ''}`)
-  return { listings: allListings, reachedEnd, extraFields: allExtraFields }
+  console.log(`✅ CarroYa: ${allListings.length} anuncios extraídos${reachedEnd ? ' (fin de paginación)' : ''}${hadError ? ' (detenido por error)' : ''}`)
+  return { listings: allListings, reachedEnd, hadError, extraFields: allExtraFields }
 }

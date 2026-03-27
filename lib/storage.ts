@@ -4,7 +4,11 @@ import { prisma } from '@/lib/prisma'
 import { NormalizedListing, SyncStats, GlobalStats } from '@/lib/types'
 
 // Upsert masivo: insertar nuevos, actualizar precio/estado de existentes
-export async function upsertListings(listings: NormalizedListing[]): Promise<SyncStats> {
+export async function upsertListings(
+  listings: NormalizedListing[],
+  options: { fullSync?: boolean } = {}
+): Promise<SyncStats> {
+  const { fullSync = false } = options
   let inserted = 0
   let updated = 0
   let skipped = 0
@@ -69,7 +73,8 @@ export async function upsertListings(listings: NormalizedListing[]): Promise<Syn
           listing.images.length > 0 &&
           JSON.stringify(listing.images) !== JSON.stringify(existing.images)
 
-        // Actualizar precio, imágenes, página de origen y marcar como activo
+        // Actualizar precio, imágenes, página de origen y marcar como activo.
+        // En full sync, también actualizar campos de identidad del listing.
         await prisma.listing.update({
           where: { id: existing.id },
           data: {
@@ -78,6 +83,22 @@ export async function upsertListings(listings: NormalizedListing[]): Promise<Syn
             sourcePage: listing.sourcePage ?? existing.sourcePage,
             isActive: true,
             scrapedAt: listing.scrapedAt,
+            ...(fullSync ? {
+              title: listing.title,
+              brand: listing.brand,
+              model: listing.model,
+              trim: listing.trim ?? null,
+              year: listing.year,
+              mileage: listing.mileage,
+              city: listing.city,
+              department: listing.department,
+              urlOriginal: listing.urlOriginal,
+              // fuelType y transmission solo si no hay detail scraping (son campos de detalle)
+              ...(!detailScrapped ? {
+                fuelType: listing.fuelType,
+                transmission: listing.transmission,
+              } : {}),
+            } : {}),
           },
         })
 
@@ -92,7 +113,8 @@ export async function upsertListings(listings: NormalizedListing[]): Promise<Syn
           })
         }
 
-        if (priceChanged || imagesChanged) updated++
+        // En full sync, contar toda actualización; en incremental, solo si cambió precio o imágenes
+        if (fullSync || priceChanged || imagesChanged) updated++
       }
     } catch (err) {
       console.error(`❌ Error guardando ${listing.sourcePortal}/${listing.externalId}:`, err)

@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ data: null, error: 'No autorizado' }, { status: 401 })
   }
 
-  let body: { portal?: string; pages?: number; startPage?: number; startIdx?: number }
+  let body: { portal?: string; pages?: number; startPage?: number; startIdx?: number; mode?: string }
   try {
     body = await req.json()
   } catch {
@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
   const portal = body.portal as Portal
   const pages = body.pages ?? 1
   const startIdx = body.startIdx ?? 0
+  const mode = (body.mode === 'full' ? 'full' : 'incremental') as 'full' | 'incremental'
 
   if (!PORTALES_VALIDOS.includes(portal)) {
     return NextResponse.json(
@@ -50,6 +51,7 @@ export async function POST(req: NextRequest) {
     // CAPA 1: Extracción según portal
     let rawListings = []
     let reachedEnd = false
+    let hadError = false
     let carroyaExtraFields: CarroyaExtraFields[] = []
     if (portal === 'tucarro') {
       rawListings = await extractTuCarro(pages)
@@ -57,24 +59,27 @@ export async function POST(req: NextRequest) {
       const result = await extractVendeTuNave(pages, startIdx)
       rawListings = result.listings
       reachedEnd = result.reachedEnd
+      hadError = result.hadError
     } else if (portal === 'olx') {
       rawListings = await extractOLX(pages)
     } else if (portal === 'carroya') {
       const result = await extractCarroya(pages, startIdx)
       rawListings = result.listings
       reachedEnd = result.reachedEnd
+      hadError = result.hadError
       carroyaExtraFields = result.extraFields
     } else {
       const result = await extractAutocosmos(pages, startIdx)
       rawListings = result.listings
       reachedEnd = result.reachedEnd
+      hadError = result.hadError
     }
 
     // CAPA 2: Normalización
     const { normalized, stats: normStats } = normalizeListings(rawListings)
 
     // CAPA 3: Almacenamiento
-    const syncStats = await upsertListings(normalized)
+    const syncStats = await upsertListings(normalized, { fullSync: mode === 'full' })
 
     // PASO EXTRA CarroYa: inyectar campos extra del bulk (color, engineSize, condition)
     // que no caben en RawListing/NormalizedListing — solo para listings nuevos (sin detailScrapedAt)
@@ -94,9 +99,11 @@ export async function POST(req: NextRequest) {
     }
 
     // Desactivar listings no actualizados en los últimos 7 días.
-    // No usamos deactivateMissingListings por lote porque el sync corre en múltiples
-    // lotes parciales — cada lote solo ve un subconjunto de IDs y desactivaría el resto.
-    const deactivated = await deactivateStaleListings(portal)
+    // Solo en full sync: el incremental para temprano a propósito (cuando no hay nuevos inserts)
+    // y deactivar por staleness destruiría listings válidos que no fueron visitados en ese lote.
+    // En full sync, el script acumula todos los IDs y llama /api/sync/deactivate al final,
+    // pero deactivateStaleListings aquí sirve como safety net adicional.
+    const deactivated = mode === 'full' ? await deactivateStaleListings(portal) : 0
 
     const finishedAt = new Date()
 
@@ -112,11 +119,16 @@ export async function POST(req: NextRequest) {
 
     console.log(`✅ Sync ${portal} completo: ${syncStats.inserted} nuevos, ${syncStats.updated} actualizados, ${normStats.discarded} descartados`)
 
+    const seenExternalIds = normalized.map((l) => l.externalId)
+
     return NextResponse.json({
       data: {
         portal,
         extracted: rawListings.length,
         normalized: normalized.length,
+        reachedEnd,
+        hadError,
+        seenExternalIds,
         ...syncStats,
         deactivated,
       },

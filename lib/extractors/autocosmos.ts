@@ -89,11 +89,11 @@ export async function extractAutocosmosUrl(app: FirecrawlApp, url: string): Prom
 // pages: cuántas páginas traer (~40 listings c/u)
 // startIdx: página inicial (1-based; 0 se trata como 1)
 // Retorna listings y si se llegó al final de la paginación (página vacía encontrada)
-export async function extractAutocosmos(pages = 10, startIdx = 0): Promise<{ listings: RawListing[]; reachedEnd: boolean }> {
+export async function extractAutocosmos(pages = 10, startIdx = 0): Promise<{ listings: RawListing[]; reachedEnd: boolean; hadError: boolean }> {
   const apiKey = process.env.FIRECRAWL_API_KEY
   if (!apiKey) {
     console.error('❌ Autocosmos: FIRECRAWL_API_KEY no configurada')
-    return { listings: [], reachedEnd: false }
+    return { listings: [], reachedEnd: false, hadError: true }
   }
 
   const startPage = startIdx > 0 ? startIdx : 1
@@ -104,6 +104,7 @@ export async function extractAutocosmos(pages = 10, startIdx = 0): Promise<{ lis
   const allListings: RawListing[] = []
   const seen = new Set<string>()
   let reachedEnd = false
+  let hadError = false
 
   for (let page = startPage; page <= endPage; page++) {
     const url = `${BASE_URL}?pidx=${page}`
@@ -128,11 +129,12 @@ export async function extractAutocosmos(pages = 10, startIdx = 0): Promise<{ lis
       if (page < endPage) await sleep(1100)
     } catch (err) {
       console.error(`❌ Autocosmos página ${page} excepción:`, err)
+      hadError = true
     }
   }
 
-  console.log(`✅ Autocosmos: ${allListings.length} anuncios extraídos${reachedEnd ? ' (fin de paginación)' : ''}`)
-  return { listings: allListings, reachedEnd }
+  console.log(`✅ Autocosmos: ${allListings.length} anuncios extraídos${reachedEnd ? ' (fin de paginación)' : ''}${hadError ? ' (con errores en algunas páginas)' : ''}`)
+  return { listings: allListings, reachedEnd, hadError }
 }
 
 function toRawListing(item: ParsedListing, page: number): RawListing {

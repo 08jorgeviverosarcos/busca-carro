@@ -28,9 +28,15 @@ export async function getFasecoldaCandidates(
 
   // Algunos portales incluyen la marca en el modelo (ej. "Mazda 2" → "2").
   // Fasecolda almacena solo el nombre corto del modelo, así que la eliminamos.
-  const modelForSearch = model
+  const modelRaw = model
     ? model.replace(new RegExp(`^${brand}\\s*`, 'i'), '').trim() || model
     : undefined
+
+  // Fasecolda omite guiones: "CX-30" → "CX30", "BT-50" → "BT50".
+  // Generamos variantes para cubrir ambas formas.
+  const modelVariants: string[] = modelRaw
+    ? Array.from(new Set([modelRaw, modelRaw.replace(/-/g, ''), modelRaw.replace(/-/g, ' ')]))
+    : []
 
   const latestPeriod = await prisma.fasecoldaValue.findFirst({
     select: { period: true },
@@ -42,9 +48,14 @@ export async function getFasecoldaCandidates(
     marca: fasecoldaBrand,
     values: { some: { year, period: latestPeriod.period } },
     // referencia1 siempre contiene el modelo en Fasecolda ("2 [2] [FL]", "COROLLA", etc.)
-    // Usamos startsWith para evitar falsos positivos: "2" no debe traer "BT50 [2]"
-    ...(modelForSearch
-      ? { referencia1: { startsWith: modelForSearch, mode: 'insensitive' as const } }
+    // Usamos startsWith para evitar falsos positivos: "2" no debe traer "BT50 [2]".
+    // Múltiples variantes para cubrir diferencias de guion (CX-30 vs CX30).
+    ...(modelVariants.length > 0
+      ? {
+          OR: modelVariants.map((v) => ({
+            referencia1: { startsWith: v, mode: 'insensitive' as const },
+          })),
+        }
       : {}),
   }
 

@@ -16,10 +16,14 @@
     "sync:olx": "node scripts/sync.mjs olx",
     "sync:autocosmos": "node scripts/sync.mjs autocosmos",
     "sync:vendetunave": "node scripts/sync.mjs vendetunave",
-    "sync:carroya": "node scripts/sync.mjs carroya",
+    "sync:carroya": "node scripts/sync.mjs carroya --mode=full",
     "sync:all": "npm run sync:autocosmos && npm run sync:vendetunave && npm run sync:carroya",
+    "sync:full": "node scripts/sync.mjs all --mode=full",
+    "sync:incremental": "node scripts/sync.mjs all --mode=incremental",
     "db:fix-vtn-urls": "node scripts/fix-vendetunave-urls.mjs",
+    "db:fix-carroya-urls": "node scripts/fix-carroya-urls.mjs",
     "db:backfill-prices": "node scripts/backfill-price-history.mjs",
+    "db:migrate-carroya-trim": "node scripts/migrate-carroya-trim.mjs",
     "sync:fasecolda": "node scripts/import-fasecolda.mjs"
   },
   "dependencies": {

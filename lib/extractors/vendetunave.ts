@@ -36,24 +36,17 @@ const HEADERS = {
 
 async function fetchPage(page: number): Promise<VTNVehicle[]> {
   const url = page === 1 ? LIST_URL : `${LIST_URL}?page=${page}`
-  try {
-    const res = await fetch(url, { headers: HEADERS })
-    if (!res.ok) {
-      console.error(`❌ VendeTuNave página ${page}: HTTP ${res.status}`)
-      return []
-    }
-    const html = await res.text()
-    const match = html.match(/<script id="__NEXT_DATA__[^>]*>([\s\S]+?)<\/script>/)
-    if (!match) {
-      console.error(`❌ VendeTuNave página ${page}: sin __NEXT_DATA__`)
-      return []
-    }
-    const json = JSON.parse(match[1])
-    return json.props?.pageProps?.data?.vehicles ?? []
-  } catch (err) {
-    console.error(`❌ VendeTuNave página ${page} excepción:`, err)
-    return []
+  const res = await fetch(url, { headers: HEADERS })
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status}`)
   }
+  const html = await res.text()
+  const match = html.match(/<script id="__NEXT_DATA__[^>]*>([\s\S]+?)<\/script>/)
+  if (!match) {
+    throw new Error('sin __NEXT_DATA__')
+  }
+  const json = JSON.parse(match[1])
+  return json.props?.pageProps?.data?.vehicles ?? []
 }
 
 function vehicleToRawListing(v: VTNVehicle, page: number): RawListing | null {
@@ -83,7 +76,7 @@ function vehicleToRawListing(v: VTNVehicle, page: number): RawListing | null {
 // pages: cuántas páginas traer (20 vehículos c/u)
 // startIdx: página inicial (1-based; 0 se trata como 1)
 // Retorna listings y si se llegó al final de la paginación (página vacía encontrada)
-export async function extractVendeTuNave(pages = 10, startIdx = 0): Promise<{ listings: RawListing[]; reachedEnd: boolean }> {
+export async function extractVendeTuNave(pages = 10, startIdx = 0): Promise<{ listings: RawListing[]; reachedEnd: boolean; hadError: boolean }> {
   const startPage = startIdx > 0 ? startIdx : 1
   const endPage = startPage + pages - 1
   console.log(`🔄 Extrayendo VendeTuNave (páginas ${startPage}–${endPage})...`)
@@ -91,6 +84,7 @@ export async function extractVendeTuNave(pages = 10, startIdx = 0): Promise<{ li
   const allListings: RawListing[] = []
   const seen = new Set<string>()
   let reachedEnd = false
+  let hadError = false
 
   for (let page = startPage; page <= endPage; page++) {
     try {
@@ -115,9 +109,11 @@ export async function extractVendeTuNave(pages = 10, startIdx = 0): Promise<{ li
       if (page < endPage) await sleep(600)
     } catch (err) {
       console.error(`❌ VendeTuNave página ${page} excepción:`, err)
+      hadError = true
+      break
     }
   }
 
-  console.log(`✅ VendeTuNave: ${allListings.length} anuncios extraídos${reachedEnd ? ' (fin de paginación)' : ''}`)
-  return { listings: allListings, reachedEnd }
+  console.log(`✅ VendeTuNave: ${allListings.length} anuncios extraídos${reachedEnd ? ' (fin de paginación)' : ''}${hadError ? ' (detenido por error)' : ''}`)
+  return { listings: allListings, reachedEnd, hadError }
 }
