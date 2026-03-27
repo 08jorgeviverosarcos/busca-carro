@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getRedis } from '@/lib/redis'
+import { getRedis, redisKey } from '@/lib/redis'
 import { BUSCACARRO_TO_FASECOLDA } from '@/lib/fasecolda/brand-map'
 
 // GET /api/fasecolda/lookup?brand=Toyota&year=2024&q=Corolla&transmission=Automático&fuelType=Gasolina
@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
   }
 
   // Caché Redis TTL 1 hora
-  const cacheKey = `fasecolda:lookup:${brand}:${year}:${q ?? ''}`
+  const cacheKey = redisKey(`fasecolda:lookup:${brand}:${year}:${q ?? ''}`)
   const redis = getRedis()
   if (redis) {
     const cached = await redis.get(cacheKey)

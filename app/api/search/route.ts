@@ -2,7 +2,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getRedis, CACHE_TTL } from '@/lib/redis'
+import { getRedis, CACHE_TTL, redisKey } from '@/lib/redis'
 import { sha256, serializeListing } from '@/lib/utils'
 import { ApiResponse } from '@/lib/types'
 import { Prisma } from '@/lib/generated/prisma'
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
 
     // Construir clave de caché
     const cacheParams = JSON.stringify({ q, brand, model, yearMin, yearMax, priceMin, priceMax, city, fuelType, transmission, portal, sortBy, page, limit })
-    const cacheKey = `search:${await sha256(cacheParams)}`
+    const cacheKey = redisKey(`search:${await sha256(cacheParams)}`)
 
     // Intentar caché Redis
     const redis = getRedis()

@@ -2,12 +2,12 @@
 
 import { NextResponse } from 'next/server'
 import { getGlobalStats } from '@/lib/storage'
-import { getRedis, CACHE_TTL } from '@/lib/redis'
+import { getRedis, CACHE_TTL, redisKey } from '@/lib/redis'
 
 export async function GET() {
   try {
     const redis = getRedis()
-    const cacheKey = 'stats:global'
+    const cacheKey = redisKey('stats:global')
 
     if (redis) {
       const cached = await redis.get(cacheKey)
