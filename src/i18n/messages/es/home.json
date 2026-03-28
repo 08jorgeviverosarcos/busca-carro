@@ -3,6 +3,21 @@
   "title": "La forma más inteligente de encontrar tu próximo carro.",
   "subtitle": "Dile a Carli qué buscas. Sin filtros, sin ir portal por portal. Solo lenguaje natural.",
   "searchPlaceholder": "Busca con IA: SUV bajo 80 millones en Bogotá...",
+  "stats": {
+    "totalListings": "{count} carros usados",
+    "cities": "en {count} ciudades",
+    "avgPrice": "Precio promedio",
+    "updated": "Actualizado diariamente"
+  },
+  "recentListings": {
+    "title": "Publicados recientemente",
+    "subtitle": "Los últimos carros agregados de todos los portales"
+  },
+  "exploreByBrand": {
+    "title": "Explorar por marca",
+    "subtitle": "Las marcas más buscadas en Colombia",
+    "viewAll": "Ver todos los {count} {brand}"
+  },
   "cta": {
     "title": "¿Listo para encontrar tu carro?",
     "subtitle": "Miles de anuncios de todos los portales, actualizados diariamente. Empieza a buscar ahora.",

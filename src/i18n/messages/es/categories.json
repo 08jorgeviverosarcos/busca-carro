@@ -1,0 +1,41 @@
+{
+  "brand": {
+    "title": "{brand} usados en Colombia",
+    "metaTitle": "{brand} usados en Colombia — {count} anuncios",
+    "metaDescription": "Encuentra {brand} usados en Colombia. {count} anuncios con precios desde {minPrice}. Compara precios de mercado en Carli.",
+    "statsCount": "{count} anuncios activos",
+    "statsAvgPrice": "Precio promedio",
+    "statsMinPrice": "Desde",
+    "statsMaxPrice": "Hasta",
+    "modelsTitle": "Modelos disponibles",
+    "listingsTitle": "Últimos {brand} publicados",
+    "viewAll": "Ver todos los {count} {brand}",
+    "noResults": "No hay suficientes anuncios de {brand} en este momento."
+  },
+  "brandModel": {
+    "title": "{brand} {model} usados en Colombia",
+    "metaTitle": "{brand} {model} usada Colombia — precio, km, versiones",
+    "metaDescription": "{brand} {model} usados en Colombia. {count} anuncios, precio promedio {avgPrice}. Compara precios de mercado en Carli.",
+    "statsCount": "{count} anuncios",
+    "statsAvgPrice": "Precio promedio",
+    "statsP25": "Precio bajo (P25)",
+    "statsP75": "Precio alto (P75)",
+    "statsAvgYear": "Año más común",
+    "statsAvgMileage": "Km promedio",
+    "listingsTitle": "Últimos {brand} {model} publicados",
+    "viewAll": "Ver todos los {count} {brand} {model}",
+    "noResults": "No hay suficientes anuncios de {brand} {model} en este momento."
+  },
+  "city": {
+    "title": "Carros usados en {city}",
+    "metaTitle": "Carros usados en {city} — {count} anuncios",
+    "metaDescription": "Encuentra carros usados en {city}. {count} anuncios con precios desde {minPrice}. Compara precios en Carli.",
+    "statsCount": "{count} anuncios en {city}",
+    "statsAvgPrice": "Precio promedio",
+    "statsMinPrice": "Desde",
+    "topBrandsTitle": "Marcas más populares en {city}",
+    "listingsTitle": "Últimos carros publicados en {city}",
+    "viewAll": "Ver todos los {count} carros en {city}",
+    "noResults": "No hay suficientes anuncios en {city} en este momento."
+  }
+}

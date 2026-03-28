@@ -1,5 +1,17 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
+import { prisma } from '@/lib/prisma'
+import { toSlug } from '@/lib/slugs'
+import { formatPrice } from '@/lib/utils'
+import { SearchBar } from '@/components/SearchBar'
+import { NavHeader } from '@/components/NavHeader'
+import { GradientButton } from '@/components/ui/gradient-button'
+import { TrackedLink } from '@/components/TrackedLink'
+import { JsonLd } from '@/components/JsonLd'
+import { CarCard } from '@/components/CarCard'
+import Link from 'next/link'
+
+export const revalidate = 300 // 5 minutos
 
 export const metadata: Metadata = {
   title: 'Carli — Todos los carros de Colombia en un solo lugar',
@@ -19,27 +31,48 @@ export const metadata: Metadata = {
     description: 'Meta-buscador de carros usados en Colombia.',
   },
 }
-import { SearchBar } from '@/components/SearchBar'
-import { NavHeader } from '@/components/NavHeader'
-import { GradientButton } from '@/components/ui/gradient-button'
-import { TrackedLink } from '@/components/TrackedLink'
-import { JsonLd } from '@/components/JsonLd'
 
 const FILTROS_RAPIDOS = [
-  { label: 'Toyota', href: '/buscar?brand=Toyota' },
-  { label: 'Chevrolet', href: '/buscar?brand=Chevrolet' },
-  { label: 'Renault', href: '/buscar?brand=Renault' },
-  { label: 'Mazda', href: '/buscar?brand=Mazda' },
-  { label: 'Kia', href: '/buscar?brand=Kia' },
-  { label: 'Hyundai', href: '/buscar?brand=Hyundai' },
-  { label: 'Bogotá', href: '/buscar?city=Bogota' },
-  { label: 'Medellín', href: '/buscar?city=Medellin' },
-  { label: 'Cali', href: '/buscar?city=Cali' },
+  { label: 'Toyota', href: '/carros/toyota' },
+  { label: 'Chevrolet', href: '/carros/chevrolet' },
+  { label: 'Renault', href: '/carros/renault' },
+  { label: 'Mazda', href: '/carros/mazda' },
+  { label: 'Kia', href: '/carros/kia' },
+  { label: 'Hyundai', href: '/carros/hyundai' },
+  { label: 'Bogotá', href: '/carros/ciudad/bogota' },
+  { label: 'Medellín', href: '/carros/ciudad/medellin' },
+  { label: 'Cali', href: '/carros/ciudad/cali' },
 ]
 
 export default async function HomePage() {
   const t = await getTranslations('home')
   const tc = await getTranslations('common')
+
+  const [totalActive, avgPriceAgg, topBrands, citiesCount, recentListings] = await Promise.all([
+    prisma.listing.count({ where: { isActive: true } }),
+    prisma.listing.aggregate({
+      where: { isActive: true, priceCop: { not: null } },
+      _avg: { priceCop: true },
+    }),
+    prisma.listing.groupBy({
+      by: ['brand'],
+      where: { isActive: true, brand: { not: null } },
+      _count: { brand: true },
+      orderBy: { _count: { brand: 'desc' } },
+      take: 10,
+    }),
+    prisma.listing.groupBy({
+      by: ['city'],
+      where: { isActive: true, city: { not: null } },
+    }).then((rows) => rows.length),
+    prisma.listing.findMany({
+      where: { isActive: true },
+      orderBy: { scrapedAt: 'desc' },
+      take: 12,
+    }),
+  ])
+
+  const avgPrice = avgPriceAgg._avg.priceCop ? Number(avgPriceAgg._avg.priceCop) : null
 
   return (
     <main className="min-h-screen bg-[#0B0B0F]">
@@ -61,7 +94,7 @@ export default async function HomePage() {
             <span className="text-xs font-bold text-[#3c83f6] uppercase tracking-widest">{t('badge')}</span>
           </div>
 
-          {/* H1 con gradient igual al Stitch — usando Tailwind utilities directo */}
+          {/* H1 con gradient */}
           <h1
             className="text-5xl md:text-7xl font-black tracking-tighter mb-6 max-w-4xl mx-auto bg-clip-text text-transparent"
             style={{ backgroundImage: 'linear-gradient(135deg, #ffffff 30%, #a855f7 100%)' }}
@@ -78,7 +111,7 @@ export default async function HomePage() {
             <SearchBar large placeholder={t('searchPlaceholder')} />
           </div>
 
-          {/* Filtros rápidos — fila única */}
+          {/* Filtros rápidos */}
           <div className="flex flex-wrap justify-center gap-3">
             {FILTROS_RAPIDOS.map((f) => (
               <TrackedLink
@@ -110,7 +143,75 @@ export default async function HomePage() {
         },
       }} />
 
-      {/* CTA Section — igual al Stitch */}
+      {/* Stats del mercado */}
+      <section className="max-w-5xl mx-auto px-6 pb-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="glass-panel rounded-2xl p-6 text-center">
+            <p className="text-3xl font-black text-white">{totalActive.toLocaleString('es-CO')}</p>
+            <p className="text-xs uppercase tracking-widest text-slate-500 mt-2">{t('stats.totalListings', { count: '' }).trim()}</p>
+          </div>
+          <div className="glass-panel rounded-2xl p-6 text-center">
+            <p className="text-3xl font-black text-white">{citiesCount}</p>
+            <p className="text-xs uppercase tracking-widest text-slate-500 mt-2">{t('stats.cities', { count: '' }).trim()}</p>
+          </div>
+          {avgPrice && (
+            <div className="glass-panel rounded-2xl p-6 text-center">
+              <p className="text-3xl font-black text-[#3c83f6]">{formatPrice(Math.round(avgPrice))}</p>
+              <p className="text-xs uppercase tracking-widest text-slate-500 mt-2">{t('stats.avgPrice')}</p>
+            </div>
+          )}
+          <div className="glass-panel rounded-2xl p-6 text-center">
+            <p className="text-3xl font-black text-white">24/7</p>
+            <p className="text-xs uppercase tracking-widest text-slate-500 mt-2">{t('stats.updated')}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Listings recientes */}
+      <section className="max-w-7xl mx-auto px-6 pb-16">
+        <h2 className="text-2xl font-bold text-white mb-1">{t('recentListings.title')}</h2>
+        <p className="text-slate-400 text-sm mb-8">{t('recentListings.subtitle')}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {recentListings.map((l) => (
+            <CarCard
+              key={l.id}
+              id={l.id}
+              sourcePortal={l.sourcePortal}
+              title={l.title}
+              brand={l.brand}
+              model={l.model}
+              year={l.year}
+              priceCop={l.priceCop ? Number(l.priceCop) : null}
+              mileage={l.mileage}
+              fuelType={l.fuelType}
+              transmission={l.transmission}
+              city={l.city}
+              images={l.images}
+              urlOriginal={l.urlOriginal}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* Explorar por marca */}
+      <section className="max-w-5xl mx-auto px-6 pb-16">
+        <h2 className="text-2xl font-bold text-white mb-1">{t('exploreByBrand.title')}</h2>
+        <p className="text-slate-400 text-sm mb-8">{t('exploreByBrand.subtitle')}</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+          {topBrands.map((b) => (
+            <Link
+              key={b.brand}
+              href={`/carros/${toSlug(b.brand!)}`}
+              className="glass-panel rounded-2xl p-5 text-center hover:bg-white/5 transition-colors group"
+            >
+              <p className="text-white font-bold group-hover:text-[#3c83f6] transition-colors">{b.brand}</p>
+              <p className="text-slate-500 text-xs mt-1">{(b._count.brand ?? 0).toLocaleString('es-CO')} {tc('search').toLowerCase()}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA Section */}
       <section className="max-w-5xl mx-auto px-6 pb-24">
         <div className="relative rounded-3xl p-[1px]" style={{ background: 'linear-gradient(135deg, #3c83f6, #a855f7)' }}>
           <div className="bg-[#0B0B0F] rounded-[22px] p-12 text-center">
