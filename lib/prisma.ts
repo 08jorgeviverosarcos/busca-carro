@@ -13,7 +13,7 @@ function createPrismaClient(): PrismaClient {
   if (!connectionString) {
     throw new Error('DATABASE_URL no está configurada en .env')
   }
-  const pool = new Pool({ connectionString })
+  const pool = new Pool({ connectionString, max: 3, idleTimeoutMillis: 10000 })
   const adapter = new PrismaPg(pool, { schema: DB_SCHEMA })
   return new PrismaClient({ adapter })
 }
