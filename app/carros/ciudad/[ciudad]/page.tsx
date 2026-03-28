@@ -100,7 +100,7 @@ export default async function CityPage({ params }: PageProps) {
         '@type': 'ItemList',
         name: `Carros usados en ${cityName}`,
         numberOfItems: count,
-        itemListElement: listings.slice(0, 20).map((l, i) => ({
+        itemListElement: listings.slice(0, 10).map((l, i) => ({
           '@type': 'ListItem',
           position: i + 1,
           url: `${baseUrl}/carro/${l.id}`,

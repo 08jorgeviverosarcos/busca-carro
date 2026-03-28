@@ -108,7 +108,7 @@ export default async function BrandPage({ params }: PageProps) {
         '@type': 'ItemList',
         name: `${brandName} usados en Colombia`,
         numberOfItems: count,
-        itemListElement: listings.slice(0, 20).map((l, i) => ({
+        itemListElement: listings.slice(0, 10).map((l, i) => ({
           '@type': 'ListItem',
           position: i + 1,
           url: `${baseUrl}/carro/${l.id}`,
