@@ -1,0 +1,50 @@
+name: Sync carros
+
+on:
+  schedule:
+    # Incremental: diario a las 7am UTC (2am Colombia)
+    - cron: '0 7 * * *'
+    # Full: domingos a las 5am UTC (medianoche Colombia)
+    - cron: '0 5 * * 0'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Modo de sync'
+        required: true
+        default: 'incremental'
+        type: choice
+        options:
+          - incremental
+          - full
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Determinar modo
+        id: mode
+        run: |
+          # Si se disparó manualmente, usar el input
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "mode=${{ inputs.mode }}" >> $GITHUB_OUTPUT
+          # Si es el cron del domingo (full), usar full
+          elif [ "$(date -u +%u)" = "7" ]; then
+            echo "mode=full" >> $GITHUB_OUTPUT
+          # Resto de días: incremental
+          else
+            echo "mode=incremental" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Correr sync (${{ steps.mode.outputs.mode }})
+        run: node scripts/sync.mjs all --mode=${{ steps.mode.outputs.mode }}
+        env:
+          NEXT_PUBLIC_APP_URL: ${{ secrets.PROD_APP_URL }}
+          SYNC_SECRET: ${{ secrets.SYNC_SECRET }}
