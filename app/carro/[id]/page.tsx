@@ -48,7 +48,7 @@ function formatCompactMillions(value: number | null, noDataLabel: string): strin
   if (value === null) return noDataLabel
   const millions = value / 1_000_000
   const rounded = millions >= 100 ? Math.round(millions) : Math.round(millions * 10) / 10
-  return `$${rounded.toLocaleString('es-CO')} M`
+  return `$${rounded.toLocaleString('es-CO', { maximumFractionDigits: 1 })} M`
 }
 
 // Generar metadata SEO dinámico

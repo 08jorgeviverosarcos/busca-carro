@@ -10,7 +10,7 @@ export function cn(...inputs: ClassValue[]) {
 export function formatPrice(price: number | bigint | null | undefined): string {
   if (price === null || price === undefined) return 'Precio no disponible'
   const num = typeof price === 'bigint' ? Number(price) : price
-  return `$${num.toLocaleString('es-CO')}`
+  return `$${num.toLocaleString('es-CO', { maximumFractionDigits: 0 })}`
 }
 
 // Formatea kilometraje con separador de miles y sufijo km
