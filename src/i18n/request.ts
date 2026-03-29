@@ -10,6 +10,7 @@ import alerts from './messages/es/alerts.json'
 import stats from './messages/es/stats.json'
 import fasecolda from './messages/es/fasecolda.json'
 import categories from './messages/es/categories.json'
+import prices from './messages/es/prices.json'
 
 export default getRequestConfig(async () => ({
   locale: 'es',
@@ -24,5 +25,6 @@ export default getRequestConfig(async () => ({
     stats,
     fasecolda,
     categories,
+    prices,
   },
 }))

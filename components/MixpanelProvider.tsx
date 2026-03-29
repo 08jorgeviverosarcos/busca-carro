@@ -12,6 +12,9 @@ const PAGE_NAMES: Record<string, string> = {
 function getPageName(pathname: string): string {
   if (PAGE_NAMES[pathname]) return PAGE_NAMES[pathname]
   if (pathname.startsWith('/carro/')) return 'Car Detail'
+  if (pathname.startsWith('/precios/')) return 'Price Index'
+  if (pathname.startsWith('/carros/ciudad/')) return 'City Category'
+  if (pathname.startsWith('/carros/')) return 'Brand Category'
   return pathname
 }
 

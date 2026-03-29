@@ -83,6 +83,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     }))
 
-  // Orden: estáticas primero, luego categorías (mayor prioridad), luego listings
-  return [...staticRoutes, ...brandRoutes, ...cityRoutes, ...brandModelRoutes, ...listingRoutes]
+  // Rutas de precios (/precios/marca/modelo)
+  const priceRoutes: MetadataRoute.Sitemap = brandModels
+    .filter((bm) => bm.brand && bm.model && (bm._count.model ?? 0) >= 3)
+    .map((bm) => ({
+      url: `${baseUrl}/precios/${toSlug(bm.brand!)}/${toSlug(bm.model!)}`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.85,
+    }))
+
+  // Rutas de precios por año (/precios/marca/modelo/year)
+  const yearCombos = await prisma.$queryRaw<{ brand: string; model: string; year: number; count: string }[]>`
+    SELECT brand, model, year, COUNT(*)::text AS count
+    FROM "Listing"
+    WHERE "isActive" = true AND brand IS NOT NULL AND model IS NOT NULL AND year IS NOT NULL AND "priceCop" IS NOT NULL
+    GROUP BY brand, model, year
+    HAVING COUNT(*) >= 2
+  `
+
+  const priceYearRoutes: MetadataRoute.Sitemap = yearCombos.map((c) => ({
+    url: `${baseUrl}/precios/${toSlug(c.brand)}/${toSlug(c.model)}/${c.year}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
+    priority: 0.8,
+  }))
+
+  // Orden: estáticas primero, luego precios (mayor prioridad SEO), luego categorías, luego listings
+  return [...staticRoutes, ...priceRoutes, ...priceYearRoutes, ...brandRoutes, ...cityRoutes, ...brandModelRoutes, ...listingRoutes]
 }

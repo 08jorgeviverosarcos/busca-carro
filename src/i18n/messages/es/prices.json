@@ -1,0 +1,32 @@
+{
+  "brandModel": {
+    "title": "Precio {brand} {model} usado en Colombia \u2014 {month} {year}",
+    "metaTitle": "Precio {brand} {model} usado en Colombia {year} \u2014 Precios de mercado",
+    "metaDescription": "El {brand} {model} tiene un precio promedio de {avgPrice} en Colombia. Rango de precios entre {p25} y {p75}. {count} anuncios activos. Compara precios por a\u00f1o y ciudad.",
+    "statsCount": "{count} anuncios activos",
+    "statsAvgPrice": "Precio promedio",
+    "statsP25": "Precio bajo (P25)",
+    "statsP75": "Precio alto (P75)",
+    "statsMin": "M\u00ednimo",
+    "statsMax": "M\u00e1ximo",
+    "priceByYearTitle": "Precio por a\u00f1o del modelo",
+    "priceByYearEmpty": "No hay suficientes datos para desglosar por a\u00f1o.",
+    "priceByCityTitle": "Precio por ciudad",
+    "priceByCityEmpty": "No hay suficientes datos para desglosar por ciudad.",
+    "recentListingsTitle": "\u00daltimos {brand} {model} publicados",
+    "viewAll": "Ver todos los {count} {brand} {model}",
+    "seoText": "El {brand} {model} tiene un precio promedio de {avgPrice} en el mercado colombiano de usados. Los precios var\u00edan entre {p25} y {p75} dependiendo del a\u00f1o, kilometraje y ciudad.",
+    "seoTextWithYear": "El {brand} {model} {modelYear} tiene un precio promedio de {avgPrice} en Colombia. Los precios var\u00edan entre {p25} y {p75}. Hay {count} anuncios activos en este momento.",
+    "tableYear": "A\u00f1o",
+    "tableCity": "Ciudad",
+    "tableCount": "Anuncios",
+    "tableAvgPrice": "Precio promedio",
+    "tableMinPrice": "Desde",
+    "tableMaxPrice": "Hasta",
+    "yearTitle": "Precio {brand} {model} {modelYear} en Colombia \u2014 {month} {year}",
+    "yearMetaTitle": "Precio {brand} {model} {modelYear} usado en Colombia \u2014 Precios",
+    "yearMetaDescription": "{brand} {model} {modelYear} usado en Colombia. Precio promedio {avgPrice}. {count} anuncios activos. Compara precios por ciudad.",
+    "availableYearsTitle": "Precios por a\u00f1o",
+    "backToModel": "Ver todos los a\u00f1os del {brand} {model}"
+  }
+}
