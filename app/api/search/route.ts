@@ -86,10 +86,13 @@ export async function GET(req: NextRequest) {
     }
 
     // Ordenamiento
-    // Por defecto: primero los de las páginas iniciales del portal, luego los más recientes dentro de la misma página
+    // sourcePage ASC: respeta el ranking del portal (página 1 = más relevante/reciente según el portal)
+    // publishedAt DESC: dentro de la misma página, prioriza los que tienen fecha real de publicación conocida
+    // firstSeenAt DESC: tiebreaker final para los que no tienen publishedAt
     let orderBy: Prisma.ListingOrderByWithRelationInput | Prisma.ListingOrderByWithRelationInput[] = [
       { sourcePage: { sort: 'asc', nulls: 'last' } },
-      { scrapedAt: 'desc' },
+      { publishedAt: { sort: 'desc', nulls: 'last' } },
+      { firstSeenAt: 'desc' },
     ]
     switch (sortBy) {
       case 'price_asc':

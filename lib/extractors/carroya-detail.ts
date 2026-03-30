@@ -45,7 +45,7 @@ function cutAtRelatedSection(md: string): string {
 // Convierte texto relativo de CarroYa en una fecha aproximada
 // Ejemplos: "hace 5 horas", "hace 2 semanas", "hace 1 mes", "hace 3 días", "hace 1 año"
 function parseRelativeDate(md: string): Date | undefined {
-  const match = md.match(/Publicada?\s+hace\s+(\d+)\s+(horas?|d[ií]as?|semanas?|mes(es)?|a[ñn]os?)/i)
+  const match = md.match(/Publicad[ao]?\s+hace\s+(\d+)\s+(horas?|d[ií]as?|semanas?|mes(es)?|a[ñn]os?)/i)
   if (!match) return undefined
 
   const n = parseInt(match[1], 10)

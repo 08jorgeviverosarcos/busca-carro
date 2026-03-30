@@ -51,7 +51,7 @@ export async function POST(req: Request, { params }: RouteContext) {
   }
 
   // Ejecutar con timeout
-  let detailData: VTNDetailData | AutocosmosDetailData | null
+  let detailData: VTNDetailData | AutocosmosDetailData | CarroyaDetailData | null
   try {
     detailData = await Promise.race([
       scrapePromise,
