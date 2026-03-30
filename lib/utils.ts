@@ -13,6 +13,22 @@ export function formatPrice(price: number | bigint | null | undefined): string {
   return `$${num.toLocaleString('es-CO', { maximumFractionDigits: 0 })}`
 }
 
+// Formatea precio de forma compacta para stat cards — evita desbordamiento en mobile
+// Ejemplo: 137455654 → "$137M" | 45000000 → "$45M" | 45500000 → "$45.5M"
+export function formatPriceCompact(price: number | bigint | null | undefined): string {
+  if (price === null || price === undefined) return '—'
+  const num = typeof price === 'bigint' ? Number(price) : price
+  if (num >= 1_000_000) {
+    const millions = num / 1_000_000
+    const formatted = millions % 1 === 0 ? millions.toFixed(0) : millions.toFixed(1)
+    return `$${formatted}M`
+  }
+  if (num >= 1_000) {
+    return `$${Math.round(num / 1_000)}K`
+  }
+  return `$${num}`
+}
+
 // Formatea kilometraje con separador de miles y sufijo km
 // Ejemplo: 52000 → "52.000 km"
 export function formatMileage(mileage: number | null | undefined): string {

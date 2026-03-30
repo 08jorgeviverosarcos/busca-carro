@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { prisma } from '@/lib/prisma'
 import { toSlug } from '@/lib/slugs'
-import { formatPrice } from '@/lib/utils'
+import { formatPrice, formatPriceCompact } from '@/lib/utils'
 import { SearchBar } from '@/components/SearchBar'
 import { NavHeader } from '@/components/NavHeader'
 import { GradientButton } from '@/components/ui/gradient-button'
@@ -156,7 +156,7 @@ export default async function HomePage() {
           </div>
           {avgPrice && (
             <div className="glass-panel rounded-2xl p-6 text-center">
-              <p className="text-3xl font-black text-[#3c83f6]">{formatPrice(Math.round(avgPrice))}</p>
+              <p className="text-3xl font-black text-[#3c83f6]">{formatPriceCompact(Math.round(avgPrice))}</p>
               <p className="text-xs uppercase tracking-widest text-slate-500 mt-2">{t('stats.avgPrice')}</p>
             </div>
           )}
