@@ -59,5 +59,8 @@
   "fuelNotSpecified": "Combustible no especificado",
   "similarVehicles": "Vehículos similares",
   "noImages": "Sin imágenes disponibles",
-  "extraPhotos": "+{count} fotos"
+  "extraPhotos": "+{count} fotos",
+  "loader": {
+    "message": "Consultando datos del portal..."
+  }
 }
