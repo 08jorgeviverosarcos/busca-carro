@@ -5,7 +5,7 @@ import { defineConfig } from "prisma/config";
 
 // Schema de PostgreSQL según entorno — mismo criterio que lib/prisma.ts
 const DB_SCHEMA = process.env.DB_SCHEMA ?? 'public'
-const baseUrl = process.env["DATABASE_URL"] ?? ''
+const baseUrl = process.env["DIRECT_DATABASE_URL"] ?? process.env["DATABASE_URL"] ?? ''
 const datasourceUrl = baseUrl.includes('?')
   ? `${baseUrl}&schema=${DB_SCHEMA}`
   : `${baseUrl}?schema=${DB_SCHEMA}`
