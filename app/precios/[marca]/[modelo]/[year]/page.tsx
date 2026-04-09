@@ -35,6 +35,7 @@ async function resolveModel(brandName: string, modeloSlug: string): Promise<stri
 }
 
 export async function generateStaticParams() {
+  console.log('[generateStaticParams /precios/[marca]/[modelo]/[year]] INICIO')
   const combos = await prisma.listing.groupBy({
     by: ['brand', 'model'],
     where: { isActive: true, brand: { not: null }, model: { not: null }, priceCop: { not: null } },

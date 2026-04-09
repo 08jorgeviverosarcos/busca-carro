@@ -35,11 +35,13 @@ async function resolveModel(brandName: string, modeloSlug: string): Promise<stri
 }
 
 export async function generateStaticParams() {
+  console.log('[generateStaticParams /precios/[marca]/[modelo]] INICIO')
   const combos = await prisma.listing.groupBy({
     by: ['brand', 'model'],
     where: { isActive: true, brand: { not: null }, model: { not: null }, priceCop: { not: null } },
     _count: { model: true },
   })
+  console.log('[generateStaticParams /precios/[marca]/[modelo]] combos:', combos.length)
 
   const allParams = combos
     .filter((c) => c.brand && c.model && (c._count.model ?? 0) >= MIN_LISTINGS)
@@ -50,9 +52,13 @@ export async function generateStaticParams() {
       _rawModel: c.model!,
     }))
 
+  // Log todos los params de hyundai para ver qué modelos genera
+  const hyundaiParams = allParams.filter((p) => p.marca === 'hyundai')
+  console.log('[generateStaticParams /precios/[marca]/[modelo]] hyundai params:', JSON.stringify(hyundaiParams))
+
   const badParams = allParams.filter((p) => !p.marca || !p.modelo)
   if (badParams.length > 0) {
-    console.error('[precios/[marca]/[modelo]] Params con slug vacío detectados:', JSON.stringify(badParams))
+    console.error('[precios/[marca]/[modelo]] Params con slug vacío:', JSON.stringify(badParams))
   }
 
   return allParams
