@@ -5,15 +5,6 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ['@prisma/adapter-pg', 'pg', 'dotenv'],
-  async redirects() {
-    return [
-      {
-        source: '/precios/:marca',
-        destination: '/buscar?brand=:marca',
-        permanent: false,
-      },
-    ]
-  },
   images: {
     remotePatterns: [
       {

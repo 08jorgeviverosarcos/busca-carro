@@ -45,14 +45,11 @@ export async function generateStaticParams() {
 
   for (const c of combos) {
     if (!c.brand || !c.model || (c._count.model ?? 0) < MIN_LISTINGS) continue
-    const marcaSlug = toSlug(c.brand)
-    const modeloSlug = toSlug(c.model)
-    if (!marcaSlug || !modeloSlug) continue
     const years = await getAvailableYears(c.brand, c.model)
     for (const year of years) {
       results.push({
-        marca: marcaSlug,
-        modelo: modeloSlug,
+        marca: toSlug(c.brand),
+        modelo: toSlug(c.model),
         year: String(year),
       })
     }
