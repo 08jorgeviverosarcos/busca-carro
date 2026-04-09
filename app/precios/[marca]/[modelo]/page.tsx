@@ -47,6 +47,7 @@ export async function generateStaticParams() {
       marca: toSlug(c.brand!),
       modelo: toSlug(c.model!),
     }))
+    .filter((p) => p.marca && p.modelo)
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
