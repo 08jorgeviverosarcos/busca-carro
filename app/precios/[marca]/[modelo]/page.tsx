@@ -41,12 +41,23 @@ export async function generateStaticParams() {
     _count: { model: true },
   })
 
-  return combos
+  const allParams = combos
     .filter((c) => c.brand && c.model && (c._count.model ?? 0) >= MIN_LISTINGS)
     .map((c) => ({
       marca: toSlug(c.brand!),
       modelo: toSlug(c.model!),
+      _rawBrand: c.brand!,
+      _rawModel: c.model!,
     }))
+
+  const badParams = allParams.filter((p) => !p.marca || !p.modelo)
+  if (badParams.length > 0) {
+    console.error('[precios/[marca]/[modelo]] Params con slug vacío detectados:', JSON.stringify(badParams))
+  }
+
+  return allParams
+    .filter((p) => p.marca && p.modelo)
+    .map(({ marca, modelo }) => ({ marca, modelo }))
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
