@@ -23,9 +23,9 @@ const nextConfig: NextConfig = {
         hostname: '**.carroya.com',
       },
       {
-        // Fallback genérico para otros portales
+        // Carroya CDN (avaldigitallabs.com)
         protocol: 'https',
-        hostname: '**',
+        hostname: '**.avaldigitallabs.com',
       },
     ],
   },

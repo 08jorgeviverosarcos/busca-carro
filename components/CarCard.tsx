@@ -84,7 +84,7 @@ export function CarCard({
         <Link href={`/carro/${id}`} onClick={handleCardClick}>
           {images[0] ? (
             <Image
-              src={images[0]}
+              src={images[0].replace('/fit-in/2000x2000/', '/fit-in/300x200/')}
               alt={title}
               fill
               className="object-cover grayscale-[0.2] group-hover:scale-110 group-hover:grayscale-0 transition-all duration-700"

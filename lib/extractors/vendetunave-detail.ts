@@ -3,7 +3,7 @@
 // Usamos redirect: 'follow' para seguir automáticamente el redirect
 
 const BASE_URL = 'https://www.vendetunave.co'
-const IMG_DETAIL_BASE = 'https://d3bmp4azzreq60.cloudfront.net/fit-in/2000x2000/vendetunave/images/vehiculos'
+const IMG_DETAIL_BASE = 'https://d3bmp4azzreq60.cloudfront.net/fit-in/800x600/vendetunave/images/vehiculos'
 
 const HEADERS = {
   'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
@@ -27,7 +27,7 @@ export type VTNDetailData =
       financiacion?: boolean
       blindado?: boolean
       plateDigit?: string     // último dígito de placa
-      images: string[]        // imágenes full-size (2000x2000)
+      images: string[]        // imágenes (800x600)
     }
 
 type VTNImageItem = {

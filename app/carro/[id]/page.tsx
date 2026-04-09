@@ -302,7 +302,7 @@ export default async function CarroDetailPage({ params }: PageProps) {
         )}
 
         <CarDetailGallery
-          images={listing.images}
+          images={listing.images.map((url) => url.replace('/fit-in/2000x2000/', '/fit-in/800x600/'))}
           title={listing.title}
           badges={[t('verified'), portalLabel]}
         />
