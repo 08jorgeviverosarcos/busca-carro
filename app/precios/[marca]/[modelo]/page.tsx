@@ -62,7 +62,7 @@ export async function generateStaticParams() {
   }
 
   return allParams
-    .filter((p) => p.marca && p.modelo)
+    .filter((p) => p.marca && p.modelo && p.modelo !== '.' && p.modelo !== '..')
     .map(({ marca, modelo }) => ({ marca, modelo }))
 }
 

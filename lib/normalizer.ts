@@ -324,7 +324,9 @@ function normalizeModel(raw: string, title: string, brand: string | null): strin
         return canonical + ' ' + titleCase(raw.slice(mapKey.length).trim())
       }
     }
-    return titleCase(raw.trim())
+    const result = titleCase(raw.trim())
+    // Descartar modelos que no tienen ningún carácter alfanumérico (ej. ".", "-", "...")
+    return /[a-zA-Z0-9]/.test(result) ? result : null
   }
 
   if (!title || !brand) return null

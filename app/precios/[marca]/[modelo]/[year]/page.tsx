@@ -48,7 +48,7 @@ export async function generateStaticParams() {
     if (!c.brand || !c.model || (c._count.model ?? 0) < MIN_LISTINGS) continue
     const marcaSlug = toSlug(c.brand)
     const modeloSlug = toSlug(c.model)
-    if (!marcaSlug || !modeloSlug) {
+    if (!marcaSlug || !modeloSlug || modeloSlug === '.' || modeloSlug === '..') {
       console.error('[precios/[marca]/[modelo]/[year]] Slug vacío detectado:', JSON.stringify({ brand: c.brand, model: c.model, marcaSlug, modeloSlug }))
       continue
     }
