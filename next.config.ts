@@ -6,6 +6,7 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 const nextConfig: NextConfig = {
   serverExternalPackages: ['@prisma/adapter-pg', 'pg', 'dotenv'],
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         // VendeTuNave — CloudFront CDN
